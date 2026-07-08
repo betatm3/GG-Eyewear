@@ -97,14 +97,14 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
 
     @Override
-    public Collection<VersioneOcchiale> doRetrieveByOcchiale(Occhiale occhiale) throws SQLException {
+    public Collection<VersioneOcchiale> doRetrieveByOcchiale(int occhiale_id) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE occhiale_id = ?";
         Collection<VersioneOcchiale> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setInt(1, occhiale != null ? occhiale.getId() : 0);
+            preparedStatement.setInt(1,occhiale_id);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {

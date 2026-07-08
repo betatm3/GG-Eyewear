@@ -1,23 +1,24 @@
 package dao;
+import java.sql.SQLException;
 import java.util.Collection;
 import model.Ordine;
 import model.Stato; 
 
 public interface OrdineDAO {
 
-	void doSave(Ordine ordine) throws Exception;
+	void doSave(Ordine ordine) throws SQLException;
 
-	void doUpdate(Ordine ordine) throws Exception;
+	void doUpdate(Ordine ordine) throws SQLException;
 
-	boolean doDelete(int id) throws Exception;
+	boolean doDelete(int id) throws SQLException;
 
-	Ordine doRetrieveByKey(int id) throws Exception;
+	Ordine doRetrieveByKey(int id) throws SQLException;
 
-	Collection<Ordine> doRetrieveByUtente(String utente_email) throws Exception;
+	Collection<Ordine> doRetrieveByUtente(String utente_email) throws SQLException;
 
-	Collection<Ordine> doRetrieveByStato(Stato stato) throws Exception;
+	Collection<Ordine> doRetrieveByStato(Stato stato) throws SQLException;
 
-	Collection<Ordine> doRetrieveAll(String order) throws Exception;
+	Collection<Ordine> doRetrieveAll(String order) throws SQLException;
 	
 }
 

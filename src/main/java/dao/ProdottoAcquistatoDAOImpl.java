@@ -94,14 +94,14 @@ public class ProdottoAcquistatoDAOImpl implements ProdottoAcquistatoDAO {
     }
 
     @Override
-    public Collection<ProdottoAcquistato> doRetrieveByOrdine(Ordine ordine) throws SQLException {
+    public Collection<ProdottoAcquistato> doRetrieveByOrdine(int id_ordine) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_ordine = ?";
         Collection<ProdottoAcquistato> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setInt(1, ordine.getId());
+            preparedStatement.setInt(1, id_ordine);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {                  
