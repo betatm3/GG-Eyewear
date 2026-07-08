@@ -2,7 +2,6 @@ package dao;
 import java.util.Collection;
 import model.Ordine;
 import model.Stato; 
-import model.Utente;
 
 public interface OrdineDAO {
 
@@ -14,7 +13,7 @@ public interface OrdineDAO {
 
 	Ordine doRetrieveByKey(int id) throws Exception;
 
-	Collection<Ordine> doRetrieveByUtente(Utente utente) throws Exception;
+	Collection<Ordine> doRetrieveByUtente(String utente_email) throws Exception;
 
 	Collection<Ordine> doRetrieveByStato(Stato stato) throws Exception;
 

@@ -95,14 +95,14 @@ public class OrdineDAOImpl implements OrdineDAO {
     }
 
     @Override
-    public Collection<Ordine> doRetrieveByUtente(Utente utente) throws SQLException {
+    public Collection<Ordine> doRetrieveByUtente(String utente_email) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE utente_email = ?";
         Collection<Ordine> ordini = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setString(1, utente.getEmail());
+            preparedStatement.setString(1, utente_email);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
