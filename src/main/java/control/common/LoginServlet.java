@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 import dao.UtenteDAOImpl;
 import model.Utente;
 
-@WebServlet("/login")
+@WebServlet("/common/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
         // Validazione base dei campi input
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             request.setAttribute("errore", "Tutti i campi sono obbligatori.");
-            request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/view/common/login.jsp").forward(request, response);
             return;
         }
 
@@ -80,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 
         // Se siamo arrivati qui significa che il login è fallito (credenziali errate o SQLException)
         // Rimandiamo l'utente al form di login mostrando il messaggio d'errore impostato nella request
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/login.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/login.jsp");
         dispatcher.forward(request, response);
     }
 }
