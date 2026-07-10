@@ -37,7 +37,7 @@ public class CatalogoServlet extends HttpServlet {
         
         try {
             // 4. Prendiamo i dati dal Database tramite il DAO
-            Collection<Occhiale> listaOcchiali = occhialeDAO.doRetrieveAll(null);
+            Collection<Occhiale> listaOcchiali = occhialeDAO.doRetrieveByAttivo(true);
             
             // 5. Cicliamo su ogni occhiale per caricarne i dettagli commerciali e i colori
             for (Occhiale occhiale : listaOcchiali) {
