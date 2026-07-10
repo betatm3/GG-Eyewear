@@ -76,7 +76,11 @@ public class Occhiale implements Cloneable{
 	}
 
 	public void setVersioneCorrente(VersioneOcchiale versioneCorrente) {
-		this.versioneCorrente = versioneCorrente.clone();
+	    if (versioneCorrente != null) {
+	        this.versioneCorrente = (VersioneOcchiale) versioneCorrente.clone();
+	    } else {
+	        this.versioneCorrente = null;
+	    }
 	}
 
 	public void setDisponibilita(Collection<Disponibile> disponibilita) {

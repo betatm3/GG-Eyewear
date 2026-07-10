@@ -1,8 +1,11 @@
-package control;
+package control.common;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,22 +23,23 @@ import model.Occhiale;
 import model.VersioneOcchiale;
 
 // URL della servlet
-@WebServlet("/catalogo")
+@WebServlet("/common/catalogo")
 public class CatalogoServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    @jakarta.annotation.Resource(name = "jdbc/ecommerce_db")
+    private DataSource ds;
+    
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 2. Recuperiamo il DataSource che Tomcat ha salvato nel contesto (scope: tutta l'applicazione)
-        DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
-        
-        // 3. Istanziamo tutti i DAO che ci servono
+    	// 3. Istanziamo tutti i DAO che ci servono
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
         
-        try {
+       try {
             // 4. Prendiamo i dati dal Database tramite il DAO
             Collection<Occhiale> listaOcchiali = occhialeDAO.doRetrieveByAttivo(true);
             
@@ -57,9 +61,10 @@ public class CatalogoServlet extends HttpServlet {
         } catch (SQLException e) {            // In caso di errore al DB, lo stampiamo in console
             e.printStackTrace(); 
         }
+        
 
-        // 7. Passiamo la palla alla pagina JSP che si occuperà della grafica
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/catalogo.jsp");
+       // 7. Passiamo la palla alla pagina JSP che si occuperà della grafica
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/catalogo.jsp");
         dispatcher.forward(request, response);
     }
 
