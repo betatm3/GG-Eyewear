@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout Ordine</title>
+    <title>Checkout Ordine - GG Eyewear</title>
     
     <!-- Font Premium da Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
