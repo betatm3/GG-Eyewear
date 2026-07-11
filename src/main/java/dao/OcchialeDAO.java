@@ -7,9 +7,9 @@ import java.sql.SQLException;
 
 public interface OcchialeDAO {
 
-	void doSave(Occhiale occhiale) throws SQLException;
+	boolean doSave(Occhiale occhiale) throws SQLException;
 
-	void doUpdate(Occhiale occhiale) throws SQLException;
+	boolean doUpdate(Occhiale occhiale) throws SQLException;
 
     boolean doDelete(int id) throws SQLException;
 

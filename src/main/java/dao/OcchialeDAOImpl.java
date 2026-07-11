@@ -20,33 +20,37 @@ public class OcchialeDAOImpl implements OcchialeDAO {
     }
 
     @Override
-    public void doSave(Occhiale occhiale) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id, attivo, immagine) VALUES (?, ?, ?)";
-
+    public boolean doSave(Occhiale occhiale) throws SQLException {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id, attivo, immagine, tipologia) VALUES (?, ?, ?,?)";
+        int result = 0;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
             
             preparedStatement.setInt(1, occhiale.getId());
             preparedStatement.setBoolean(2, occhiale.isAttivo());
             preparedStatement.setBytes(3, occhiale.getImmagine());
+            preparedStatement.setString(4, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
             
-            preparedStatement.executeUpdate();
+            result = preparedStatement.executeUpdate();
         }
+        return (result != 0);
     }
 
     @Override
-    public void doUpdate(Occhiale occhiale) throws SQLException {
-        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = ?, immagine = ? WHERE id = ?";
-
+    public boolean doUpdate(Occhiale occhiale) throws SQLException {
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = ?, immagine = ?, tipologia = ? WHERE id = ?";
+        int result = 0;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             
             preparedStatement.setBoolean(1, occhiale.isAttivo());
             preparedStatement.setBytes(2, occhiale.getImmagine());
-            preparedStatement.setInt(3, occhiale.getId());
+            preparedStatement.setString(3, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
+            preparedStatement.setInt(4, occhiale.getId());
 
-            preparedStatement.executeUpdate();
+            result = preparedStatement.executeUpdate();
         }
+        return (result != 0);
     }
 
     @Override
@@ -146,6 +150,12 @@ public class OcchialeDAOImpl implements OcchialeDAO {
         occhiale.setId(rs.getInt("id"));
         occhiale.setAttivo(rs.getBoolean("attivo"));
         occhiale.setImmagine(rs.getBytes("immagine"));
+        
+        String tipologiaStr = rs.getString("tipologia");
+        if (tipologiaStr != null) {
+            occhiale.setTipo(Tipologia.valueOf(tipologiaStr));
+        }
+        
         return occhiale;
     }
 }

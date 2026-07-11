@@ -23,7 +23,7 @@ public class UtenteDAOImpl implements UtenteDAO {
     @Override
     public boolean doSave(Utente utente) throws SQLException {
         String insertSQL = "INSERT INTO " + TABLE_NAME + " (email, password, nome, cognome, data_nascita, indirizzo, telefono, ruolo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        int result;
+        int result = 0;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
             
@@ -53,7 +53,7 @@ public class UtenteDAOImpl implements UtenteDAO {
     @Override
     public boolean doUpdate(Utente utente) throws SQLException {
         String updateSQL = "UPDATE " + TABLE_NAME + " SET password = ?, nome = ?, cognome = ?, data_nascita = ?, indirizzo = ?, telefono = ?, ruolo = ? WHERE email = ?";
-        int result;
+        int result = 0;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             

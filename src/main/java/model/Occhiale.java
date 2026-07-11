@@ -14,7 +14,6 @@ public class Occhiale implements Cloneable{
 	
    	public Occhiale(int id, boolean attivo, Tipologia tipo, byte[] immagine, VersioneOcchiale versioneCorrente,
 			Collection<Disponibile> disponibilita) {
-		super();
 		this.id = id;
 		this.attivo = attivo;
 		this.tipo = tipo;
