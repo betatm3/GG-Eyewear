@@ -8,15 +8,15 @@ import model.Ruolo;
 
 public interface UtenteDAO {
     
-    public boolean doSave(Utente utente) throws SQLException;
+    boolean doSave(Utente utente) throws SQLException;
     
-    public boolean doUpdate(Utente utente) throws SQLException;
+    boolean doUpdate(Utente utente) throws SQLException;
     
-    public boolean doDelete(String email) throws SQLException;
+    boolean doDelete(String email) throws SQLException;
     
-    public Utente doRetrieveByKey(String email) throws SQLException;
+    Utente doRetrieveByKey(String email) throws SQLException;
     
-    public Collection<Utente> doRetrieveByRuolo(Ruolo ruoloScelto) throws SQLException;
+    Collection<Utente> doRetrieveByRuolo(Ruolo ruoloScelto) throws SQLException;
     
-    public Collection<Utente> doRetrieveAll(String order) throws SQLException;
+    Collection<Utente> doRetrieveAll(String order) throws SQLException;
 }
