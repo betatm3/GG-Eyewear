@@ -3,8 +3,6 @@ package control.common;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
@@ -19,18 +17,15 @@ import javax.sql.DataSource;
 import dao.OrdineDAOImpl;
 import dao.ProdottoAcquistatoDAOImpl;
 import dao.DisponibileDAOImpl;
-import dao.OcchialeDAOImpl;
-import dao.VersioneOcchialeDAOImpl;
+
 import dao.ColoreDAOImpl;
 
 import model.Ordine;
 import model.ProdottoAcquistato;
 import model.Utente;
 import model.Stato;
-import model.Occhiale;
-import model.VersioneOcchiale;
+
 import model.Disponibile;
-import model.Colore;
 
 @WebServlet("/checkout")
 public class CheckoutServlet extends HttpServlet {
