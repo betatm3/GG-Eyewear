@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 
 import model.VersioneOcchiale;
+import model.Colore;
 import model.Genere;
 import model.Montatura;
 import model.Occhiale;
+import model.Tipologia;
 
 public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
 
@@ -274,27 +276,6 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         }
         return lista;
     }
-
-    @Override
-    public Collection<VersioneOcchiale> doRetrieveAll(String order) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME;
-
-        if (order != null && !order.trim().isEmpty()) {
-            selectSQL += " ORDER BY " + order;
-        }
-
-        Collection<VersioneOcchiale> lista = new ArrayList<>();
-
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-             ResultSet rs = preparedStatement.executeQuery()) {
-
-            while (rs.next()) {
-                lista.add(leggiDBVersioneOcchiale(rs));
-            }
-        }
-        return lista;
-    }
     
     @Override
     public VersioneOcchiale doRetrieveCorrenteByOcchiale(int idOcchiale) throws SQLException {
@@ -353,7 +334,162 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         return lista;
     }
     
+    @Override
+    public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
+        Collection<VersioneOcchiale> lista = new ArrayList<>();
+        
+        // 1. Convertiamo il nome del colore nel suo ID tramite il ColoreDAO se è stato passato
+        String codiceColore = null;
+        if (colore != null && !colore.trim().isEmpty()) {
+            ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
+            Colore c = coloreDAO.doRetrieveByNome(colore);
+            if (c != null) {
+            	codiceColore = c.getCodice(); 
+            } else { //NON ARRIVERA' MAI QUI, DA CAPIRE SE TOGLIERE
+                // Se l'utente ha cercato un colore che non esiste nel DB, 
+                // restituiamo direttamente una lista vuota senza interrogare il database inutilmente
+                return lista; 
+            }
+        }
+        
+        StringBuilder sql = new StringBuilder(
+            "SELECT DISTINCT v.* FROM versione_occhiale v " +
+            "JOIN occhiale o ON v.occhiale_id = o.id "
+        );
+        
+        // Se dobbiamo filtrare per colore, aggiungiamo la JOIN con la tabella disponibilità
+        if (codiceColore != null) {
+            sql.append("JOIN disponibilita d ON o.id = d.occhiale_id ");
+        }
+        
+        // Clausola WHERE iniziale obbligatoria per le versioni correnti e prodotti attivi
+        sql.append("WHERE o.attivo = true AND v.corrente = true");
+        
+        // 3. Aggiunta dinamica dei filtri condizionali
+        if (genere != null) {
+            sql.append(" AND v.genere = ?");
+        }
+        if (materiale != null && !materiale.trim().isEmpty()) {
+            sql.append(" AND v.materiale = ?");
+        }
+        if (forma != null && !forma.trim().isEmpty()) {
+            sql.append(" AND v.forma = ?");
+        }
+        if (marca != null && !marca.trim().isEmpty()) {
+            sql.append(" AND o.marca = ?");
+        }
+        if (codiceColore != null) {
+            sql.append(" AND d.colore_codice = ?"); 
+        }
+        if (taglia != null && !taglia.trim().isEmpty()) {
+            sql.append(" AND v.taglia = ?");
+        }
+        if (prezzoMin != null) {
+            sql.append(" AND v.prezzo >= ?");
+        }
+        if (prezzoMax != null) {
+            sql.append(" AND v.prezzo <= ?");
+        }
+        
+        // 4. Impostazione dei parametri nel PreparedStatement nello STESSO IDENTICO ORDINE
+        try (Connection con = ds.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+            
+            int index = 1;
+            
+            if (genere != null) {
+                ps.setString(index++, genere.name());
+            }
+            if (materiale != null && !materiale.trim().isEmpty()) {
+                ps.setString(index++, materiale);
+            }
+            if (forma != null && !forma.trim().isEmpty()) {
+                ps.setString(index++, forma);
+            }
+            if (marca != null && !marca.trim().isEmpty()) {
+                ps.setString(index++, marca);
+            }
+            if (codiceColore != null) {
+                ps.setString(index++, codiceColore);
+            }
+            if (taglia != null && !taglia.trim().isEmpty()) {
+                ps.setString(index++, taglia);
+            }
+            if (prezzoMin != null) {
+                ps.setDouble(index++, prezzoMin);
+            }
+            if (prezzoMax != null) {
+                ps.setDouble(index++, prezzoMax);
+            }
+            
+            // 5. Esecuzione e mappatura dei risultati
+            ResultSet rs = ps.executeQuery();
+            
+            
+            while (rs.next()) {
+                VersioneOcchiale versione = new VersioneOcchiale();
+                
+                // 1. Settiamo tutti gli attributi di VersioneOcchiale
+                versione.setCodice(rs.getInt("v.codice"));
+                versione.setTaglia(rs.getString("v.taglia"));
+                versione.setForma(rs.getString("v.forma"));
+                versione.setMateriale(rs.getString("v.materiale"));
+                versione.setPrezzo(rs.getDouble("v.prezzo"));
+                versione.setCorrente(rs.getBoolean("v.corrente"));
+                versione.setMarca(rs.getString("v.marca"));
+                versione.setModello(rs.getString("v.modello"));
 
+                
+                String genereStr = rs.getString("v.genere");
+                if (genereStr != null) {
+                    versione.setGenere(Genere.valueOf(genereStr));
+                }
+                
+                String montaturaStr = rs.getString("v.montatura");
+                if (montaturaStr != null) {
+                    versione.setMontatura(Montatura.valueOf(montaturaStr));
+                }
+
+                // 2. Mappiamo l'oggetto Occhiale direttamente dai campi della JOIN
+                Occhiale occhialeAssociato = new Occhiale();
+                occhialeAssociato.setId(rs.getInt("o.id")); 
+                occhialeAssociato.setAttivo(rs.getBoolean("o.attivo"));
+                occhialeAssociato.setImmagine(rs.getBytes("o.immagine"));
+                String tipologiaStr = rs.getString("o.tipologia");
+                if (tipologiaStr != null) {
+                    occhialeAssociato.setTipo(Tipologia.valueOf(tipologiaStr));
+                }
+                // 3. Colleghiamo l'oggetto Occhiale appena creato all'interno della versione
+                versione.setOcchiale(occhialeAssociato);
+
+                lista.add(versione);
+            }
+        }
+        
+        return lista;
+    }
+    
+    @Override
+    public Collection<VersioneOcchiale> doRetrieveAll(String order) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME;
+
+        if (order != null && !order.trim().isEmpty()) {
+            selectSQL += " ORDER BY " + order;
+        }
+
+        Collection<VersioneOcchiale> lista = new ArrayList<>();
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(leggiDBVersioneOcchiale(rs));
+            }
+        }
+        return lista;
+    }
+    
     private VersioneOcchiale leggiDBVersioneOcchiale(ResultSet rs) throws SQLException {
         VersioneOcchiale v = new VersioneOcchiale();
         v.setCodice(rs.getInt("codice"));
@@ -378,16 +514,12 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         v.setPrezzo(rs.getDouble("prezzo"));
         v.setCorrente(rs.getBoolean("corrente"));
         
+        OcchialeDAOImpl occDAO = new OcchialeDAOImpl(ds);
         int idOcchiale = rs.getInt("occhiale_id");
-        if (idOcchiale != 0) {
-            Occhiale o = new Occhiale();
-            o.setId(idOcchiale);
-            v.setOcchiale(o);
-        }
-        
+        v.setOcchiale(occDAO.doRetrieveByKey(idOcchiale));
+    
         return v;
     }
 
-    
-
+ 
 }

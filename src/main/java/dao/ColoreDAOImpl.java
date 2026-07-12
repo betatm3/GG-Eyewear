@@ -80,9 +80,28 @@ public class ColoreDAOImpl implements ColoreDAO {
         }
         return colore;
     }
+    
+    @Override
+    public Colore doRetrieveByNome(String nomeScelto) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE nome = ?";
+        Colore colore = null;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+            
+            preparedStatement.setString(1, nomeScelto);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                	colore = leggiDBColore(rs);
+                }
+            }
+        }
+        return colore;
+    }
 
     @Override
-    public Collection<Colore> doRetrieveByNome(String nomeScelto) throws SQLException {
+    public Collection<Colore> doRetrieveByNomeGenerico(String nomeScelto) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE nome LIKE ?";
         Collection<Colore> colori = new ArrayList<>();
 
@@ -100,6 +119,8 @@ public class ColoreDAOImpl implements ColoreDAO {
         return colori;
     }
 
+    
+    
     @Override
     public Collection<Colore> doRetrieveAll(String order) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME;
