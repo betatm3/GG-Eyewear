@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import model.VersioneOcchiale;
 import model.Genere;
+import model.Montatura;
 import model.Occhiale;
 
 public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
@@ -33,7 +34,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             preparedStatement.setString(3, versione.getModello());
             preparedStatement.setString(4, versione.getGenere() != null ? versione.getGenere().name() : null);
             preparedStatement.setString(5, versione.getTaglia());
-            preparedStatement.setString(6, versione.getMontatura());
+            preparedStatement.setString(6, versione.getMontatura()!= null ? versione.getMontatura().name() : null);
             preparedStatement.setString(7, versione.getForma());
             preparedStatement.setString(8, versione.getMateriale());
             preparedStatement.setDouble(9, versione.getPrezzo());
@@ -56,7 +57,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             preparedStatement.setString(2, versione.getModello());
             preparedStatement.setString(3, versione.getGenere() != null ? versione.getGenere().name() : null);
             preparedStatement.setString(4, versione.getTaglia());
-            preparedStatement.setString(5, versione.getMontatura());
+            preparedStatement.setString(5, versione.getMontatura()!= null ? versione.getMontatura().name() : null);
             preparedStatement.setString(6, versione.getForma());
             preparedStatement.setString(7, versione.getMateriale());
             preparedStatement.setDouble(8, versione.getPrezzo());
@@ -160,14 +161,14 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
 
     @Override
-    public Collection<VersioneOcchiale> doRetrieveByMontatura(String montaturaScelta) throws SQLException {
+    public Collection<VersioneOcchiale> doRetrieveByMontatura(Montatura montaturaScelta) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE montatura = ?";
         Collection<VersioneOcchiale> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setString(1, montaturaScelta);
+            preparedStatement.setString(1, montaturaScelta!= null ? montaturaScelta.name() : null);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
@@ -366,7 +367,12 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         }
         
         v.setTaglia(rs.getString("taglia"));
-        v.setMontatura(rs.getString("montatura"));
+        
+        String montaturaStr = rs.getString("montatura");
+        if (montaturaStr != null) {
+            v.setMontatura(Montatura.valueOf(montaturaStr));
+        }
+        
         v.setForma(rs.getString("forma"));
         v.setMateriale(rs.getString("materiale"));
         v.setPrezzo(rs.getDouble("prezzo"));

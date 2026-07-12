@@ -3,7 +3,7 @@ package control.common;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -17,8 +17,6 @@ import javax.sql.DataSource;
 import dao.OrdineDAOImpl;
 import dao.ProdottoAcquistatoDAOImpl;
 import dao.DisponibileDAOImpl;
-
-import dao.ColoreDAOImpl;
 
 import model.Ordine;
 import model.ProdottoAcquistato;
@@ -46,7 +44,8 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        List<ProdottoAcquistato> carrello = (List<ProdottoAcquistato>) session.getAttribute("carrello");
+        @SuppressWarnings("unchecked")
+		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
 
         if (carrello == null || carrello.isEmpty()) {
             request.setAttribute("errore", "Il tuo carrello è attualmente vuoto.");
@@ -67,7 +66,8 @@ public class CheckoutServlet extends HttpServlet {
 
         Utente utenteLoggato = (Utente) session.getAttribute("utenteLoggato");
 
-        List<ProdottoAcquistato> carrello = (List<ProdottoAcquistato>) session.getAttribute("carrello");
+        @SuppressWarnings("unchecked")
+		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
         if (carrello == null || carrello.isEmpty()) {
             request.setAttribute("errore", "Il carrello è vuoto. Impossibile procedere.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
@@ -99,7 +99,6 @@ public class CheckoutServlet extends HttpServlet {
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
         ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
-        ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
 
         try {
             // 1. Validazione preliminare delle disponibilità di magazzino

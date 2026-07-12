@@ -2,6 +2,7 @@ package dao;
 import java.util.Collection;
 import model.VersioneOcchiale;
 import model.Genere;
+import model.Montatura;
 import java.sql.SQLException;
 
 public interface VersioneOcchialeDAO {
@@ -20,7 +21,7 @@ public interface VersioneOcchialeDAO {
 
     Collection<VersioneOcchiale> doRetrieveByTaglia(String taglia) throws SQLException;
 
-    Collection<VersioneOcchiale> doRetrieveByMontatura(String montatura) throws SQLException;
+    Collection<VersioneOcchiale> doRetrieveByMontatura(Montatura montatura) throws SQLException;
 
     Collection<VersioneOcchiale> doRetrieveByForma(String forma) throws SQLException;
 

@@ -5,7 +5,7 @@ public class VersioneOcchiale implements Cloneable{
     private String modello;
     private Genere genere;
     private String taglia;
-    private String montatura;
+    private Montatura montatura;
     private String forma;
     private String materiale;
     private double prezzo;
@@ -14,7 +14,7 @@ public class VersioneOcchiale implements Cloneable{
 
     
 
-    public VersioneOcchiale(int codice, String marca, String modello, Genere genere, String taglia, String montatura, String forma, String materiale, double prezzo, boolean corrente, Occhiale occhiale) {
+    public VersioneOcchiale(int codice, String marca, String modello, Genere genere, String taglia, Montatura montatura, String forma, String materiale, double prezzo, boolean corrente, Occhiale occhiale) {
 		this.codice = codice;
 		this.marca = marca;
 		this.modello = modello;
@@ -51,7 +51,7 @@ public class VersioneOcchiale implements Cloneable{
         this.taglia = taglia;
     }
 
-    public void setMontatura(String montatura) {
+    public void setMontatura(Montatura montatura) {
         this.montatura = montatura;
     }
 
@@ -95,7 +95,7 @@ public class VersioneOcchiale implements Cloneable{
         return taglia;
     }
 
-    public String getMontatura() {
+    public Montatura getMontatura() {
         return montatura;
     }
 
