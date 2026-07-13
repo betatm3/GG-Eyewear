@@ -20,20 +20,26 @@ public class OcchialeDAOImpl implements OcchialeDAO {
     }
 
     @Override
-    public boolean doSave(Occhiale occhiale) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id, attivo, immagine, tipologia) VALUES (?, ?, ?,?)";
-        int result = 0;
+    public int doSave(Occhiale occhiale) throws SQLException {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (attivo, immagine, tipologia) VALUES (?, ?, ?)";
+        
         try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             
-            preparedStatement.setInt(1, occhiale.getId());
-            preparedStatement.setBoolean(2, occhiale.isAttivo());
-            preparedStatement.setBytes(3, occhiale.getImmagine());
-            preparedStatement.setString(4, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
+            preparedStatement.setBoolean(1, occhiale.isAttivo());
+            preparedStatement.setBytes(2, occhiale.getImmagine());
+            preparedStatement.setString(3, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
             
-            result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+            
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                } else {
+                    throw new SQLException("Inserimento fallito, nessun ID generato dal database.");
+                }
+            }
         }
-        return (result != 0);
     }
 
     @Override
@@ -66,6 +72,20 @@ public class OcchialeDAOImpl implements OcchialeDAO {
         }
         return (result != 0);
     }
+    
+    public boolean doDeleteLogica(int id) throws SQLException {
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = false WHERE id = ?";
+        int result = 0;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+            
+            preparedStatement.setInt(1, id);
+            result = preparedStatement.executeUpdate();
+        }
+        return (result != 0);
+    }
+    
 
     @Override
     public Occhiale doRetrieveByKey(int id) throws SQLException {

@@ -7,11 +7,13 @@ import java.sql.SQLException;
 
 public interface OcchialeDAO {
 
-	boolean doSave(Occhiale occhiale) throws SQLException;
+	int doSave(Occhiale occhiale) throws SQLException;
 
 	boolean doUpdate(Occhiale occhiale) throws SQLException;
 
     boolean doDelete(int id) throws SQLException;
+    
+    boolean doDeleteLogica(int id) throws SQLException;
 
     Occhiale doRetrieveByKey(int id) throws SQLException;
     

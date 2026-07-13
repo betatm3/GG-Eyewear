@@ -13,7 +13,7 @@ public interface VersioneOcchialeDAO {
 
     boolean doDelete(int codice) throws SQLException;
 
-    VersioneOcchiale doRetrieveByKey(int codice) throws SQLException;
+    VersioneOcchiale doRetrieveByKey(int codice, int id_occhiale) throws SQLException;
 
     Collection<VersioneOcchiale> doRetrieveByOcchiale(int occhiale_id) throws SQLException;
 

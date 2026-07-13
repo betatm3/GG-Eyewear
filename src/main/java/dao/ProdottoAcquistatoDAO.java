@@ -13,7 +13,7 @@ public interface ProdottoAcquistatoDAO {
     
     boolean doDelete(int numero) throws SQLException;
     
-    ProdottoAcquistato doRetrieveByKey(int numero) throws SQLException;
+    ProdottoAcquistato doRetrieveByKey(int numero, int id_ordine) throws SQLException;
     
     Collection<ProdottoAcquistato> doRetrieveByOrdine(int id_ordine) throws SQLException;
     

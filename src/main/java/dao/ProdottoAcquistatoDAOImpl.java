@@ -77,14 +77,15 @@ public class ProdottoAcquistatoDAOImpl implements ProdottoAcquistatoDAO {
     }
 
     @Override
-    public ProdottoAcquistato doRetrieveByKey(int numero) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE numero = ?";
+    public ProdottoAcquistato doRetrieveByKey(int numero, int id_ordine) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE numero = ? AND ordine_id = ?";
         ProdottoAcquistato prodotto = null;
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
             preparedStatement.setInt(1, numero);
+            preparedStatement.setInt(2, id_ordine);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
