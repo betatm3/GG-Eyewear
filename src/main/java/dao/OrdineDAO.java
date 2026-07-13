@@ -18,6 +18,8 @@ public interface OrdineDAO {
 
 	Collection<Ordine> doRetrieveByStato(Stato stato) throws SQLException;
 
+	Collection<Ordine> doRetrieveByProdotti(Collection<Integer> codiciVersioni, Collection<Integer> idOcchiali) throws SQLException;
+	
 	Collection<Ordine> doRetrieveAll(String order) throws SQLException;
 	
 }

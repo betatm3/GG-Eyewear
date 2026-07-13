@@ -133,6 +133,60 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
         return ordini;
     }
+    
+    public Collection<Ordine> doRetrieveByProdotti(Collection<Integer> codiciVersioni, Collection<Integer> idOcchiali) throws SQLException {
+        Collection<Ordine> ordini = new ArrayList<>();
+        
+        // Se una delle due collezioni è vuota, evitiamo di fare una query che fallirebbe a livello sintattico
+        if (codiciVersioni == null || codiciVersioni.isEmpty() || idOcchiali == null || idOcchiali.isEmpty()) {
+            return ordini;
+        }
+
+        // 1. Costruiamo dinamicamente i segnaposto '?' per la clausola IN
+        StringBuilder sbCodici = new StringBuilder();
+        for (int i = 0; i < codiciVersioni.size(); i++) {
+            sbCodici.append("?");
+            if (i < codiciVersioni.size() - 1) sbCodici.append(",");
+        }
+
+        StringBuilder sbIdOcchiali = new StringBuilder();
+        for (int i = 0; i < idOcchiali.size(); i++) {
+            sbIdOcchiali.append("?");
+            if (i < idOcchiali.size() - 1) sbIdOcchiali.append(",");
+        }
+
+        // 2. Definiamo la query SQL con la JOIN sulla tabella dei prodotti acquistati (chiave composta)
+        // Usiamo DISTINCT per evitare di duplicare lo stesso ordine se contiene più occhiali che corrispondono ai filtri
+        String query = "SELECT DISTINCT o.* FROM ordine o " +
+                       "JOIN prodotto_acquistato pa ON o.id = pa.ordine_id " +
+                       "WHERE pa.versione_codice IN (" + sbCodici.toString() + ") " +
+                       "AND pa.occhiale_id IN (" + sbIdOcchiali.toString() + ")";
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            int parameterIndex = 1;
+
+            // 3. Settiamo i parametri per i codici delle versioni
+            for (Integer codice : codiciVersioni) {
+                preparedStatement.setInt(parameterIndex++, codice);
+            }
+
+            // 4. Settiamo i parametri per gli ID degli occhiali
+            for (Integer id : idOcchiali) {
+                preparedStatement.setInt(parameterIndex++, id);
+            }
+
+           ResultSet rs = preparedStatement.executeQuery();
+           while (rs.next()) {
+               Ordine ordine = leggiDBOrdine(rs); 
+               ordini.add(ordine);
+           }
+            
+        }
+        
+        return ordini;
+    }
 
     @Override
     public Collection<Ordine> doRetrieveAll(String order) throws SQLException {
