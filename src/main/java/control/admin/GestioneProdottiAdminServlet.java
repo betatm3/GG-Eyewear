@@ -91,7 +91,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
     private boolean checkAdminPrivileges(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
+        Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
         
         if (utente == null || !utente.isAdmin()) {
             request.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");

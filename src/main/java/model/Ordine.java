@@ -61,7 +61,17 @@ public class Ordine implements Cloneable{
 		this.utente = utente.clone();
 	}
 
-    @Override
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (o == null || getClass() != o.getClass()) return false;
+	    Ordine ordine = (Ordine) o;
+	    return id == ordine.id; 
+	}
+
+
+
+	@Override
     public Ordine clone(){
         try{
         	Ordine cloned = (Ordine) super.clone();

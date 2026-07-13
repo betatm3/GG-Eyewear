@@ -12,8 +12,6 @@ public class VersioneOcchiale implements Cloneable{
     private boolean corrente;
     private Occhiale occhiale;
 
-    
-
     public VersioneOcchiale(int codice, String marca, String modello, Genere genere, String taglia, Montatura montatura, String forma, String materiale, double prezzo, boolean corrente, Occhiale occhiale) {
 		this.codice = codice;
 		this.marca = marca;

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException; 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
@@ -129,6 +130,65 @@ public class OrdineDAOImpl implements OrdineDAO {
                 while (rs.next()) {
                     ordini.add(leggiDBOrdine(rs));
                 }
+            }
+        }
+        return ordini;
+    }
+    
+    @Override
+    public Collection<Ordine> doRetrieveByFiltri(Stato stato, String metodoPagamento, Double prezzoMin, Double prezzoMax, LocalDateTime dataInizio, LocalDateTime dataFine) throws SQLException {
+        Collection<Ordine> ordini = new ArrayList<>();
+        
+        StringBuilder sbQuery = new StringBuilder("SELECT * FROM " + TABLE_NAME + " WHERE 1=1");
+        
+        if (stato != null) {
+            sbQuery.append(" AND stato = ?");
+        }
+        if (metodoPagamento != null && !metodoPagamento.trim().isEmpty()) {
+            sbQuery.append(" AND metodo_pagamento = ?");
+        }
+        if (prezzoMin != null) {
+            sbQuery.append(" AND totale >= ?");
+        }
+        if (prezzoMax != null) {
+            sbQuery.append(" AND totale <= ?");
+        }
+        if (dataInizio != null) {
+            sbQuery.append(" AND data_ordine >= ?");
+        }
+        if (dataFine != null) {
+            sbQuery.append(" AND data_ordine <= ?");
+        }
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sbQuery.toString())) {
+            
+            int parameterIndex = 1;
+
+            if (stato != null) {
+                preparedStatement.setString(parameterIndex++, stato.name());
+            }
+            if (metodoPagamento != null && !metodoPagamento.trim().isEmpty()) {
+                preparedStatement.setString(parameterIndex++, metodoPagamento.trim());
+            }
+            if (prezzoMin != null) {
+                preparedStatement.setDouble(parameterIndex++, prezzoMin);
+            }
+            if (prezzoMax != null) {
+                preparedStatement.setDouble(parameterIndex++, prezzoMax);
+            }
+            if (dataInizio != null) {
+                // Convertiamo il LocalDateTime nel tipo compatibile con il driver JDBC (Timestamp)
+                preparedStatement.setTimestamp(parameterIndex++, java.sql.Timestamp.valueOf(dataInizio));
+            }
+            if (dataFine != null) {
+                preparedStatement.setTimestamp(parameterIndex++, java.sql.Timestamp.valueOf(dataFine));
+            }
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+            	Ordine ordine = leggiDBOrdine(rs);
+                ordini.add(ordine);
             }
         }
         return ordini;
