@@ -97,7 +97,7 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
             }
                     
             request.setAttribute("listaOrdini", ordiniFiltrati);
-            request.getRequestDispatcher("/WEB-INF/view/admin/visualizzaOrdini.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/view/admin/visualizzaOrdiniAdmin.jsp").forward(request, response);
 
         } catch (SQLException | NumberFormatException | java.time.format.DateTimeParseException e) {
             e.printStackTrace();
