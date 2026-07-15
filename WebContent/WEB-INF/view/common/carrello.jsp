@@ -329,16 +329,16 @@
             </svg>
             Torna al Catalogo
         </a>
-
         <h1>Il tuo Carrello</h1>
-
         <% 
             ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
-            
+        %>
+        <div id="activeCartContent" style="<%= (carrello != null && !carrello.isEmpty()) ? "" : "display: none;" %>">
+        <% 
             if (carrello != null && !carrello.isEmpty()) {
                 double totaleCarrello = 0.0;
         %>
-                <table class="cart-table">
+                <table class="cart-table" id="cartTable">
                     <thead>
                         <tr class="cart-header-row">
                             <th class="cart-header-cell" style="width: 100px;">Prodotto</th>
@@ -362,9 +362,8 @@
                                 double subtotale = prezzoUnitario * item.getQuantita();
                                 totaleCarrello += subtotale;
                         %>
-                                <tr class="cart-row">
+                                <tr class="cart-row" data-id="<%= idOcchiale %>" data-codice="<%= codiceVersione %>" data-colore="<%= codiceColore %>">
                                     
-                                   
                                     <td class="cart-cell">
                                         <div class="product-img-container">
                                             <% if (item.getOcchiale().getImmagine() != null && item.getOcchiale().getImmagine().length > 0) { %>
@@ -376,7 +375,6 @@
                                         </div>
                                     </td>
 
-                                    
                                     <td class="cart-cell">
                                         <div class="product-title"><%= marca %> - <%= modello %></div>
                                         <div class="product-details">
@@ -385,7 +383,6 @@
                                         </div>
                                     </td>
 
-                                    
                                     <td class="cart-cell">
                                         <div class="product-price">€ <%= String.format("%.2f", prezzoUnitario) %></div>
                                     </td>
@@ -393,18 +390,16 @@
                                     <!-- Quantità (con controlli + e -) -->
                                     <td class="cart-cell" style="text-align: center;">
                                         <div class="qty-controls" style="justify-content: center;">
-                                            <a href="carrello?action=modificaQuantita&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>&quantita=<%= item.getQuantita() - 1 %>" class="btn-qty">-</a>
+                                            <a href="carrello?action=modificaQuantita&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>&quantita=<%= item.getQuantita() - 1 %>" class="btn-qty btn-minus">-</a>
                                             <span class="qty-val"><%= item.getQuantita() %></span>
-                                            <a href="carrello?action=modificaQuantita&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>&quantita=<%= item.getQuantita() + 1 %>" class="btn-qty">+</a>
+                                            <a href="carrello?action=modificaQuantita&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>&quantita=<%= item.getQuantita() + 1 %>" class="btn-qty btn-plus">+</a>
                                         </div>
                                     </td>
 
-                                    
-                                    <td class="cart-cell" style="text-align: right; font-weight: 700; color: #ffffff;">
+                                    <td class="cart-cell item-subtotal" style="text-align: right; font-weight: 700; color: #ffffff;">
                                         € <%= String.format("%.2f", subtotale) %>
                                     </td>
 
-                                    
                                     <td class="cart-cell" style="text-align: center;">
                                         <a href="carrello?action=rimuovi&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>" class="btn-remove" title="Rimuovi prodotto">
                                             🗑️
@@ -417,34 +412,35 @@
                         %>
                     </tbody>
                 </table>
-
                
                 <div class="cart-summary">
                     <div class="summary-row">
                         <div class="summary-label">Totale Carrello</div>
-                        <div class="summary-total">€ <%= String.format("%.2f", totaleCarrello) %></div>
+                        <div class="summary-total" id="cartTotal">€ <%= String.format("%.2f", totaleCarrello) %></div>
                     </div>
                     
                     <div class="action-buttons">
                         <a href="checkout" class="btn-checkout">Procedi al Checkout</a>
+                        <a href="carrello?action=svuota" class="btn-shopping btn-clear-cart" style="color: var(--danger-color); border-color: rgba(248, 113, 113, 0.2);">Svuota Carrello</a>
                         <a href="catalogo" class="btn-shopping">Continua lo Shopping</a>
                     </div>
-                </div>
-
-        <% 
-            } else { 
-        %>
-               
-                <div class="empty-cart">
-                    <span class="empty-cart-icon">🛒</span>
-                    <div class="empty-cart-text">Il tuo carrello è attualmente vuoto.</div>
-                    <a href="catalogo" class="btn-checkout" style="display: inline-block; width: auto; padding: 14px 35px;">Inizia lo Shopping</a>
                 </div>
         <% 
             } 
         %>
+        </div>
+
+        <div id="emptyCartContent" style="<%= (carrello == null || carrello.isEmpty()) ? "" : "display: none;" %>">
+            <div class="empty-cart">
+                <span class="empty-cart-icon">🛒</span>
+                <div class="empty-cart-text">Il tuo carrello è attualmente vuoto.</div>
+                <a href="catalogo" class="btn-checkout" style="display: inline-block; width: auto; padding: 14px 35px;">Inizia lo Shopping</a>
+            </div>
+        </div>
 
     </div>
 
+    <!-- Script AJAX per il carrello -->
+    <script src="<%= request.getContextPath() %>/scripts/carrelloAjax.js"></script>
 </body>
 </html>

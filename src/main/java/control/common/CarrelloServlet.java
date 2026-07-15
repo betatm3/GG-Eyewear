@@ -60,12 +60,56 @@ public class CarrelloServlet extends HttpServlet {
                     modificaQuantita(request, carrello);
                     break;
                     
+                case "svuota":
+                    carrello.clear();
+                    break;
+                    
                 case "visualizza":
                 default:
                     break;
             }
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parametri del carrello non validi.");
+            return;
+        }
+
+        // Supporto AJAX
+        boolean isAjax = "true".equalsIgnoreCase(request.getParameter("ajax"));
+        if (isAjax) {
+            double totale = 0.0;
+            int quantitaAggiornata = 0;
+            double subtotaleAggiornato = 0.0;
+            for (ProdottoAcquistato p : carrello) {
+                double sub = p.getVersioneOcchiale().getPrezzo() * p.getQuantita();
+                totale += sub;
+                
+                if (action.equalsIgnoreCase("modificaQuantita") || action.equalsIgnoreCase("aggiungi")) {
+                    try {
+                        int id = Integer.parseInt(request.getParameter("idOcchiale"));
+                        int cod = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
+                        String col = request.getParameter("coloreScelto");
+                        
+                        if (p.getVersioneOcchiale().getOcchiale().getId() == id && 
+                            p.getVersioneOcchiale().getCodice() == cod && 
+                            p.getColore().getCodice().equalsIgnoreCase(col)) {
+                            quantitaAggiornata = p.getQuantita();
+                            subtotaleAggiornato = sub;
+                        }
+                    } catch (NumberFormatException e) {
+                        // ignore
+                    }
+                }
+            }
+            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            
+            String json = String.format(
+                java.util.Locale.US,
+                "{\"status\":\"success\", \"totaleCarrello\":%.2f, \"quantita\":%d, \"subtotale\":%.2f, \"carrelloVuoto\":%b}",
+                totale, quantitaAggiornata, subtotaleAggiornato, carrello.isEmpty()
+            );
+            response.getWriter().write(json);
             return;
         }
         
@@ -153,7 +197,6 @@ public class CarrelloServlet extends HttpServlet {
                 if (nuovaQuantita > 0) {
                     p.setQuantita(nuovaQuantita);
                 } else {
-                    // Se la quantità scende a 0 o meno, lo rimuoviamo direttamente
                     carrello.remove(i);
                 }
                 break;
