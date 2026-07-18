@@ -8,7 +8,7 @@
         driverClassName="com.mysql.cj.jdbc.Driver" 
         url="jdbc:mysql://localhost:3306/ecommerce_db?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC" 
         username="root"
-        password="1Colione720%" 
+        password="Napolicampione2023" 
         maxTotal="20"
         maxIdle="10"
         maxWaitMillis="-1"
