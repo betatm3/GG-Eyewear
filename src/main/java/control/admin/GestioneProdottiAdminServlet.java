@@ -50,7 +50,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 return;
             }
             
-            // Default: mostra la pagina di gestione
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneProdotti.jsp");
             dispatcher.forward(request, response);
             
@@ -93,9 +92,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
     }
 
-    // =========================================================================
-    // METODI PRIVATI DI SUPPORTO
-    // =========================================================================
+    // --- METODI PRIVATI DI SUPPORTO ---
 
     private boolean checkAdminPrivileges(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);

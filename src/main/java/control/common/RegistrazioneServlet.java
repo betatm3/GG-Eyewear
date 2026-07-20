@@ -23,18 +23,15 @@ public class RegistrazioneServlet extends HttpServlet {
     @jakarta.annotation.Resource(name = "jdbc/ecommerce_db")
     private DataSource ds;
     
-    // Il GET mostra semplicemente la pagina JSP con il form di registrazione vuoto
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
     	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
     	dispatcher.forward(request, response);
     }
 
-    // Il POST elabora i dati inviati dall'utente per creare l'account
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 1. Recuperiamo i parametri inviati dal form HTML
         String nome = request.getParameter("nome");
         String cognome = request.getParameter("cognome");
         String email = request.getParameter("email");
@@ -44,7 +41,7 @@ public class RegistrazioneServlet extends HttpServlet {
         String dataNascitaStr = request.getParameter("dataNascita"); // Arriva come stringa "YYYY-MM-DD" dal tag <input type="date">
         String telefono = request.getParameter("telefono");
 
-        // 2. VALIDAZIONE DEI CAMPI (Controllo lato server obbligatorio per l'esame)
+        // Validazione campi
         if (nome == null || nome.trim().isEmpty() ||
             cognome == null || cognome.trim().isEmpty() ||
             email == null || email.trim().isEmpty() ||
@@ -70,7 +67,6 @@ public class RegistrazioneServlet extends HttpServlet {
         	return;
         }
         
-        // Controllo corrispondenza password
         if (!password.equals(confermaPassword)) {
             request.setAttribute("errore", "Le password inserite non corrispondono.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
@@ -81,15 +77,14 @@ public class RegistrazioneServlet extends HttpServlet {
         UtenteDAOImpl utenteDAO = new UtenteDAOImpl(ds);
 
         try {
-            // 4. Controllo Unicità dell'Email: non possono esserci due utenti con la stessa email
+            // Controllo unicità dell'email
             if (utenteDAO.doRetrieveByKey(email) != null) {
                 request.setAttribute("errore", "Questa email è già associata a un account esistente.");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
             	dispatcher.forward(request, response);
             	return;
             }
-
-            // 5. Creazione del Model (Modello Utente)
+            
             Utente nuovoUtente = new Utente();
             nuovoUtente.setNome(nome.trim());
             nuovoUtente.setCognome(cognome.trim());
@@ -98,24 +93,16 @@ public class RegistrazioneServlet extends HttpServlet {
             nuovoUtente.setIndirizzo(indirizzo.trim());
             nuovoUtente.setDataNascita(dataNascita);
             nuovoUtente.setTelefono(telefono.trim());
-            
-            // NOTA: Per l'esame andrebbe benissimo salvare la password così, 
-            // ma se vuoi fare un figurone, la password andrebbe cifrata (es. con un hash SHA-256 o BCrypt) prima del set.
             nuovoUtente.setPassword(password); 
             
-
-            // 6. Salvataggio nel Database tramite il DAO
             boolean isCreato = utenteDAO.doSave(nuovoUtente);
 
             if (isCreato) {
-                // 7. REGISTRAZIONE RIUSCITA: Eseguiamo il login automatico per migliorare l'esperienza utente
-                // Recuperiamo l'utente appena creato dal DB per avere anche l'ID generato dall'AUTO_INCREMENT
+                // eseguiamo il login automatico recupeando dell'utente appena creato dal DB per avere anche l'ID generato dall'AUTO_INCREMENT
                 Utente utenteLoggato = utenteDAO.doRetrieveByKey(nuovoUtente.getEmail());
                 
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utenteLoggato", utenteLoggato);
-
-                // Reindirizziamo all'area utente
                 response.sendRedirect(request.getContextPath() + "/area-utente");
                 return;
             } else {

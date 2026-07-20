@@ -37,7 +37,6 @@ public class CheckoutServlet extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("utenteLoggato") == null) {
-            // L'utente non è loggato, reindirizza al login
             response.sendRedirect(request.getContextPath() + "/login?errore=auth_required");
             return;
         }
@@ -73,7 +72,6 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Recupero parametri di spedizione e pagamento
         String indirizzo = request.getParameter("indirizzo");
         String citta = request.getParameter("citta");
         String cap = request.getParameter("cap");
@@ -93,13 +91,12 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // DAO necessari
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
         ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
 
         try {
-            // 1. Validazione preliminare delle disponibilità di magazzino
+            // Validazione preliminare delle disponibilità di magazzino
             for (ProdottoAcquistato item : carrello) {
                 Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice());
                 if (disp == null || disp.getQuantita() < item.getQuantita()) {
@@ -112,13 +109,12 @@ public class CheckoutServlet extends HttpServlet {
                 }
             }
 
-            // 2. Calcolo del totale dell'ordine
             double totale = 0.0;
             for (ProdottoAcquistato item : carrello) {
                 totale += item.getVersioneOcchiale().getPrezzo() * item.getQuantita();
             }
 
-            // 3. Generazione e salvataggio dell'ordine
+            // Generazione e salvataggio dell'ordine
             int idOrdine = new java.util.Random().nextInt(900000) + 100000; // ID univoco a 6 cifre
             Ordine ordine = new Ordine();
             ordine.setId(idOrdine);
@@ -136,7 +132,6 @@ public class CheckoutServlet extends HttpServlet {
 
             ordineDAO.doSave(ordine);
 
-            // 4. Salvataggio delle righe di dettaglio e aggiornamento del magazzino
             for (ProdottoAcquistato item : carrello) {
                 // Genera codice riga
                 int numeroRiga = new java.util.Random().nextInt(900000) + 100000;
@@ -154,10 +149,9 @@ public class CheckoutServlet extends HttpServlet {
                 disponibileDAO.doUpdate(disp);
             }
 
-            // 5. Svuota il carrello dalla sessione
+            // Svuota il carrello dalla sessione
             session.removeAttribute("carrello");
 
-            // Passa l'ID dell'ordine avvenuto con successo
             request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo. Riceverai presto una mail di conferma.");
             
         } catch (SQLException e) {

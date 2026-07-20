@@ -35,15 +35,14 @@ public class HomeServlet extends HttpServlet {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
         try {
-            // 1. Recupera gli occhiali da sole attivi (massimo 4)
+            // Recupera gli occhiali da sole attivi (massimo 4)
             Collection<Occhiale> sole = occhialeDAO.doRetrieveByTipologia(Tipologia.DA_SOLE);
             List<Occhiale> soleCompleti = caricaDettagli(sole, versioneDAO, 4);
 
-            // 2. Recupera gli occhiali da vista attivi (massimo 4)
+            // Recupera gli occhiali da vista attivi (massimo 4)
             Collection<Occhiale> vista = occhialeDAO.doRetrieveByTipologia(Tipologia.DA_VISTA);
             List<Occhiale> vistaCompleti = caricaDettagli(vista, versioneDAO, 4);
 
-            // 3. Imposta gli attributi per la JSP
             request.setAttribute("sole", soleCompleti);
             request.setAttribute("vista", vistaCompleti);
 
@@ -53,7 +52,6 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("vista", new ArrayList<Occhiale>());
         }
 
-        // 4. Passa alla JSP della home
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/home.jsp");
         dispatcher.forward(request, response);
     }

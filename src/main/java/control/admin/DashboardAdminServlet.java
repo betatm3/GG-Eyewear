@@ -53,7 +53,6 @@ public class DashboardAdminServlet extends HttpServlet {
             // 3. Recupera il numero totale di occhiali nel catalogo
             int totaleProdotti = occhialeDAO.doRetrieveAll(null).size();
 
-            // 4. Imposta gli attributi per la JSP
             request.setAttribute("totaleOrdini", totaleOrdini);
             request.setAttribute("totaleGuadagni", totaleGuadagni);
             request.setAttribute("totaleUtenti", totaleUtenti);

@@ -53,10 +53,7 @@ public class AreaUtenteServlet extends HttpServlet {
         ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
 
         try {
-            // 1. Recupera tutti gli ordini del cliente
             Collection<Ordine> ordini = ordineDAO.doRetrieveByUtente(utente.getEmail());
-
-            // 2. Mappa per contenere i dettagli dei prodotti di ogni ordine
             Map<Integer, Collection<ProdottoAcquistato>> prodottiOrdineMap = new HashMap<>();
 
             if (ordini != null) {

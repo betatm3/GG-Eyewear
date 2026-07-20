@@ -59,7 +59,6 @@ public class OcchialeServlet extends HttpServlet {
             Occhiale occhiale = occhialeDAO.doRetrieveByKey(id);
             
             if (occhiale != null && occhiale.isAttivo()) {
-                // Recupera versione commerciale corrente
                 VersioneOcchiale versioneCorrente = versioneDAO.doRetrieveCorrenteByOcchiale(id);
                 occhiale.setVersioneCorrente(versioneCorrente);
 
@@ -80,7 +79,6 @@ public class OcchialeServlet extends HttpServlet {
                 
                 occhiale.setDisponibilita(listaDisponibilita);
 
-                // Recupera le recensioni per l'occhiale in sicurezza
                 Collection<Recensione> recensioni = new ArrayList<>();
                 double mediaVoto = 0.0;
                 int numRecensioni = 0;
@@ -94,7 +92,6 @@ public class OcchialeServlet extends HttpServlet {
                     System.err.println("Avviso: Impossibile recuperare le recensioni per l'occhiale #" + id + ": " + e.getMessage());
                 }
 
-                // Passiamo l'oggetto completo di dettagli e le recensioni alla JSP
                 request.setAttribute("prodotto", occhiale);
                 request.setAttribute("recensioni", recensioni);
                 request.setAttribute("mediaVoto", mediaVoto);
@@ -102,8 +99,7 @@ public class OcchialeServlet extends HttpServlet {
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/occhiale.jsp");
                 dispatcher.forward(request, response);
-            } else {
-                // Prodotto inesistente o non attivo, torniamo al catalogo
+            } else {      // Prodotto inesistente o non attivo
                 response.sendRedirect(request.getContextPath() + "/catalogo");
             }
         } catch (SQLException e) {

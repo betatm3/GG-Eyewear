@@ -29,11 +29,8 @@ public class CarrelloServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 1. Recuperiamo la sessione (o la creiamo)
         HttpSession session = request.getSession(true);
         
-        // 2. Recuperiamo il carrello dalla sessione (usando ArrayList)
-  
         @SuppressWarnings("unchecked")//per togliere warning gialli che dava a carrello
 		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
         if (carrello == null) {
@@ -41,7 +38,6 @@ public class CarrelloServlet extends HttpServlet {
             session.setAttribute("carrello", carrello);
         }
         
-        // 3. Leggiamo l'azione richiesta
         String action = request.getParameter("action");
         if (action == null) {
             action = "visualizza";
@@ -114,7 +110,6 @@ public class CarrelloServlet extends HttpServlet {
             return;
         }
         
-        // 4. Inoltro alla pagina JSP per la visualizzazione grafica
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/carrello.jsp");
         dispatcher.forward(request, response);
     }
@@ -124,7 +119,7 @@ public class CarrelloServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    // --- METODI PRIVATI DI SUPPORTO CON LOGICA SU ARRAYLIST ---
+    // --- METODI PRIVATI DI SUPPORTO ---
 
     private void aggiungiProdotto(HttpServletRequest request, ArrayList<ProdottoAcquistato> carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
@@ -147,7 +142,7 @@ public class CarrelloServlet extends HttpServlet {
         if (giaEsistente == null) {
             // Se è un prodotto nuovo, creiamo l'oggetto
             ProdottoAcquistato nuovo = new ProdottoAcquistato();
-            nuovo.setNumero(0); // Campo ignorato per ora, verrà valorizzato nel Checkout
+            nuovo.setNumero(0); // Campo ignorato, verrà valorizzato nel Checkout
             OcchialeDAOImpl o = new OcchialeDAOImpl(ds);
             VersioneOcchialeDAOImpl ver = new VersioneOcchialeDAOImpl(ds);
             ColoreDAOImpl c = new ColoreDAOImpl(ds);
@@ -171,7 +166,6 @@ public class CarrelloServlet extends HttpServlet {
         int codiceVersioneOcchiale = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
         String coloreScelto = request.getParameter("coloreScelto");
         
-        // Cerchiamo l'indice dell'elemento corrispondente per rimuoverlo
         for (int i = 0; i < carrello.size(); i++) {
             ProdottoAcquistato p = carrello.get(i);
             if (p.getVersioneOcchiale().getOcchiale().getId() == idOcchiale && 

@@ -23,7 +23,6 @@ public class MostraImmagineServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 1. Recuperiamo l'ID dell'occhiale dai parametri dell'URL
         String idStr = request.getParameter("id");
         
         if (idStr == null || idStr.trim().isEmpty()) {
@@ -40,18 +39,15 @@ public class MostraImmagineServlet extends HttpServlet {
             return;
         }
 
-        // 2. Recuperiamo il DataSource dal contesto e istanziamo il DAO
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
 
         try {
-            // 3. Recuperiamo l'oggetto dal database tramite l'ID
             Occhiale occhiale = occhialeDAO.doRetrieveByKey(idOcchiale);
 
             if (occhiale != null && occhiale.getImmagine() != null) {
                 byte[] immagineBytes = occhiale.getImmagine();
 
                 // 4. Configura la risposta HTTP per dire al browser che stiamo inviando un'immagine
-                // NOTA: Se salvi sia PNG che JPEG, andrebbe bene un tipo generico come "image/jpeg"
                 response.setContentType("image/jpeg"); 
                 response.setContentLength(immagineBytes.length);
 
@@ -59,8 +55,7 @@ public class MostraImmagineServlet extends HttpServlet {
                 response.getOutputStream().write(immagineBytes);
                 response.getOutputStream().flush();
             } else {
-                // Se l'occhiale o l'immagine non esistono, possiamo reindirizzare a un'immagine "placeholder" di default
-                // presente nelle cartelle del tuo progetto (es. /images/no-image.png)
+                // Se l'occhiale o l'immagine non esistono, reindirizziamoe a un'immagine "placeholder" di default
                 String defaultPath = request.getContextPath() + "/images/no-image.png";
                 response.sendRedirect(defaultPath);
             }
@@ -71,7 +66,6 @@ public class MostraImmagineServlet extends HttpServlet {
         }
     }
 
-    // Il doPost non serve, le immagini vengono richieste solo in GET
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doGet(request, response);

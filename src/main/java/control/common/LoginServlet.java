@@ -37,11 +37,10 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // 1. Recuperiamo i parametri inviati dal form HTML
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Validazione base dei campi input
+        // Validazione campi input
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             request.setAttribute("errore", "Tutti i campi sono obbligatori.");
             request.getRequestDispatcher("/WEB-INF/view/common/login.jsp").forward(request, response);
@@ -52,29 +51,23 @@ public class LoginServlet extends HttpServlet {
 
         try {
             // 3. Chiediamo al DAO di verificare le credenziali
-            // NOTA: Idealmente il metodo del tuo DAO dovrebbe fare il match della password cifrata (es. con BCrypt o SHA-256)
             Utente utente = utenteDAO.doRetrieveByKey(email);
 
             if (utente != null) {
-                
-                // 4. AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
+                // AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
                 HttpSession session = request.getSession(true);
                 
-                // Salviamo l'intero oggetto utente (così avremo ID, Nome, Ruolo ecc. sempre a portata di mano)
+                // Salviamo l'intero oggetto utente
                 session.setAttribute("utenteLoggato", utente);
 
-                // 5. AUTORIZZAZIONE (Rendrizzamento differenziato in base al ruolo)
                 if ("AMMINISTRATORE".equalsIgnoreCase(utente.getRuolo().name())) {
-                    // Se è Admin, lo mandiamo alla dashboard di controllo
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    // Se è un Cliente normale, lo rimandiamo alla sua area utente
                     response.sendRedirect(request.getContextPath() + "/area-utente");
                 }
-                return; // Interrompiamo l'esecuzione avendo fatto il redirect
+                return;
 
             } else {
-                // Credenziali errate
                 request.setAttribute("errore", "Email o password errate.");
             }
 
@@ -84,7 +77,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         // Se siamo arrivati qui significa che il login è fallito (credenziali errate o SQLException)
-        // Rimandiamo l'utente al form di login mostrando il messaggio d'errore impostato nella request
+        // Rimandiamo al form di login mostrando il messaggio d'errore impostato nella request
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/login.jsp");
         dispatcher.forward(request, response);
     }
