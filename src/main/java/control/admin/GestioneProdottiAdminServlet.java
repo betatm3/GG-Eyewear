@@ -173,9 +173,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         primaVersione.setOcchiale(nuovoOcchiale); 
         versioneDAO.doSave(primaVersione);
 
-        // =====================================================================
-        // 3. NUOVA PORZIONE DI CODICE: AGGIUNTA DEI COLORI E QUANTITÀ
-        // =====================================================================
+        // --- NUOVA PORZIONE DI CODICE: AGGIUNTA DEI COLORI E QUANTITÀ ---
 
         String[] codiciColori = request.getParameterValues("codiceColore");
         String[] quantitaColori = request.getParameterValues("quantitaColore");
@@ -218,9 +216,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
         if (occhialeModificato != null && versioneModificata != null) {
             
-            // =====================================================================
-            // 1. AGGIORNAMENTO ATTRIBUTI OCCHIALE
-            // =====================================================================
+            // --- AGGIORNAMENTO ATTRIBUTI OCCHIALE ---
             
             String tipologiaStr = request.getParameter("tipologia");
             if (tipologiaStr != null && !tipologiaStr.trim().isEmpty()) {
@@ -238,9 +234,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
           
             occhialeDAO.doUpdate(occhialeModificato);
 
-            // =====================================================================
-            // 2. AGGIORNAMENTO ATTRIBUTI VERSIONEOCCHIALE
-            // =====================================================================
+            // --- AGGIORNAMENTO ATTRIBUTI VERSIONEOCCHIALE ---
             
             versioneModificata.setMarca(request.getParameter("marca"));
             versioneModificata.setModello(request.getParameter("modello"));

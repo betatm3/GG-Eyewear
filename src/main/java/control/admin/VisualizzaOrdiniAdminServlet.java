@@ -38,7 +38,6 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
         try {        
-            // 1. Recupero dei parametri di filtro dal form della JSP
             String genereStr = request.getParameter("genere");
             String marca = request.getParameter("marca");
             String prezzoMinStr = request.getParameter("prezzoMin");
