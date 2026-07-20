@@ -3,6 +3,7 @@ package control.common;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.ArrayList;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -16,11 +17,13 @@ import dao.OcchialeDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
 import dao.DisponibileDAOImpl;
 import dao.ColoreDAOImpl;
+import dao.RecensioneDAOImpl;
 
 import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Disponibile;
 import model.Colore;
+import model.Recensione;
 
 @WebServlet("/occhiale")
 public class OcchialeServlet extends HttpServlet {
@@ -50,6 +53,7 @@ public class OcchialeServlet extends HttpServlet {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
         ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
+        RecensioneDAOImpl recensioneDAO = new RecensioneDAOImpl(ds);
 
         try {
             Occhiale occhiale = occhialeDAO.doRetrieveByKey(id);
@@ -76,8 +80,25 @@ public class OcchialeServlet extends HttpServlet {
                 
                 occhiale.setDisponibilita(listaDisponibilita);
 
-                // Passiamo l'oggetto completo di dettagli alla JSP
+                // Recupera le recensioni per l'occhiale in sicurezza
+                Collection<Recensione> recensioni = new ArrayList<>();
+                double mediaVoto = 0.0;
+                int numRecensioni = 0;
+                try {
+                    recensioni = recensioneDAO.doRetrieveByOcchiale(id);
+                    if (recensioni != null && !recensioni.isEmpty()) {
+                        numRecensioni = recensioni.size();
+                        mediaVoto = recensioni.stream().mapToInt(Recensione::getVoto).average().orElse(0.0);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Avviso: Impossibile recuperare le recensioni per l'occhiale #" + id + ": " + e.getMessage());
+                }
+
+                // Passiamo l'oggetto completo di dettagli e le recensioni alla JSP
                 request.setAttribute("prodotto", occhiale);
+                request.setAttribute("recensioni", recensioni);
+                request.setAttribute("mediaVoto", mediaVoto);
+                request.setAttribute("numRecensioni", numRecensioni);
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/occhiale.jsp");
                 dispatcher.forward(request, response);

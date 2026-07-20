@@ -17,7 +17,7 @@
     <nav class="main-nav">
       <a href="<%= request.getContextPath() %>/catalogo?tipo=sole">Occhiali da sole</a>
       <a href="<%= request.getContextPath() %>/catalogo?tipo=vista">Occhiali da vista</a>
-      <a href="<%= request.getContextPath() %>/catalogo" class="outlet">Catalogo</a>
+      <a href="<%= request.getContextPath() %>/catalogo?outlet=true" class="outlet">Outlet</a>
     </nav>
 
     <div class="header-actions">

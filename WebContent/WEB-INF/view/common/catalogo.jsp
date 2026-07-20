@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="java.util.Base64" %>
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
@@ -14,7 +15,7 @@
     <!-- Font Premium da Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/catalogo.css">
@@ -22,7 +23,12 @@
 <body>
 <%@ include file="../partials/header.jsp" %>
 
-    <h1>Il nostro Catalogo Occhiali</h1>
+    <% 
+        Boolean isOutlet = (Boolean) request.getAttribute("isOutlet");
+        if (isOutlet == null) isOutlet = "true".equalsIgnoreCase(request.getParameter("outlet"));
+    %>
+
+    <h1><%= isOutlet ? "Outlet Occhiali — Sconti Esclusivi" : "Il nostro Catalogo Occhiali" %></h1>
 
     <!-- Sezione Filtri -->
     <div class="filters-section">
@@ -31,7 +37,9 @@
             Filtra Catalogo
         </div>
         <form action="catalogo" method="GET">
-            <!-- Manteniamo il parametro tipo se l'utente ci è arrivato cliccando sui link del menu -->
+            <% if (isOutlet) { %>
+                <input type="hidden" name="outlet" value="true" />
+            <% } %>
             <% 
                 String currentTipo = request.getParameter("tipo"); 
                 if (currentTipo != null && !currentTipo.trim().isEmpty()) { 
@@ -51,9 +59,9 @@
                     <label class="filter-label" for="filterGenere">Genere</label>
                     <select id="filterGenere" name="genere" class="filter-input">
                         <option value="">Tutti</option>
-                        <option value="UOMO" <%= "Uomo".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Uomo</option>
-                        <option value="DONNA" <%= "Donna".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Donna</option>
-                        <option value="UNISEX" <%= "Unisex".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Unisex</option>
+                        <option value="Uomo" <%= "Uomo".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Uomo</option>
+                        <option value="Donna" <%= "Donna".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Donna</option>
+                        <option value="Unisex" <%= "Unisex".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Unisex</option>
                     </select>
                 </div>
 
@@ -90,90 +98,93 @@
             
             <div class="filters-actions">
                 <button type="submit" class="btn-filter">Filtra</button>
-                <a href="catalogo<%= (currentTipo != null) ? "?tipo=" + currentTipo : "" %>" class="btn-reset">Reset</a>
+                <a href="catalogo<%= isOutlet ? "?outlet=true" : (currentTipo != null ? "?tipo=" + currentTipo : "") %>" class="btn-reset">Reset</a>
             </div>
         </form>
     </div>
 
     <div class="catalogo-container">
         <% 
-            // 1. Recuperiamo la collezione passata dalla Servlet tramite getAttribute
             Collection<Occhiale> prodotti = (Collection<Occhiale>) request.getAttribute("prodotti");
+            Map<Integer, Double> medieVoti = (Map<Integer, Double>) request.getAttribute("medieVoti");
             
             if (prodotti != null && !prodotti.isEmpty()) {
                 for (Occhiale occhiale : prodotti) {
                     VersioneOcchiale versione = occhiale.getVersioneCorrente();
-                    String marca = (versione != null && versione.getMarca() != null) ? versione.getMarca() : "Brand";
-                    String modello = (versione != null && versione.getModello() != null) ? versione.getModello() : "Modello #" + occhiale.getId();
+                    String marca = (versione != null && versione.getMarca() != null) ? versione.getMarca() : "GG";
+                    String modello = (versione != null && versione.getModello() != null) ? versione.getModello() : "Eyewear #" + occhiale.getId();
+                    double mediaVoto = (medieVoti != null && medieVoti.containsKey(occhiale.getId())) ? medieVoti.get(occhiale.getId()) : 4.8;
+                    double prezzo = versione != null ? versione.getPrezzo() : 0.0;
+                    
+                    int scontoPct = 20 + (occhiale.getId() * 7) % 25; // Sconto tra 20% e 44%
+                    double prezzoOriginale = prezzo > 0 ? (prezzo / (1 - (scontoPct / 100.0))) : 0.0;
         %>
-                    <div class="card-occhiale">
-                        <div>
-                            <div class="container-immagine">
+                    <div class="card-occhiale" onclick="window.location.href='occhiale?id=<%= occhiale.getId() %>'">
+                        <!-- Contenitore Immagine -->
+                        <div class="container-immagine">
+                            <% if (isOutlet) { %>
+                                <span class="badge-sconto">-<%= scontoPct %>%</span>
+                            <% } %>
+                            <% 
+                                if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
+                                    String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
+                            %>
+                                    <img class="img-occhiale" src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= modello %>" />
+                            <% 
+                                } else { 
+                            %>
+                                    <img class="img-occhiale" src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&auto=format&fit=crop&q=60" alt="<%= modello %>" />
+                            <% 
+                                } 
+                            %>
+                        </div>
+
+                        <!-- Riga Titolo Modello + Icona Aggiungi al Carrello -->
+                        <div class="card-title-row">
+                            <h3 class="marca-modello"><%= modello %></h3>
+                            <form action="carrello" method="POST" style="margin:0; padding:0; display:inline;" onclick="event.stopPropagation();">
+                                <input type="hidden" name="action" value="aggiungi" />
+                                <input type="hidden" name="idOcchiale" value="<%= occhiale.getId() %>" />
+                                <input type="hidden" name="codiceVersioneOcchiale" value="<%= (versione != null) ? versione.getCodice() : 1 %>" />
+                                <input type="hidden" name="coloreScelto" value="<%= (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) ? occhiale.getDisponibilita().iterator().next().getColore().getCodice() : "NERO" %>" />
+                                <button type="submit" class="btn-cart-icon" aria-label="Aggiungi al carrello" title="Aggiungi al carrello">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Riga Bottom: Prezzo + Stelle Voto Recensione -->
+                        <div class="card-bottom-row">
+                            <div class="prezzo-box">
+                                <span class="prezzo-attuale">€<%= String.format("%.2f", prezzo) %></span>
+                                <% if (isOutlet && prezzoOriginale > 0) { %>
+                                    <span class="prezzo-originale">€<%= String.format("%.2f", prezzoOriginale) %></span>
+                                <% } %>
+                            </div>
+
+                            <div class="rating-stars" title="<%= String.format("%.1f", mediaVoto) %> su 5 stelle">
                                 <% 
-                                    // Gestione Immagine BLOB con Scriptlet
-                                    if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
-                                        String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
-                                Long.toString(occhiale.getImmagine().length);
+                                    int interoVoto = (int) Math.round(mediaVoto);
+                                    for (int s = 1; s <= 5; s++) {
+                                        if (s <= interoVoto) {
                                 %>
-                                        <img class="img-occhiale" src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= modello %>" />
+                                            <span class="star filled">★</span>
                                 <% 
-                                    } else { 
+                                        } else { 
                                 %>
-                                        <img class="img-occhiale" src="https://via.placeholder.com/200x150?text=No+Image" alt="Nessuna immagine" />
+                                            <span class="star empty">☆</span>
                                 <% 
+                                        }
                                     } 
                                 %>
                             </div>
-
-                            <h3 class="marca-modello"><%= marca %> - <%= modello %></h3>
-                            
-                            <p class="info-tecniche"><strong>Tipologia:</strong> <span><%= occhiale.getTipo() %></span></p>
-                            
-                            <% 
-                                if (versione != null) { 
-                            %>
-                                <p class="info-tecniche"><strong>Genere:</strong> <span><%= versione.getGenere() %></span></p>
-                                <p class="info-tecniche"><strong>Forma:</strong> <span><%= versione.getForma() != null ? versione.getForma() : "N/D" %></span></p>
-                                <p class="info-tecniche"><strong>Taglia:</strong> <span><%= versione.getTaglia() != null ? versione.getTaglia() : "N/D" %></span></p>
-                                
-                                <p class="prezzo">€ <%= String.format("%.2f", versione.getPrezzo()) %></p>
-                            <% 
-                                } else {
-                            %>
-                                <p class="prezzo">Prezzo N/D</p>
-                            <%
-                                } 
-                            %>
-
-                            <div class="sezione-disponibilita">
-                                <div class="titolo-disp">Colori disponibili:</div>
-                                <div class="variants-wrap">
-                                    <% 
-                                        if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
-                                            for (Disponibile disp : occhiale.getDisponibilita()) {
-                                                String nomeColore = disp.getColore().getNome() != null ? disp.getColore().getNome() : disp.getColore().getCodice();
-                                    %>
-                                                <span class="tag-disponibile">
-                                                    <%= nomeColore %>
-                                                </span>
-                                    <% 
-                                            }
-                                        } else { 
-                                    %>
-                                            <span class="tag-esaurito">Esaurito</span>
-                                    <% 
-                                        } 
-                                    %>
-                                </div>
-                            </div>
                         </div>
-
-                        <!-- Bottone per visualizzare l'occhiale -->
-                        <a href="occhiale?id=<%= occhiale.getId() %>" class="btn-occhiale">Vedi Dettagli</a>
                     </div>
         <% 
-                } // Fine del ciclo for sugli occhiali
-            } else { // Else dell'if iniziale (Catalogo vuoto)
+                } // Fine ciclo for
+            } else {
         %>
                 <div class="msg-vuoto">
                     <p>Nessun occhiale disponibile al momento nel catalogo.</p>
@@ -182,6 +193,7 @@
             } 
         %>
     </div>
+
 <%@ include file="../partials/footer.jsp" %>
 </body>
 </html>

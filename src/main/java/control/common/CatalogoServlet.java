@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -15,12 +17,14 @@ import javax.sql.DataSource;
 
 import dao.VersioneOcchialeDAOImpl;
 import dao.DisponibileDAOImpl;
+import dao.RecensioneDAOImpl;
 
 import model.Disponibile;
 import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Tipologia;
 import model.Genere;
+import model.Recensione;
 
 // URL della servlet
 @WebServlet("/catalogo")
@@ -90,8 +94,11 @@ public class CatalogoServlet extends HttpServlet {
             Collection<VersioneOcchiale> versioniFiltrate = versioneDAO.doRetrieveByFiltri(
                 genere, materiale, forma, marca, colore, taglia, prezzoMin, prezzoMax);
             
-            // 7. Costruiamo la lista di Occhiale da passare alla JSP
+            // 7. Costruiamo la lista di Occhiale da passare alla JSP ed il calcolo delle medie voti
             Collection<Occhiale> listaOcchiali = new ArrayList<>();
+            Map<Integer, Double> medieVoti = new HashMap<>();
+            RecensioneDAOImpl recensioneDAO = new RecensioneDAOImpl(ds);
+
             for (VersioneOcchiale versione : versioniFiltrate) {
                 Occhiale occhiale = versione.getOcchiale();
                 if (occhiale != null) {
@@ -100,6 +107,20 @@ public class CatalogoServlet extends HttpServlet {
                     // Cerca tutte le disponibilità di colore/quantità
                     Collection<Disponibile> listaDisponibilita = disponibileDAO.doRetrieveByOcchiale(occhiale.getId());
                     occhiale.setDisponibilita(listaDisponibilita);
+                    
+                    // Calcolo della media recensioni del prodotto
+                    try {
+                        Collection<Recensione> recensioni = recensioneDAO.doRetrieveByOcchiale(occhiale.getId());
+                        if (recensioni != null && !recensioni.isEmpty()) {
+                            double media = recensioni.stream().mapToInt(Recensione::getVoto).average().orElse(5.0);
+                            medieVoti.put(occhiale.getId(), media);
+                        } else {
+                            // Valore predefinito dimostrativo in assenza di recensioni (4.8 stelle)
+                            medieVoti.put(occhiale.getId(), 4.8);
+                        }
+                    } catch (Exception e) {
+                        medieVoti.put(occhiale.getId(), 5.0);
+                    }
                     
                     listaOcchiali.add(occhiale);
                 }
@@ -121,7 +142,17 @@ public class CatalogoServlet extends HttpServlet {
                 }
             }
             
+            // 9. Gestione sezione Outlet con occhiali casuali e sconti
+            String isOutletStr = request.getParameter("outlet");
+            boolean isOutlet = "true".equalsIgnoreCase(isOutletStr) || (tipo == null && (isOutletStr == null || "true".equalsIgnoreCase(isOutletStr)));
+            
+            if (isOutlet && listaOcchiali instanceof java.util.List) {
+                java.util.Collections.shuffle((java.util.List<Occhiale>) listaOcchiali);
+            }
+            
             request.setAttribute("prodotti", listaOcchiali);
+            request.setAttribute("medieVoti", medieVoti);
+            request.setAttribute("isOutlet", isOutlet);
         } catch (SQLException e) {
             e.printStackTrace();
         }

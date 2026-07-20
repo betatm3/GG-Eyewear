@@ -21,12 +21,13 @@
 <body>
 <%@ include file="../partials/header.jsp" %>
 <div class="container">
-    <!-- Pulsante per tornare all'area o alla home -->
-    <a href="${pageContext.request.contextPath}/home" class="btn-back">
-        <svg viewBox="0 0 24 24">
-            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+    <!-- Torna alla Dashboard Admin -->
+    <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        Torna alla Home
+        Torna alla Dashboard Admin
     </a>
 
     <h1>GG Eyewear — Area Amministrazione</h1>

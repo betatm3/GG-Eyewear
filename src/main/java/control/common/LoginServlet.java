@@ -68,8 +68,8 @@ public class LoginServlet extends HttpServlet {
                     // Se è Admin, lo mandiamo alla dashboard di controllo
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    // Se è un Cliente normale, lo rimandiamo alla home
-                    response.sendRedirect(request.getContextPath() + "/home");
+                    // Se è un Cliente normale, lo rimandiamo alla sua area utente
+                    response.sendRedirect(request.getContextPath() + "/area-utente");
                 }
                 return; // Interrompiamo l'esecuzione avendo fatto il redirect
 

@@ -25,6 +25,11 @@ import dao.VersioneOcchialeDAOImpl;
 import dao.DisponibileDAOImpl;
 
 @WebServlet("/admin/GestioneProdotti")
+@jakarta.servlet.annotation.MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+    maxFileSize = 1024 * 1024 * 10,      // 10MB
+    maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 public class GestioneProdottiAdminServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -82,9 +87,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Azione non riconosciuta.");
                     break;
             }
-        } catch (SQLException | NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante l'operazione sul database.");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante l'operazione sul database: " + e.getMessage());
         }
     }
 
@@ -127,7 +132,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         
         String tipologiaStr = request.getParameter("tipologia");
         if (tipologiaStr != null && !tipologiaStr.trim().isEmpty()) {
-            nuovoOcchiale.setTipo(Tipologia.valueOf(tipologiaStr.trim()));
+            nuovoOcchiale.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
+        } else {
+            nuovoOcchiale.setTipo(Tipologia.DA_SOLE);
         }
         
         jakarta.servlet.http.Part filePart = request.getPart("immagine");
@@ -153,7 +160,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         
         String prezzoStr = request.getParameter("prezzo");
         if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
-            primaVersione.setPrezzo(Double.parseDouble(prezzoStr));
+            primaVersione.setPrezzo(Double.parseDouble(prezzoStr.trim().replace(",", ".")));
         }
         
         String genereStr = request.getParameter("genere");

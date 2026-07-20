@@ -307,3 +307,27 @@ h1 {
   align-items: center;
   gap: 8px;
 }
+
+/* Bottone Dashboard Admin per Utenti Amministratori */
+.btn-admin-dashboard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px 18px;
+  background: var(--ink);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(43, 43, 43, 0.15);
+}
+
+.btn-admin-dashboard:hover {
+  background: var(--rust);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(200, 106, 85, 0.25);
+}

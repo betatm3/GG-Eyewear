@@ -115,8 +115,8 @@ public class RegistrazioneServlet extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utenteLoggato", utenteLoggato);
 
-                // Reindirizziamo alla home
-                response.sendRedirect(request.getContextPath() + "/home");
+                // Reindirizziamo all'area utente
+                response.sendRedirect(request.getContextPath() + "/area-utente");
                 return;
             } else {
                 request.setAttribute("errore", "Errore durante la registrazione. Riprova.");

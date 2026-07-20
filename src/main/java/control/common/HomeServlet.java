@@ -21,7 +21,7 @@ import model.Occhiale;
 import model.Tipologia;
 import model.VersioneOcchiale;
 
-@WebServlet("/home")
+@WebServlet({"/home", ""})
 public class HomeServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

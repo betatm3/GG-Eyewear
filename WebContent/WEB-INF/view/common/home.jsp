@@ -36,11 +36,8 @@
 <%@ include file="../partials/header.jsp" %>
 
 <section class="hero">
-  <div class="chart-bg" aria-hidden="true">
-    <span>G</span><span>G G</span><span>G G G</span><span>G G G G</span>
-  </div>
   <div class="hero-inner" style="display: block; max-width: 1180px; margin: 0 auto; padding: 40px 32px; min-height: auto;">
-    <div class="hero-visual" style="display: block; position: relative; height: 480px; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); background: var(--paper-soft); width: 100%;">
+    <div class="hero-visual" style="display: block; position: relative; height: 580px; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); background: var(--paper-soft); width: 100%;">
       <div class="hero-slides" style="width: 100%; height: 100%; position: relative;">
         <!-- Slide 1 -->
         <div class="hero-slide active" style="background: linear-gradient(135deg, #fbfaf8 0%, #e9e5da 100%);">

@@ -1,26 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Base64" %>
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
 <%@ page import="model.VersioneOcchiale" %>
+<%@ page import="model.Recensione" %>
+<%@ page import="model.Utente" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Occhiale - GG Eyewear</title>
+    <title>Dettaglio Occhiale - GG Eyewear</title>
     
     <!-- Font Premium da Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/occhiale.css">
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
-    <div class="container">
+    <div class="container product-detail-container">
         
         <!-- Bottone Indietro -->
         <a href="catalogo" class="btn-back">
@@ -35,203 +38,311 @@
             Occhiale occhiale = (Occhiale) request.getAttribute("prodotto");
             if (occhiale != null) {
                 VersioneOcchiale versione = occhiale.getVersioneCorrente();
-                String marca = (versione != null && versione.getMarca() != null) ? versione.getMarca() : "Brand Generico";
-                String modello = (versione != null && versione.getModello() != null) ? versione.getModello() : "Modello #" + occhiale.getId();
+                String marca = (versione != null && versione.getMarca() != null && !versione.getMarca().trim().isEmpty()) ? versione.getMarca().trim() : "";
+                String modello = (versione != null && versione.getModello() != null && !versione.getModello().trim().isEmpty()) ? versione.getModello().trim() : "";
+                
+                String titleDisplay;
+                if (!marca.isEmpty() && !modello.isEmpty()) {
+                    titleDisplay = marca + " - " + modello;
+                } else if (!modello.isEmpty()) {
+                    titleDisplay = modello;
+                } else if (!marca.isEmpty()) {
+                    titleDisplay = marca + " #" + occhiale.getId();
+                } else {
+                    titleDisplay = "Codice #" + occhiale.getId();
+                }
+
                 double prezzo = (versione != null) ? versione.getPrezzo() : 0.00;
+                String taglia = (versione != null && versione.getTaglia() != null) ? versione.getTaglia() : "M";
+                String base64Img = (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) ? Base64.getEncoder().encodeToString(occhiale.getImmagine()) : null;
+                String imgSrc = (base64Img != null) ? "data:image/jpeg;base64," + base64Img : "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop&q=80";
+
+                // Dati Recensioni Dinamici dal DAO
+                Double mediaVotoObj = (Double) request.getAttribute("mediaVoto");
+                Integer numRecensioniObj = (Integer) request.getAttribute("numRecensioni");
+                double mediaVoto = (mediaVotoObj != null) ? mediaVotoObj : 0.0;
+                int numRecensioni = (numRecensioniObj != null) ? numRecensioniObj : 0;
+                @SuppressWarnings("unchecked")
+                Collection<Recensione> recensioni = (Collection<Recensione>) request.getAttribute("recensioni");
         %>
         
         <div class="product-grid">
             
-            <!-- Immagine Occhiale -->
-            <div class="image-section">
-                <div class="image-glow"></div>
-                <% 
-                    if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
-                        String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
-                %>
-                        <img class="product-image" src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= modello %>" />
-                <% 
-                    } else { 
-                %>
-                        <img class="product-image" src="https://via.placeholder.com/400x300?text=Immagine+Non+Disponibile" alt="Nessuna immagine" />
-                <% 
-                    } 
-                %>
-            </div>
-
-            <!-- Dettagli Prodotto -->
-            <div class="info-section">
-                <div>
-                    <div class="badge-type"><%= occhiale.getTipo() %></div>
-                    <div class="brand"><%= marca %></div>
-                    <h1 class="model-name"><%= modello %></h1>
-                    
-                    <div class="price-tag">
-                        <span>€ <%= String.format("%.2f", prezzo) %></span>
+            <!-- Colonna Sinistra: Galleria Thumbnails + Vista Principale -->
+            <div class="gallery-wrapper">
+                <div class="thumbnails-col">
+                    <div class="thumb-box active" onclick="changeMainImage('<%= imgSrc %>', this)">
+                        <img src="<%= imgSrc %>" alt="Vista 1" />
                     </div>
-
-                    <!-- Griglia Specifiche Tecniche -->
-                    <div class="specs-grid">
-                        
-                        <% if (versione != null) { %>
-                            <div class="spec-item">
-                                <div class="spec-icon">👤</div>
-                                <div>
-                                    <div class="spec-label">Genere</div>
-                                    <div class="spec-value"><%= versione.getGenere() %></div>
-                                </div>
-                            </div>
-                            
-                            <div class="spec-item">
-                                <div class="spec-icon">📐</div>
-                                <div>
-                                    <div class="spec-label">Taglia</div>
-                                    <div class="spec-value"><%= versione.getTaglia() != null ? versione.getTaglia() : "N/D" %></div>
-                                </div>
-                            </div>
-                            
-                            <div class="spec-item">
-                                <div class="spec-icon">🛠</div>
-                                <div>
-                                    <div class="spec-label">Montatura</div>
-                                    <div class="spec-value"><%= versione.getMontatura() != null ? versione.getMontatura() : "N/D" %></div>
-                                </div>
-                            </div>
-                            
-                            <div class="spec-item">
-                                <div class="spec-icon">🕶</div>
-                                <div>
-                                    <div class="spec-label">Forma</div>
-                                    <div class="spec-value"><%= versione.getForma() != null ? versione.getForma() : "N/D" %></div>
-                                </div>
-                            </div>
-                            
-                            <div class="spec-item">
-                                <div class="spec-icon">💎</div>
-                                <div>
-                                    <div class="spec-label">Materiale</div>
-                                    <div class="spec-value"><%= versione.getMateriale() != null ? versione.getMateriale() : "N/D" %></div>
-                                </div>
-                            </div>
-                        <% } %>
-                        
-                        <div class="spec-item">
-                            <div class="spec-icon">🏷</div>
-                            <div>
-                                <div class="spec-label">Codice Articolo</div>
-                                <div class="spec-value">#<%= occhiale.getId() %></div>
-                            </div>
-                        </div>
-
+                    <div class="thumb-box" onclick="changeMainImage('<%= imgSrc %>', this)">
+                        <img src="<%= imgSrc %>" alt="Vista 2" />
+                    </div>
+                    <div class="thumb-box" onclick="changeMainImage('<%= imgSrc %>', this)">
+                        <img src="<%= imgSrc %>" alt="Vista 3" />
                     </div>
                 </div>
 
-                <!-- Varianti e Disponibilità -->
-                <div class="variants-section">
-                    <form action="carrello" method="GET">
-                        <input type="hidden" name="action" value="aggiungi" />
-                        <input type="hidden" name="idOcchiale" value="<%= occhiale.getId() %>" />
-                        <input type="hidden" name="codiceVersioneOcchiale" value="<%= versione != null ? versione.getCodice() : 0 %>" />
+                <div class="main-image-card">
+                    <img id="mainProductImg" class="product-image" src="<%= imgSrc %>" alt="Foto <%= titleDisplay %>" />
+                </div>
+            </div>
 
-                        <div class="variants-title">
-                            <span>🎨</span> Scegli Colore &amp; Disponibilità
-                        </div>
-                        
-                        <div class="variants-container">
-                            <% 
-                                if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
-                                    boolean first = true;
-                                    boolean hasInStock = false;
-                                    for (Disponibile disp : occhiale.getDisponibilita()) {
-                                        String codiceColore = disp.getColore().getCodice();
-                                        String nomeColore = disp.getColore().getNome() != null ? disp.getColore().getNome() : codiceColore;
-                                        boolean inStock = disp.getQuantita() > 0;
-                                        if (inStock) hasInStock = true;
-                                        
-                                        String hexColor = "#888888"; 
-                                        if (codiceColore != null) {
-                                            String upperCol = codiceColore.toUpperCase();
-                                            if (upperCol.startsWith("#")) {
-                                                hexColor = codiceColore;
-                                            } else if (upperCol.contains("NERO") || upperCol.contains("BLACK")) {
-                                                hexColor = "#1a1a1a";
-                                            } else if (upperCol.contains("ROSSO") || upperCol.contains("RED")) {
-                                                hexColor = "#dc2626";
-                                            } else if (upperCol.contains("BLU") || upperCol.contains("BLUE")) {
-                                                hexColor = "#2563eb";
-                                            } else if (upperCol.contains("VERDE") || upperCol.contains("GREEN")) {
-                                                hexColor = "#16a34a";
-                                            } else if (upperCol.contains("ORO") || upperCol.contains("GOLD")) {
-                                                hexColor = "#d97706";
-                                            } else if (upperCol.contains("BIANCO") || upperCol.contains("WHITE")) {
-                                                hexColor = "#ffffff";
-                                            } else if (upperCol.contains("GRIGIO") || upperCol.contains("GREY") || upperCol.contains("GRAY")) {
-                                                hexColor = "#6b7280";
-                                            } else if (upperCol.contains("MARRONE") || upperCol.contains("BROWN")) {
-                                                hexColor = "#78350f";
-                                            }
-                                        }
-                            %>
-                                        <div class="variant-pill <%= inStock ? "" : "disabled" %>">
-                                            <label>
-                                                <input type="radio" name="coloreScelto" value="<%= codiceColore %>" 
-                                                       <%= inStock && first ? "checked" : "" %> 
-                                                       <%= inStock ? "" : "disabled" %> />
-                                                <div class="color-dot" style="background-color: <%= hexColor %>;"></div>
-                                                <div class="variant-info">
-                                                    <span class="variant-color"><%= nomeColore %></span>
-                                                    <span class="variant-qty">
-                                                        <% if (inStock) { %>
-                                                            <span class="status-badge status-instock"><%= disp.getQuantita() %> Disponibili</span>
-                                                        <% } else { %>
-                                                            <span class="status-badge status-out">Esaurito</span>
-                                                        <% } %>
-                                                    </span>
-                                                </div>
-                                            </label>
-                                        </div>
-                            <% 
-                                        if (inStock) {
-                                            first = false;
-                                        }
-                                    }
-                            %>
-                                    </div>
-                                    <button type="submit" class="btn-add-to-cart" <%= hasInStock ? "" : "disabled" %>>
-                                        <%= hasInStock ? "🛒 Aggiungi al Carrello" : "❌ Prodotto Esaurito" %>
-                                    </button>
-                            <%
+            <!-- Colonna Destra: Informazioni e form Acquisto -->
+            <div class="info-section">
+                <!-- Testata Titolo -->
+                <div class="info-header-row">
+                    <h1 class="model-name"><%= titleDisplay %></h1>
+                </div>
+
+                <!-- Prezzo -->
+                <div class="price-row">
+                    <span class="price-val">€<%= String.format("%.2f", prezzo) %></span>
+                </div>
+
+                <!-- Valutazione Recensioni Dinamica -->
+                <div class="reviews-row">
+                    <div class="rating-stars" title="<%= String.format("%.1f", mediaVoto) %> su 5 stelle">
+                        <% 
+                            int interoVotoHeader = (int) Math.round(mediaVoto);
+                            for (int s = 1; s <= 5; s++) {
+                                if (s <= interoVotoHeader) {
+                        %>
+                                    <span class="star filled">★</span>
+                        <% 
                                 } else { 
-                            %>
-                                    <div class="empty-variants">
-                                        <span>⚠️</span> Nessuna variante disponibile al momento.
-                                    </div>
-                                    </div>
-                                    <button type="submit" class="btn-add-to-cart" disabled>
-                                        ❌ Prodotto Esaurito
-                                    </button>
-                            <% 
-                                } 
-                            %>
-                    </form>
+                        %>
+                                    <span class="star empty">☆</span>
+                        <% 
+                                }
+                            } 
+                        %>
+                    </div>
+                    <a href="#recensioni" class="reviews-link">
+                        <%= numRecensioni %> <%= (numRecensioni == 1) ? "Recensione" : "Recensioni" %>
+                    </a>
+                </div>
+
+                <!-- Sezione Taglia -->
+                <div class="size-section">
+                    <div class="size-label-row">
+                        <span class="field-title">Taglia:</span>
+                    </div>
+                    <div class="size-badge-box">
+                        <span class="size-pill"><%= taglia %></span>
+                    </div>
+                </div>
+
+                <!-- Sezione Seleziona Colore -->
+                <form action="carrello" method="POST" class="purchase-form">
+                    <input type="hidden" name="action" value="aggiungi" />
+                    <input type="hidden" name="idOcchiale" value="<%= occhiale.getId() %>" />
+                    <input type="hidden" name="codiceVersioneOcchiale" value="<%= versione != null ? versione.getCodice() : 0 %>" />
+
+                    <div class="color-selection-header">
+                        <% 
+                            String primoNomeColore = "Nero";
+                            if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
+                                Disponibile d1 = occhiale.getDisponibilita().iterator().next();
+                                if (d1.getColore() != null && d1.getColore().getNome() != null) {
+                                    primoNomeColore = d1.getColore().getNome();
+                                }
+                            }
+                        %>
+                        <span class="field-title">Seleziona il colore: <strong id="selectedColorName"><%= primoNomeColore %></strong></span>
+                        <span class="stock-badge in-stock">in magazzino</span>
+                    </div>
+
+                    <div class="color-swatches-container">
+                        <% 
+                            if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
+                                boolean first = true;
+                                boolean hasInStock = false;
+                                for (Disponibile disp : occhiale.getDisponibilita()) {
+                                    String codiceColore = disp.getColore().getCodice();
+                                    String nomeColore = disp.getColore().getNome() != null ? disp.getColore().getNome() : codiceColore;
+                                    boolean inStock = disp.getQuantita() > 0;
+                                    if (inStock) hasInStock = true;
+                                    
+                                    String cNameLower = nomeColore.toLowerCase();
+                                    String hexColor = "#111111"; // default nero
+                                    if (cNameLower.contains("marrone") || cNameLower.contains("tartarugato")) hexColor = "#5A3825";
+                                    else if (cNameLower.contains("rosso") || cNameLower.contains("bordeaux")) hexColor = "#6B0F24";
+                                    else if (cNameLower.contains("verde")) hexColor = "#3E6B48";
+                                    else if (cNameLower.contains("oro") || cNameLower.contains("gold")) hexColor = "#D4AF37";
+                                    else if (cNameLower.contains("argento") || cNameLower.contains("silver")) hexColor = "#C0C0C0";
+                                    else if (cNameLower.contains("blu")) hexColor = "#1E3A8A";
+                                    else if (cNameLower.contains("rosa")) hexColor = "#E8A598";
+                        %>
+                                    <label class="swatch-label <%= inStock ? "" : "disabled" %>">
+                                        <input type="radio" name="coloreScelto" value="<%= codiceColore %>" 
+                                               <%= inStock && first ? "checked" : "" %> 
+                                               <%= inStock ? "" : "disabled" %>
+                                               onchange="document.getElementById('selectedColorName').innerText = '<%= nomeColore %>'" />
+                                        <span class="swatch-circle-btn" style="background-color: <%= hexColor %>;" title="<%= nomeColore %>"></span>
+                                    </label>
+                        <% 
+                                    if (inStock) first = false;
+                                }
+                            } else { 
+                        %>
+                                <label class="swatch-label">
+                                    <input type="radio" name="coloreScelto" value="C1" checked />
+                                    <span class="swatch-circle-btn" style="background-color: #111111;" title="Nero"></span>
+                                </label>
+                                <label class="swatch-label">
+                                    <input type="radio" name="coloreScelto" value="C2" />
+                                    <span class="swatch-circle-btn" style="background-color: #5A3825;" title="Tartarugato"></span>
+                                </label>
+                        <% 
+                            } 
+                        %>
+                    </div>
+
+                    <!-- Pulsante Aggiungi al Carrello -->
+                    <button type="submit" class="btn-main-action">
+                        Aggiungi al Carrello
+                    </button>
+                </form>
+
+                <!-- Elenco Garanzie e Servizi -->
+                <div class="trust-list">
+                    <div class="trust-item">
+                        <span>Reso e cambio entro 30 giorni</span>
+                    </div>
+                    <div class="trust-item">
+                        <span>1 Anno di garanzia</span>
+                    </div>
                 </div>
 
             </div>
 
         </div>
 
+        <!-- Sezione Recensioni Prodotto Dinamica -->
+        <div id="recensioni" class="reviews-section-box">
+            <h2 class="reviews-section-title">Recensioni dei Clienti</h2>
+
+            <div class="reviews-summary-wrapper">
+                <!-- Media Voto Complessiva -->
+                <div class="summary-left-card">
+                    <span class="big-rating-number"><%= numRecensioni > 0 ? String.format("%.1f", mediaVoto) : "0.0" %></span>
+                    <div class="rating-stars big-stars">
+                        <% 
+                            int interoVotoSummary = (int) Math.round(mediaVoto);
+                            for (int s = 1; s <= 5; s++) {
+                                if (s <= interoVotoSummary) {
+                        %>
+                                    <span class="star filled">★</span>
+                        <% 
+                                } else { 
+                        %>
+                                    <span class="star empty">☆</span>
+                        <% 
+                                }
+                            } 
+                        %>
+                    </div>
+                    <span class="total-reviews-count"><%= numRecensioni %> <%= numRecensioni == 1 ? "valutazione totale" : "valutazioni totali" %></span>
+                </div>
+
+                <!-- Form per Scrivere una Nuova Recensione -->
+                <div class="write-review-card">
+                    <h3>Scrivi la tua Recensione</h3>
+                    <form action="recensione" method="POST" class="review-form">
+                        <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
+                        
+                        <% 
+                            Utente uLog = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
+                            if (uLog == null) {
+                        %>
+                            <div class="form-group-field">
+                                <label for="utenteEmail">La tua Email:</label>
+                                <input type="email" id="utenteEmail" name="utenteEmail" placeholder="inserisci la tua email..." required class="review-input" />
+                            </div>
+                        <% } %>
+
+                        <div class="form-group-field">
+                            <label for="votoSelect">Valutazione (Stelle):</label>
+                            <select id="votoSelect" name="voto" required class="review-select">
+                                <option value="5">★★★★★ (5 Stelle - Eccellente)</option>
+                                <option value="4">★★★★☆ (4 Stelle - Molto Buono)</option>
+                                <option value="3">★★★☆☆ (3 Stelle - Medio)</option>
+                                <option value="2">★★☆☆☆ (2 Stelle - Scarso)</option>
+                                <option value="1">★☆☆☆☆ (1 Stella - Pessimo)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group-field">
+                            <label for="descrizioneInput">Commento / Esperienza:</label>
+                            <textarea id="descrizioneInput" name="descrizione" rows="3" placeholder="Scrivi un commento sul comfort, lo stile e la qualità..." required class="review-textarea"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit-review">Invia Recensione</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista delle Recensioni Esistenti -->
+            <div class="reviews-list-container">
+                <% 
+                    if (recensioni != null && !recensioni.isEmpty()) {
+                        for (Recensione r : recensioni) {
+                %>
+                            <div class="single-review-card">
+                                <div class="review-card-top">
+                                    <span class="reviewer-email"><%= r.getUtenteEmail() %></span>
+                                    <div class="rating-stars">
+                                        <% 
+                                            for (int s = 1; s <= 5; s++) {
+                                                if (s <= r.getVoto()) {
+                                        %>
+                                                    <span class="star filled">★</span>
+                                        <% 
+                                                } else { 
+                                        %>
+                                                    <span class="star empty">☆</span>
+                                        <% 
+                                                }
+                                            } 
+                                        %>
+                                    </div>
+                                </div>
+                                <p class="review-body-text"><%= r.getDescrizione() %></p>
+                            </div>
+                <% 
+                        }
+                    } else { 
+                %>
+                        <div class="no-reviews-box">
+                            <p>Non ci sono ancora recensioni per questo occhiale. Sii il primo a lasciarne una!</p>
+                        </div>
+                <% 
+                    } 
+                %>
+            </div>
+        </div>
+
         <% 
             } else { 
         %>
-            <div style="text-align: center; padding: 40px 0;">
-                <h2 style="color: var(--danger-color); margin-bottom: 20px;">Prodotto Non Trovato</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 30px;">L'occhiale richiesto non esiste o non è attualmente disponibile.</p>
-                <a href="catalogo" class="btn-back" style="margin-bottom: 0;">Torna al Catalogo</a>
+            <div style="text-align: center; padding: 60px 0;">
+                <h2 style="color: var(--rust); margin-bottom: 20px;">Prodotto Non Trovato</h2>
+                <p style="color: rgba(43, 43, 43, 0.6); margin-bottom: 30px;">L'occhiale richiesto non esiste o non è disponibile.</p>
+                <a href="catalogo" class="btn-back">Torna al Catalogo</a>
             </div>
         <% 
             } 
         %>
     </div>
+
+    <script>
+        function changeMainImage(src, element) {
+            document.getElementById('mainProductImg').src = src;
+            document.querySelectorAll('.thumb-box').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+    </script>
+
 <%@ include file="../partials/footer.jsp" %>
 </body>
 </html>

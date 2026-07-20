@@ -16,30 +16,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  min-height: 560px;
+  min-height: 620px;
   gap: 40px;
 }
-
-.chart-bg {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 18px;
-  padding-right: 60px;
-  opacity: 0.05;
-  pointer-events: none;
-  font-family: 'Fraunces', serif;
-  font-weight: 600;
-  text-align: right;
-}
-
-.chart-bg span:nth-child(1) { font-size: 120px; }
-.chart-bg span:nth-child(2) { font-size: 88px; }
-.chart-bg span:nth-child(3) { font-size: 60px; }
-.chart-bg span:nth-child(4) { font-size: 38px; }
 
 .hero-copy .eyebrow {
   font-size: 12px;
@@ -115,7 +94,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 420px;
+  height: 580px;
 }
 
 .lens-ring {
@@ -259,18 +238,66 @@
   gap: 22px;
 }
 
-/* ---------- INTERNAL STYLE STRETCH ---------- */
+/* Schede Prodotto Home (Selezionati per Te) */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 14px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(43, 43, 43, 0.08);
+  border-color: var(--ink);
+}
+
+.product-frame {
+  width: 100%;
+  height: 170px;
+  background: var(--paper-soft);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
 .product-frame img {
-  width: 72%;
-  height: 72%;
+  max-width: 85%;
+  max-height: 85%;
   object-fit: contain;
   mix-blend-mode: multiply;
-  z-index: 2;
   transition: transform .25s ease;
 }
 
 .product-card:hover .product-frame img {
   transform: scale(1.08);
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.product-price {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bottle);
 }
 
 /* Slider Hero */
@@ -306,15 +333,14 @@
 }
 
 /* ---------- RESPONSIVE ---------- */
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .hero-inner {
     grid-template-columns: 1fr;
     min-height: auto;
-    padding: 48px 20px;
+    padding: 32px 20px;
   }
   .hero-visual {
-    height: 300px;
-    order: -1;
+    height: 380px;
   }
   .featured {
     padding: 56px 0 70px;
@@ -325,5 +351,15 @@
   }
   .featured-groups::before {
     display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .grid-2x2 {
+    grid-template-columns: 1fr; /* Una sola scheda per riga su schermi stretti */
+    gap: 16px;
+  }
+  .product-frame {
+    height: 190px; /* Ampio spazio per la foto dell'occhiale */
   }
 }

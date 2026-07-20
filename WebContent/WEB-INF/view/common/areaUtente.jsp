@@ -25,14 +25,26 @@
 <%@ include file="../partials/header.jsp" %>
     <div class="container">
         
-        <!-- Bottone Catalogo -->
-        <a href="catalogo" class="btn-back">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            Torna al Catalogo
-        </a>
+        <!-- Header Action Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="${pageContext.request.contextPath}/home" class="btn-back" style="margin-bottom: 0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Torna alla Home
+            </a>
+
+            <% 
+                Utente utenteCheckAdmin = (Utente) session.getAttribute("utenteLoggato");
+                if (utenteCheckAdmin != null && utenteCheckAdmin.getRuolo() != null && "AMMINISTRATORE".equalsIgnoreCase(utenteCheckAdmin.getRuolo().name())) { 
+            %>
+                <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard" style="width: auto; margin-top: 0; padding: 8px 16px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 6px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Pannello Amministratore
+                </a>
+            <% } %>
+        </div>
 
         <h1>Area Personale</h1>
 
@@ -101,6 +113,13 @@
                         </div>
                     </div>
                 </div>
+
+                <% if (utente.getRuolo() != null && "AMMINISTRATORE".equalsIgnoreCase(utente.getRuolo().name())) { %>
+                    <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 8px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        Pannello Amministratore
+                    </a>
+                <% } %>
 
             </div>
 
