@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <a href="<%= request.getContextPath() %>/logout" class="btn-logout">
+                <a href="<%= request.getContextPath() %>/common/logout" class="btn-logout">
                     <img src="<%= request.getContextPath() %>/images/icons8-logout-50.png" alt="Esci" style="width: 18px; height: 18px; margin-right: 8px; vertical-align: middle;" />
                     Esci dal Profilo
                 </a>

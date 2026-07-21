@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -97,7 +97,7 @@ public class OcchialeServlet extends HttpServlet {
                 request.setAttribute("mediaVoto", mediaVoto);
                 request.setAttribute("numRecensioni", numRecensioni);
 
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/occhiale.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/occhiale.jsp");
                 dispatcher.forward(request, response);
             } else {      // Prodotto inesistente o non attivo
                 response.sendRedirect(request.getContextPath() + "/catalogo");

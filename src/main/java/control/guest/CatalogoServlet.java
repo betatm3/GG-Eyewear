@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -161,7 +161,7 @@ public class CatalogoServlet extends HttpServlet {
             e.printStackTrace();
         }
         
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/catalogo.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp");
         dispatcher.forward(request, response);
     }
 

@@ -50,7 +50,7 @@
                 
                 <!-- Dettagli Spedizione e Pagamento -->
                 <div class="checkout-card">
-                    <form action="checkout" method="POST">
+                    <form action="/common/checkout" method="POST">
                         <div class="section-title">
                             <span>📦</span> Indirizzo di Spedizione
                         </div>

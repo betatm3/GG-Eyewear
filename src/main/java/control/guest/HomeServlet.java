@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -81,12 +81,11 @@ public class HomeServlet extends HttpServlet {
             request.setAttribute("medieVoti", new HashMap<Integer, Double>());
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/home.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/home.jsp");
         dispatcher.forward(request, response);
     }
 
-    private List<Occhiale> caricaDettagli(Collection<Occhiale> occhiali, 
-                                         VersioneOcchialeDAOImpl versioneDAO, 
+    private List<Occhiale> caricaDettagli(Collection<Occhiale> occhiali, VersioneOcchialeDAOImpl versioneDAO, 
                                          int limit) throws SQLException {
         List<Occhiale> completi = new ArrayList<>();
         if (occhiali != null) {

@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -110,7 +110,7 @@ public class CarrelloServlet extends HttpServlet {
             return;
         }
         
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/carrello.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/carrello.jsp");
         dispatcher.forward(request, response);
     }
 

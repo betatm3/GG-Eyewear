@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ public class RegistrazioneServlet extends HttpServlet {
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-    	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+    	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
     	dispatcher.forward(request, response);
     }
 
@@ -51,7 +51,7 @@ public class RegistrazioneServlet extends HttpServlet {
             telefono == null || telefono.trim().isEmpty()){
         	
             request.setAttribute("errore", "Tutti i campi sono obbligatori.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
         	dispatcher.forward(request, response);
         	return;
         }
@@ -62,14 +62,14 @@ public class RegistrazioneServlet extends HttpServlet {
             dataNascita = java.time.LocalDate.parse(dataNascitaStr);
         } catch (java.time.format.DateTimeParseException e) {
             request.setAttribute("errore", "Formato della data di nascita non valido.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
         	dispatcher.forward(request, response);
         	return;
         }
         
         if (!password.equals(confermaPassword)) {
             request.setAttribute("errore", "Le password inserite non corrispondono.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
         	dispatcher.forward(request, response);
         	return;
         }
@@ -80,7 +80,7 @@ public class RegistrazioneServlet extends HttpServlet {
             // Controllo unicità dell'email
             if (utenteDAO.doRetrieveByKey(email) != null) {
                 request.setAttribute("errore", "Questa email è già associata a un account esistente.");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
             	dispatcher.forward(request, response);
             	return;
             }
@@ -103,7 +103,7 @@ public class RegistrazioneServlet extends HttpServlet {
                 
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utenteLoggato", utenteLoggato);
-                response.sendRedirect(request.getContextPath() + "/area-utente");
+                response.sendRedirect(request.getContextPath() + "/common/area-utente");
                 return;
             } else {
                 request.setAttribute("errore", "Errore durante la registrazione. Riprova.");
@@ -115,7 +115,7 @@ public class RegistrazioneServlet extends HttpServlet {
         }
 
         // Se qualcosa è andato storto, ricarichiamo la pagina di registrazione mostrando l'errore
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/registrazione.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
     	dispatcher.forward(request, response);
     	}
 }

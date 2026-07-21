@@ -1,4 +1,4 @@
-package control.common;
+package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
     	if ("auth_required".equals(erroreParam)) {
     	    request.setAttribute("errore", "Devi effettuare il login prima di effettuare altre azioni.");
     	}
-    	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/login.jsp");
+    	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp");
     	dispatcher.forward(request, response);
     }
 
@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
         // Validazione campi input
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             request.setAttribute("errore", "Tutti i campi sono obbligatori.");
-            request.getRequestDispatcher("/WEB-INF/view/common/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp").forward(request, response);
             return;
         }
 
@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
                 if ("AMMINISTRATORE".equalsIgnoreCase(utente.getRuolo().name())) {
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/area-utente");
+                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
                 }
                 return;
 
@@ -76,9 +76,8 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errore", "Si è verificato un errore tecnico. Riprova più tardi.");
         }
 
-        // Se siamo arrivati qui significa che il login è fallito (credenziali errate o SQLException)
-        // Rimandiamo al form di login mostrando il messaggio d'errore impostato nella request
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/login.jsp");
+        // Login fallito (credenziali errate o SQLException), rimandiamo al form di login 
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp");
         dispatcher.forward(request, response);
     }
 }

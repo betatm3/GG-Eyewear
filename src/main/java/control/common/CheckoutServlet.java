@@ -25,7 +25,7 @@ import model.Stato;
 
 import model.Disponibile;
 
-@WebServlet("/checkout")
+@WebServlet("/common/checkout")
 public class CheckoutServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

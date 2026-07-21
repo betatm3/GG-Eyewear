@@ -261,7 +261,7 @@
                 <!-- Form per Scrivere una Nuova Recensione -->
                 <div class="write-review-card">
                     <h3>Scrivi la tua Recensione</h3>
-                    <form action="recensione" method="POST" class="review-form">
+                    <form action="/common/recensione" method="POST" class="review-form">
                         <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
                         
                         <% 

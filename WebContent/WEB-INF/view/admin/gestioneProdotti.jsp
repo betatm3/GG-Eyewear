@@ -185,7 +185,7 @@
                     <span>✏️</span> Modifica Caratteristiche
                 </div>
                 
-                <form action="GestioneProdotti?action=updatecaratteristiche" method="POST" enctype="multipart/form-data">
+                <form action="/admin/GestioneProdotti?action=updatecaratteristiche" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="idOcchiale" value="<%= versioneInModifica.getOcchiale().getId() %>" />
                     <input type="hidden" name="codiceVersione" value="<%= versioneInModifica.getCodice() %>" />
                     
@@ -245,7 +245,7 @@
                     </div>
                     
                     <button type="submit" class="btn-submit">Salva Modifiche</button>
-                    <a href="GestioneProdotti" class="btn-cancel">Annulla Modifica</a>
+                    <a href="/admin/GestioneProdotti" class="btn-cancel">Annulla Modifica</a>
                 </form>
 
             <% } else if (occhialeColori != null) { %>
@@ -274,7 +274,7 @@
                                     
                                     <div class="color-update-form">
                                         <!-- Aggiornamento quantità -->
-                                        <form action="GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
+                                        <form action="/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
                                             <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                                             <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
                                             <input type="number" name="quantita" value="<%= disp.getQuantita() %>" min="0" required />
@@ -282,7 +282,7 @@
                                         </form>
 
                                         <!-- Rimozione colore -->
-                                        <a href="GestioneProdotti?action=updatecolori&subAction=removecolor&idOcchiale=<%= occhialeColori.getId() %>&codiceColore=<%= disp.getColore().getCodice() %>" 
+                                        <a href="/admin/GestioneProdotti?action=updatecolori&subAction=removecolor&idOcchiale=<%= occhialeColori.getId() %>&codiceColore=<%= disp.getColore().getCodice() %>" 
                                            class="btn-mini delete" 
                                            onclick="return confirm('Sicuro di voler rimuovere questa variante colore? Verrà azzerato il magazzino per questa opzione.');">
                                             Rimuovi
@@ -305,7 +305,7 @@
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
                     <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px; color: #ffffff;">Associa Nuova Variante Colore</div>
                     
-                    <form action="GestioneProdotti?action=updatecolori&subAction=addcolor" method="POST">
+                    <form action="/admin/GestioneProdotti?action=updatecolori&subAction=addcolor" method="POST">
                         <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                         
                         <div class="form-grid">
@@ -332,7 +332,7 @@
                         </div>
                         
                         <button type="submit" class="btn-submit">Associa Colore</button>
-                        <a href="GestioneProdotti" class="btn-cancel">Chiudi Pannello Colori</a>
+                        <a href="/admin/GestioneProdotti" class="btn-cancel">Chiudi Pannello Colori</a>
                     </form>
                 </div>
 
@@ -342,7 +342,7 @@
                     <span>➕</span> Aggiungi Nuovo Occhiale
                 </div>
                 
-                <form action="GestioneProdotti?action=add" method="POST" enctype="multipart/form-data">
+                <form action="/admin/GestioneProdotti?action=add" method="POST" enctype="multipart/form-data">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="marca">Marca</label>

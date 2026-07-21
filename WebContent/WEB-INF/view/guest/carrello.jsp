@@ -124,7 +124,7 @@
                     </div>
                     
                     <div class="action-buttons">
-                        <a href="checkout" class="btn-checkout">Procedi al Checkout</a>
+                        <a href="/common/checkout" class="btn-checkout">Procedi al Checkout</a>
                         <a href="carrello?action=svuota" class="btn-shopping btn-clear-cart" style="color: var(--danger-color); border-color: rgba(248, 113, 113, 0.2);">Svuota Carrello</a>
                         <a href="catalogo" class="btn-shopping">Continua lo Shopping</a>
                     </div>

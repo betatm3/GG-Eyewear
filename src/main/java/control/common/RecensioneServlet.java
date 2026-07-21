@@ -14,7 +14,7 @@ import dao.RecensioneDAOImpl;
 import model.Recensione;
 import model.Utente;
 
-@WebServlet("/recensione")
+@WebServlet("/common/recensione")
 public class RecensioneServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
