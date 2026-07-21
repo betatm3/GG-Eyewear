@@ -132,7 +132,13 @@ public class CatalogoServlet extends HttpServlet {
                     targetTipo = Tipologia.DA_VISTA;
                 } else if (cleanedTipo.equals("LETTURA") || cleanedTipo.equals("DA_LETTURA")) {
                     targetTipo = Tipologia.DA_LETTURA;
-                } else {
+                } 
+                else if (cleanedTipo.equals("FOTOCROMATICO")) {
+                    targetTipo = Tipologia.FOTOCROMATICO;
+                }
+                else if (cleanedTipo.equals("PROGRESSIVO")) {
+                    targetTipo = Tipologia.PROGRESSIVO;
+                }else {
                     try {
                         targetTipo = Tipologia.valueOf(cleanedTipo);
                     } catch (IllegalArgumentException e) {

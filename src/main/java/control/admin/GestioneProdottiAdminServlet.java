@@ -147,7 +147,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             nuovoOcchiale.addImmagine(urlImmagine.trim());
         }
 
-        int idGenerato = occhialeDAO.doSave(nuovoOcchiale);
 
         // 2. Creazione e popolamento dell'oggetto VERSIONEOCCHIALE
         VersioneOcchiale primaVersione = new VersioneOcchiale();
