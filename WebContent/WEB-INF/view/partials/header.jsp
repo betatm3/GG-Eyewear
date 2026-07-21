@@ -10,49 +10,6 @@
       }
   }
 %>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
-
-  header.site-header {
-    background: #FFFFFF !important;
-    font-family: 'Outfit', sans-serif !important;
-  }
-  
-  header.site-header .header-inner {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-    padding: 0 32px !important;
-    height: 84px !important;
-  }
-  
-  header.site-header nav.main-nav {
-    display: flex !important;
-    gap: 36px !important;
-    align-items: center !important;
-    height: 100% !important;
-  }
-  
-  header.site-header nav.main-nav a {
-    font-family: 'Outfit', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
-    color: #2B2B2B !important;
-    text-decoration: none !important;
-    display: flex !important;
-    align-items: center !important;
-    height: 100% !important;
-  }
-
-  header.site-header nav.main-nav a.outlet {
-    color: #C86A55 !important;
-  }
-
-  header.site-header nav.main-nav a.nav-home {
-    font-weight: 600 !important;
-  }
-</style>
 <header class="site-header">
   <div class="header-inner">
     <a href="<%= request.getContextPath() %>/home" class="logo"><span class="mark">GG<em>.</em></span><span class="sub">Eyewear</span></a>

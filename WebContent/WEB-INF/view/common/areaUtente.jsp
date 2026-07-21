@@ -158,12 +158,25 @@
                                 %>
                                                 <div class="order-item-row">
                                                     <div class="item-img-container">
-                                                        <% if (item.getOcchiale() != null && item.getOcchiale().getImmagine() != null && item.getOcchiale().getImmagine().length > 0) { %>
-                                                            <% String base64 = Base64.getEncoder().encodeToString(item.getOcchiale().getImmagine()); %>
-                                                            <img class="item-img" src="data:image/jpeg;base64,<%= base64 %>" alt="<%= modello %>" />
-                                                        <% } else { %>
-                                                            <img class="item-img" src="https://via.placeholder.com/50x50?text=No" alt="No Image" />
-                                                        <% } %>
+                                                         <% 
+                                                            String primaImgUser = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
+                                                            String imgSrcUser = null;
+                                                            if (primaImgUser != null && !primaImgUser.trim().isEmpty()) {
+                                                                String trimmed = primaImgUser.trim();
+                                                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                                                    imgSrcUser = trimmed;
+                                                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                                                    imgSrcUser = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                                } else {
+                                                                    imgSrcUser = "data:image/jpeg;base64," + trimmed;
+                                                                }
+                                                            }
+                                                            if (imgSrcUser != null) { 
+                                                         %>
+                                                             <img class="item-img" src="<%= imgSrcUser %>" alt="<%= modello %>" />
+                                                         <% } else { %>
+                                                             <img class="item-img" src="https://via.placeholder.com/50x50?text=No" alt="No Image" />
+                                                         <% } %>
                                                     </div>
                                                     
                                                     <div class="item-info">

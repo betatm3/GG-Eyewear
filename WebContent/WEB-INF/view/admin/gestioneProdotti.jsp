@@ -112,12 +112,25 @@
                                     <tr class="prod-tr <%= attivo ? "" : "inactive" %>">
                                         <td class="prod-td">
                                             <div class="prod-img-container">
-                                                <% if (occ != null && occ.getImmagine() != null && occ.getImmagine().length > 0) { %>
-                                                    <% String base64 = Base64.getEncoder().encodeToString(occ.getImmagine()); %>
-                                                    <img class="prod-img" src="data:image/jpeg;base64,<%= base64 %>" alt="<%= v.getModello() %>" />
-                                                <% } else { %>
-                                                    <img class="prod-img" src="https://via.placeholder.com/60x45?text=No" alt="No Image" />
-                                                <% } %>
+                                                 <% 
+                                                    String primaImgProd = (occ != null) ? occ.getImmagine(0) : null;
+                                                    String imgSrcProd = null;
+                                                    if (primaImgProd != null && !primaImgProd.trim().isEmpty()) {
+                                                        String trimmed = primaImgProd.trim();
+                                                        if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                                            imgSrcProd = trimmed;
+                                                        } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                                            imgSrcProd = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                        } else {
+                                                            imgSrcProd = "data:image/jpeg;base64," + trimmed;
+                                                        }
+                                                    }
+                                                    if (imgSrcProd != null) { 
+                                                 %>
+                                                     <img class="prod-img" src="<%= imgSrcProd %>" alt="<%= v.getModello() %>" />
+                                                 <% } else { %>
+                                                     <img class="prod-img" src="https://via.placeholder.com/60x45?text=No" alt="No Image" />
+                                                 <% } %>
                                             </div>
                                         </td>
                                         <td class="prod-td">

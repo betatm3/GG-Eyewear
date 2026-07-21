@@ -125,10 +125,21 @@
                     <a href="${pageContext.request.contextPath}/occhiale?id=<%= occhiale.getId() %>" class="product-card">
                       <div class="product-frame">
                         <% 
-                            if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
-                                String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
+                            String primaImgSole = (occhiale != null) ? occhiale.getImmagine(0) : null;
+                            String imgSrcSole = null;
+                            if (primaImgSole != null && !primaImgSole.trim().isEmpty()) {
+                                String trimmed = primaImgSole.trim();
+                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                    imgSrcSole = trimmed;
+                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                    imgSrcSole = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                } else {
+                                    imgSrcSole = "data:image/jpeg;base64," + trimmed;
+                                }
+                            }
+                            if (imgSrcSole != null) {
                         %>
-                                <img src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= nomeProdotto %>" />
+                                <img src="<%= imgSrcSole %>" alt="Foto <%= nomeProdotto %>" />
                         <% 
                             } else { 
                         %>
@@ -200,10 +211,21 @@
                     <a href="${pageContext.request.contextPath}/occhiale?id=<%= occhiale.getId() %>" class="product-card">
                       <div class="product-frame">
                         <% 
-                            if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
-                                String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
+                            String primaImgVista = (occhiale != null) ? occhiale.getImmagine(0) : null;
+                            String imgSrcVista = null;
+                            if (primaImgVista != null && !primaImgVista.trim().isEmpty()) {
+                                String trimmed = primaImgVista.trim();
+                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                    imgSrcVista = trimmed;
+                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                    imgSrcVista = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                } else {
+                                    imgSrcVista = "data:image/jpeg;base64," + trimmed;
+                                }
+                            }
+                            if (imgSrcVista != null) {
                         %>
-                                <img src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= nomeProdotto %>" />
+                                <img src="<%= imgSrcVista %>" alt="Foto <%= nomeProdotto %>" />
                         <% 
                             } else { 
                         %>

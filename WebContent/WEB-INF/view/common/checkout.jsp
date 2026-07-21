@@ -148,12 +148,25 @@
                     %>
                                 <div class="cart-item">
                                     <div class="item-img-container">
-                                        <% if (item.getOcchiale().getImmagine() != null && item.getOcchiale().getImmagine().length > 0) { %>
-                                            <% String base64 = Base64.getEncoder().encodeToString(item.getOcchiale().getImmagine()); %>
-                                            <img class="item-img" src="data:image/jpeg;base64,<%= base64 %>" alt="<%= modello %>" />
-                                        <% } else { %>
-                                            <img class="item-img" src="https://via.placeholder.com/60x60?text=No" alt="No Image" />
-                                        <% } %>
+                                         <% 
+                                            String primaImgCheck = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
+                                            String imgSrcCheck = null;
+                                            if (primaImgCheck != null && !primaImgCheck.trim().isEmpty()) {
+                                                String trimmed = primaImgCheck.trim();
+                                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                                    imgSrcCheck = trimmed;
+                                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                                    imgSrcCheck = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                } else {
+                                                    imgSrcCheck = "data:image/jpeg;base64," + trimmed;
+                                                }
+                                            }
+                                            if (imgSrcCheck != null) { 
+                                         %>
+                                             <img class="item-img" src="<%= imgSrcCheck %>" alt="<%= modello %>" />
+                                         <% } else { %>
+                                             <img class="item-img" src="https://via.placeholder.com/60x60?text=No" alt="No Image" />
+                                         <% } %>
                                     </div>
                                     <div class="item-details">
                                         <div class="item-title"><%= marca %> - <%= modello %></div>

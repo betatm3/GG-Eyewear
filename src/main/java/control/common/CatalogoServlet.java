@@ -125,10 +125,19 @@ public class CatalogoServlet extends HttpServlet {
             String tipo = request.getParameter("tipo");
             if (tipo != null && !tipo.trim().isEmpty()) {
                 Tipologia targetTipo = null;
-                if (tipo.equalsIgnoreCase("sole")) {
+                String cleanedTipo = tipo.toUpperCase().trim();
+                if (cleanedTipo.equals("SOLE") || cleanedTipo.equals("DA_SOLE")) {
                     targetTipo = Tipologia.DA_SOLE;
-                } else if (tipo.equalsIgnoreCase("vista")) {
+                } else if (cleanedTipo.equals("VISTA") || cleanedTipo.equals("DA_VISTA")) {
                     targetTipo = Tipologia.DA_VISTA;
+                } else if (cleanedTipo.equals("LETTURA") || cleanedTipo.equals("DA_LETTURA")) {
+                    targetTipo = Tipologia.DA_LETTURA;
+                } else {
+                    try {
+                        targetTipo = Tipologia.valueOf(cleanedTipo);
+                    } catch (IllegalArgumentException e) {
+                        targetTipo = null;
+                    }
                 }
                 
                 if (targetTipo != null) {

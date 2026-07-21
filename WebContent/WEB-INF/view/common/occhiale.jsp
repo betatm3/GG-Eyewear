@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Collection" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%@ page import="java.util.Base64" %>
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
@@ -45,8 +47,27 @@
 
                 double prezzo = (versione != null) ? versione.getPrezzo() : 0.00;
                 String taglia = (versione != null && versione.getTaglia() != null) ? versione.getTaglia() : "M";
-                String base64Img = (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) ? Base64.getEncoder().encodeToString(occhiale.getImmagine()) : null;
-                String imgSrc = (base64Img != null) ? "data:image/jpeg;base64," + base64Img : "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop&q=80";
+                
+                ArrayList<String> listaImmagini = (occhiale != null) ? occhiale.getImmagini() : null;
+                List<String> immaginiResolute = new ArrayList<>();
+                if (listaImmagini != null && !listaImmagini.isEmpty()) {
+                    for (String path : listaImmagini) {
+                        if (path != null && !path.trim().isEmpty()) {
+                            String trimmed = path.trim();
+                            if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                immaginiResolute.add(trimmed);
+                            } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                immaginiResolute.add(request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed);
+                            } else {
+                                immaginiResolute.add("data:image/jpeg;base64," + trimmed);
+                            }
+                        }
+                    }
+                }
+                if (immaginiResolute.isEmpty()) {
+                    immaginiResolute.add("https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop&q=80");
+                }
+                String imgSrc = immaginiResolute.get(0);
 
                 // Dati Recensioni Dinamici dal DAO
                 Double mediaVotoObj = (Double) request.getAttribute("mediaVoto");
@@ -62,15 +83,16 @@
             <!-- Colonna Sinistra: Galleria Thumbnails + Vista Principale -->
             <div class="gallery-wrapper">
                 <div class="thumbnails-col">
-                    <div class="thumb-box active" onclick="changeMainImage('<%= imgSrc %>', this)">
-                        <img src="<%= imgSrc %>" alt="Vista 1" />
-                    </div>
-                    <div class="thumb-box" onclick="changeMainImage('<%= imgSrc %>', this)">
-                        <img src="<%= imgSrc %>" alt="Vista 2" />
-                    </div>
-                    <div class="thumb-box" onclick="changeMainImage('<%= imgSrc %>', this)">
-                        <img src="<%= imgSrc %>" alt="Vista 3" />
-                    </div>
+                    <% 
+                        for (int t = 0; t < immaginiResolute.size(); t++) {
+                            String currentThumb = immaginiResolute.get(t);
+                    %>
+                            <div class="thumb-box <%= t == 0 ? "active" : "" %>" onclick="changeMainImage('<%= currentThumb %>', this)">
+                                <img src="<%= currentThumb %>" alt="Vista <%= t + 1 %>" />
+                            </div>
+                    <% 
+                        } 
+                    %>
                 </div>
 
                 <div class="main-image-card">

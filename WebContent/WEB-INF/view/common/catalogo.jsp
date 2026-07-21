@@ -126,10 +126,21 @@
                                 <span class="badge-sconto">-<%= scontoPct %>%</span>
                             <% } %>
                             <% 
-                                if (occhiale.getImmagine() != null && occhiale.getImmagine().length > 0) {
-                                    String base64Image = Base64.getEncoder().encodeToString(occhiale.getImmagine());
+                                String primaImgCat = (occhiale != null) ? occhiale.getImmagine(0) : null;
+                                String imgSrcCat = null;
+                                if (primaImgCat != null && !primaImgCat.trim().isEmpty()) {
+                                    String trimmed = primaImgCat.trim();
+                                    if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                        imgSrcCat = trimmed;
+                                    } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                        imgSrcCat = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                    } else {
+                                        imgSrcCat = "data:image/jpeg;base64," + trimmed;
+                                    }
+                                }
+                                if (imgSrcCat != null) {
                             %>
-                                    <img class="img-occhiale" src="data:image/jpeg;base64,<%= base64Image %>" alt="Foto <%= modello %>" />
+                                    <img class="img-occhiale" src="<%= imgSrcCat %>" alt="Foto <%= modello %>" />
                             <% 
                                 } else { 
                             %>

@@ -57,12 +57,25 @@
                                     
                                     <td class="cart-cell">
                                         <div class="product-img-container">
-                                            <% if (item.getOcchiale().getImmagine() != null && item.getOcchiale().getImmagine().length > 0) { %>
-                                                <% String base64 = Base64.getEncoder().encodeToString(item.getOcchiale().getImmagine()); %>
-                                                <img class="product-img" src="data:image/jpeg;base64,<%= base64 %>" alt="<%= modello %>" />
-                                            <% } else { %>
-                                                <img class="product-img" src="https://via.placeholder.com/80x60?text=No+Image" alt="No Image" />
-                                            <% } %>
+                                             <% 
+                                                String primaImgCart = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
+                                                String imgSrcCart = null;
+                                                if (primaImgCart != null && !primaImgCart.trim().isEmpty()) {
+                                                    String trimmed = primaImgCart.trim();
+                                                    if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                                        imgSrcCart = trimmed;
+                                                    } else if (trimmed.startsWith("/") || trimmed.startsWith("images/")) {
+                                                        imgSrcCart = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                    } else {
+                                                        imgSrcCart = "data:image/jpeg;base64," + trimmed;
+                                                    }
+                                                }
+                                                if (imgSrcCart != null) { 
+                                             %>
+                                                 <img class="product-img" src="<%= imgSrcCart %>" alt="<%= modello %>" />
+                                             <% } else { %>
+                                                 <img class="product-img" src="https://via.placeholder.com/80x60?text=No+Image" alt="No Image" />
+                                             <% } %>
                                         </div>
                                     </td>
 

@@ -138,8 +138,13 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             try (java.io.InputStream inputStream = filePart.getInputStream()) {
                 byte[] immagineBytes = inputStream.readAllBytes();
-                nuovoOcchiale.setImmagine(immagineBytes);
+                String base64Img = java.util.Base64.getEncoder().encodeToString(immagineBytes);
+                nuovoOcchiale.addImmagine("data:image/jpeg;base64," + base64Img);
             }
+        }
+        String urlImmagine = request.getParameter("urlImmagine");
+        if (urlImmagine != null && !urlImmagine.trim().isEmpty()) {
+            nuovoOcchiale.addImmagine(urlImmagine.trim());
         }
 
         int idGenerato = occhialeDAO.doSave(nuovoOcchiale);
@@ -222,13 +227,22 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 occhialeModificato.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
             }
 
-            // Se l'admin seleziona un nuovo file, lo sovrascriviamo; altrimenti resta quello vecchio
             jakarta.servlet.http.Part filePart = request.getPart("immagine");
             if (filePart != null && filePart.getSize() > 0) {
                 try (java.io.InputStream inputStream = filePart.getInputStream()) {
                     byte[] immagineBytes = inputStream.readAllBytes();
-                    occhialeModificato.setImmagine(immagineBytes);
+                    String base64Img = java.util.Base64.getEncoder().encodeToString(immagineBytes);
+                    java.util.ArrayList<String> nuoveImmagini = new java.util.ArrayList<>();
+                    nuoveImmagini.add("data:image/jpeg;base64," + base64Img);
+                    occhialeModificato.setImmagini(nuoveImmagini);
                 }
+            }
+            String urlImmagine = request.getParameter("urlImmagine");
+            if (urlImmagine != null && !urlImmagine.trim().isEmpty()) {
+                if (occhialeModificato.getImmagini() == null) {
+                    occhialeModificato.setImmagini(new java.util.ArrayList<>());
+                }
+                occhialeModificato.addImmagine(urlImmagine.trim());
             }
           
             occhialeDAO.doUpdate(occhialeModificato);
