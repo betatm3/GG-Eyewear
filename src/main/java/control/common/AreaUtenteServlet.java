@@ -28,7 +28,7 @@ import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Colore;
 
-@WebServlet("/common/area-utente")
+@WebServlet({"/area-utente", "/common/area-utente", "/areaUtente"})
 public class AreaUtenteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -38,13 +38,19 @@ public class AreaUtenteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-    	HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("utenteLoggato") == null) {
-            response.sendRedirect(request.getContextPath() + "/login?errore=auth_required");
-            return;
+        HttpSession session = request.getSession(false);
+        Utente utente = null;
+        if (session != null) {
+            utente = (Utente) session.getAttribute("utenteLoggato");
+            if (utente == null) {
+                utente = (Utente) session.getAttribute("utente");
+            }
         }
 
-        Utente utente = (Utente) session.getAttribute("utenteLoggato");
+        if (utente == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
         ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);

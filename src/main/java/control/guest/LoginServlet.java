@@ -57,13 +57,14 @@ public class LoginServlet extends HttpServlet {
                 // AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
                 HttpSession session = request.getSession(true);
                 
-                // Salviamo l'intero oggetto utente
+                // Salviamo l'intero oggetto utente nella sessione
                 session.setAttribute("utenteLoggato", utente);
+                session.setAttribute("utente", utente);
 
                 if ("AMMINISTRATORE".equalsIgnoreCase(utente.getRuolo().name())) {
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                    response.sendRedirect(request.getContextPath() + "/area-utente");
                 }
                 return;
 

@@ -6,19 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accesso Negato - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/errorePermessi.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/errori.css">
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
 <div class="error-card">
     <div class="error-icon">
-        <!-- Icona Lucchetto Chiuso PNG -->
+       
         <img src="${pageContext.request.contextPath}/images/icons8-lock-24.png" alt="Accesso Negato" style="width: 48px; height: 48px; object-fit: contain;" />
     </div>
 

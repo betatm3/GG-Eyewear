@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
     <h1>GG Eyewear — Area Admin</h1>
     <div class="subtitle">Benvenuto nella dashboard di controllo del tuo negozio</div>
 
-    <!-- Sezione Statistiche -->
+    
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-label">Ricavi Totali</div>
@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <!-- Pulsanti Azioni Rapide -->
+    
     <div class="actions-grid">
         <!-- Azione: Gestione Prodotti -->
         <a href="${pageContext.request.contextPath}/admin/GestioneProdotti" class="action-card">
@@ -51,7 +51,7 @@
             <div class="action-desc">Inserisci nuovi occhiali, modifica le informazioni commerciali, i prezzi e gestisci le varianti di colore a magazzino.</div>
         </a>
 
-        <!-- Azione: Gestione Ordini -->
+      
         <a href="${pageContext.request.contextPath}/admin/VisualizzaOrdini" class="action-card">
             <div class="action-icon">
                 <img src="${pageContext.request.contextPath}/images/icons8-order-24.png" alt="Gestione Ordini" style="width: 28px; height: 28px; object-fit: contain;" />
@@ -60,7 +60,7 @@
             <div class="action-desc">Visualizza gli ordini effettuati dai clienti, applica filtri avanzati e aggiorna lo stato degli ordini in tempo reale.</div>
         </a>
 
-        <!-- Azione: Torna al Negozio -->
+        
         <a href="${pageContext.request.contextPath}/home" class="action-card">
             <div class="action-icon">
                 <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna al Negozio" style="width: 28px; height: 28px; object-fit: contain;" />

@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout Ordine - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
             
             if (successo != null) {
         %>
-            <!-- Schermata di Conferma Ordine Riuscito -->
+           
             <div class="alert alert-success">
                 <h2>🎉 Ordine Confermato!</h2>
                 <p><%= successo %></p>
@@ -48,7 +48,7 @@
 
             <div class="checkout-grid">
                 
-                <!-- Dettagli Spedizione e Pagamento -->
+               
                 <div class="checkout-card">
                     <form action="/common/checkout" method="POST">
                         <div class="section-title">
@@ -128,7 +128,7 @@
                     </form>
                 </div>
 
-                <!-- Riepilogo Carrello -->
+                
                 <div class="cart-summary">
                     <div class="section-title">
                         <span>🛒</span> Riepilogo Ordine

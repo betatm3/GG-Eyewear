@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Ordini (Admin) - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
 <body>
 <%@ include file="../partials/header.jsp" %>
 <div class="container">
-    <!-- Torna alla Dashboard Admin -->
+    
     <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-back">
         <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
         Torna alla Dashboard Admin
@@ -41,7 +41,7 @@
         } 
     %>
 
-    <!-- Sezione Filtri -->
+    
     <%
         String paramGenere = request.getParameter("genere");
         if (paramGenere == null) paramGenere = "";
@@ -137,13 +137,13 @@
         %>
                     <div class="order-card">
                         <div class="order-row">
-                            <!-- Informazioni Ordine -->
+                            
                             <div class="order-info">
                                 <div class="order-id">Ordine #<%= ordine.getId() %></div>
                                 <div class="order-customer">Cliente: <span><%= utenteEmail %></span></div>
                             </div>
 
-                            <!-- Meta Informazioni -->
+                            
                             <div class="order-meta">
                                 <div class="meta-item">
                                     <div class="meta-label">Data</div>
@@ -159,7 +159,7 @@
                                 </div>
                             </div>
 
-                            <!-- Form Modifica Stato -->
+                           
                             <% if (ordine.getStato() == Stato.CONSEGNATO) { %>
                                 <div class="status-form" style="border-color: rgba(52, 211, 153, 0.2); background: rgba(52, 211, 153, 0.03);">
                                     <span style="color: #34d399; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; padding: 4px 12px; text-transform: uppercase;">Consegnato</span>

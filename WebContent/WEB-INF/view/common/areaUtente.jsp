@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Area Personale - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
 <%@ include file="../partials/header.jsp" %>
     <div class="container">
         
-        <!-- Header Action Bar -->
+        
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
             <% 
                 Utente utenteCheckAdmin = (Utente) session.getAttribute("utenteLoggato");
@@ -56,10 +56,10 @@
 
         <div class="area-grid">
             
-            <!-- Colonna Profilo -->
+            
             <div class="profile-card">
                 
-                <!-- Icona utente silhouette -->
+             
                 <div class="user-icon-container">
                     <img src="<%= request.getContextPath() %>/images/icons8-user-24.png" alt="Profilo" style="width: 42px; height: 42px; object-fit: contain;" />
                 </div>
@@ -111,7 +111,7 @@
 
             </div>
 
-            <!-- Colonna Storico Ordini -->
+           
             <div class="orders-card">
                 <div class="section-title">
                     <span>🛍️</span> Il tuo Storico Ordini
@@ -128,7 +128,7 @@
                 %>
                             <div class="order-box">
                                 
-                                <!-- Intestazione Ordine -->
+                                
                                 <div class="order-header">
                                     <div>
                                         <div class="order-id">Ordine #<%= ordine.getId() %></div>
@@ -140,7 +140,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Lista articoli all'interno dell'ordine -->
+                                
                                 <div class="order-details-title">Articoli acquistati:</div>
                                 <% 
                                     if (prodottiMap != null) {

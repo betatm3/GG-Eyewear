@@ -17,4 +17,15 @@
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
 	</resource-ref>
+	
+	<!-- Gestione personalizzata degli Errori 404 (Pagina Non Trovata) e 500 (Errore Server) -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/view/errors/error404.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/view/errors/error500.jsp</location>
+	</error-page>
 </web-app>

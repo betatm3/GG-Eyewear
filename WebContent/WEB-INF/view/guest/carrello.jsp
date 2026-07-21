@@ -91,7 +91,7 @@
                                         <div class="product-price">€ <%= String.format("%.2f", prezzoUnitario) %></div>
                                     </td>
 
-                                    <!-- Quantità (con controlli + e -) -->
+                                    
                                     <td class="cart-cell" style="text-align: center;">
                                         <div class="qty-controls" style="justify-content: center;">
                                             <a href="carrello?action=modificaQuantita&idOcchiale=<%= idOcchiale %>&codiceVersioneOcchiale=<%= codiceVersione %>&coloreScelto=<%= codiceColore %>&quantita=<%= item.getQuantita() - 1 %>" class="btn-qty btn-minus">-</a>

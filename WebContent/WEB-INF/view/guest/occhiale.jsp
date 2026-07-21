@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dettaglio Occhiale - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -69,7 +69,7 @@
                 }
                 String imgSrc = immaginiResolute.get(0);
 
-                // Dati Recensioni Dinamici dal DAO
+                
                 Double mediaVotoObj = (Double) request.getAttribute("mediaVoto");
                 Integer numRecensioniObj = (Integer) request.getAttribute("numRecensioni");
                 double mediaVoto = (mediaVotoObj != null) ? mediaVotoObj : 0.0;
@@ -80,7 +80,7 @@
         
         <div class="product-grid">
             
-            <!-- Colonna Sinistra: Galleria Thumbnails + Vista Principale -->
+           
             <div class="gallery-wrapper">
                 <div class="thumbnails-col">
                     <% 
@@ -100,19 +100,19 @@
                 </div>
             </div>
 
-            <!-- Colonna Destra: Informazioni e form Acquisto -->
+            
             <div class="info-section">
-                <!-- Testata Titolo -->
+                
                 <div class="info-header-row">
                     <h1 class="model-name"><%= titleDisplay %></h1>
                 </div>
 
-                <!-- Prezzo -->
+                
                 <div class="price-row">
                     <span class="price-val">€<%= String.format("%.2f", prezzo) %></span>
                 </div>
 
-                <!-- Valutazione Recensioni Dinamica -->
+                
                 <div class="reviews-row">
                     <div class="rating-stars" title="<%= String.format("%.1f", mediaVoto) %> su 5 stelle">
                         <% 
@@ -135,7 +135,7 @@
                     </a>
                 </div>
 
-                <!-- Sezione Taglia -->
+                
                 <div class="size-section">
                     <div class="size-label-row">
                         <span class="field-title">Taglia:</span>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
 
-                <!-- Sezione Seleziona Colore -->
+               
                 <form action="carrello" method="POST" class="purchase-form">
                     <input type="hidden" name="action" value="aggiungi" />
                     <input type="hidden" name="idOcchiale" value="<%= occhiale.getId() %>" />
@@ -211,13 +211,13 @@
                         %>
                     </div>
 
-                    <!-- Pulsante Aggiungi al Carrello -->
+                    
                     <button type="submit" class="btn-main-action">
                         Aggiungi al Carrello
                     </button>
                 </form>
 
-                <!-- Elenco Garanzie e Servizi -->
+                
                 <div class="trust-list">
                     <div class="trust-item">
                         <span>Reso e cambio entro 30 giorni</span>
@@ -231,12 +231,12 @@
 
         </div>
 
-        <!-- Sezione Recensioni Prodotto Dinamica -->
+        
         <div id="recensioni" class="reviews-section-box">
             <h2 class="reviews-section-title">Recensioni dei Clienti</h2>
 
             <div class="reviews-summary-wrapper">
-                <!-- Media Voto Complessiva -->
+                
                 <div class="summary-left-card">
                     <span class="big-rating-number"><%= numRecensioni > 0 ? String.format("%.1f", mediaVoto) : "0.0" %></span>
                     <div class="rating-stars big-stars">
@@ -258,14 +258,14 @@
                     <span class="total-reviews-count"><%= numRecensioni %> <%= numRecensioni == 1 ? "valutazione totale" : "valutazioni totali" %></span>
                 </div>
 
-                <!-- Form per Scrivere una Nuova Recensione -->
+                
                 <div class="write-review-card">
                     <h3>Scrivi la tua Recensione</h3>
-                    <form action="/common/recensione" method="POST" class="review-form">
+                    <form action="${pageContext.request.contextPath}/recensione" method="POST" class="review-form">
                         <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
                         
                         <% 
-                            Utente uLog = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
+                            Utente uLog = (session != null) ? (Utente) session.getAttribute("utente") : null;
                             if (uLog == null) {
                         %>
                             <div class="form-group-field">
@@ -295,7 +295,7 @@
                 </div>
             </div>
 
-            <!-- Lista delle Recensioni Esistenti -->
+            
             <div class="reviews-list-container">
                 <% 
                     if (recensioni != null && !recensioni.isEmpty()) {

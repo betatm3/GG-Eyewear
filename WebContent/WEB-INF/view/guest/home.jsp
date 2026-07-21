@@ -41,33 +41,30 @@
   <div class="hero-inner" style="display: block; max-width: 1180px; margin: 0 auto; padding: 40px 32px; min-height: auto;">
     <div class="hero-visual" style="display: block; position: relative; height: 580px; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); background: var(--paper-soft); width: 100%;">
       <div class="hero-slides" style="width: 100%; height: 100%; position: relative;">
-        <!-- Slide 1 -->
-        <div class="hero-slide active" style="background: linear-gradient(135deg, #fbfaf8 0%, #e9e5da 100%);">
-          <div style="text-align: center; color: var(--ink); padding: 20px;">
-            <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; stroke: var(--amber); fill: none; stroke-width: 1.2; margin-bottom: 12px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
-            <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; font-style: italic;">Nuova Collezione Sole</h4>
-            <p style="font-size: 13px; color: #666; margin-bottom: 80px;">[Spazio per Foto Banner 1]</p>
+        
+        <div class="hero-slide active" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;">
+          <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Nuova Collezione Sole</h4>
+            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Stile iconico e massima protezione per le tue giornate al sole</p>
           </div>
         </div>
-        <!-- Slide 2 -->
-        <div class="hero-slide" style="background: linear-gradient(135deg, #f5f2eb 0%, #dfdaca 100%);">
-          <div style="text-align: center; color: var(--ink); padding: 20px;">
-            <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; stroke: var(--bottle); fill: none; stroke-width: 1.2; margin-bottom: 12px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
-            <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; font-style: italic;">Montature da Vista Premium</h4>
-            <p style="font-size: 13px; color: #666; margin-bottom: 80px;">[Spazio per Foto Banner 2]</p>
+        
+        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;">
+          <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Montature da Vista Premium</h4>
+            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Design contemporaneo e comfort per ogni momento della tua giornata</p>
           </div>
         </div>
-        <!-- Slide 3 -->
-        <div class="hero-slide" style="background: linear-gradient(135deg, #FAF8F5 0%, #e5dfd3 100%);">
-          <div style="text-align: center; color: var(--ink); padding: 20px;">
-            <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; stroke: var(--rust); fill: none; stroke-width: 1.2; margin-bottom: 12px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M20.4 14.5L16 10 4 20"/></svg>
-            <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 500; margin-bottom: 6px; font-style: italic;">Artigianato GG Eyewear</h4>
-            <p style="font-size: 13px; color: #666; margin-bottom: 80px;">[Spazio per Foto Banner 3]</p>
+        
+        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1508296695146-257a814070b4?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;">
+          <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Artigianato GG Eyewear</h4>
+            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Materiali nobili lavorati con cura ed attenzione sartoriale</p>
           </div>
         </div>
       </div>
 
-      <!-- Centered Button Overlay -->
+      
       <div style="position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 70px; z-index: 12; pointer-events: none;">
         <a href="${pageContext.request.contextPath}/catalogo" class="btn-primary" style="pointer-events: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.18);">
           Scopri la collezione
@@ -75,7 +72,7 @@
         </a>
       </div>
 
-      <!-- Dots Indicator -->
+      
       <div class="slider-dots" style="position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 15;">
         <span class="slider-dot active" data-index="0"></span>
         <span class="slider-dot" data-index="1"></span>
@@ -96,7 +93,7 @@
 
   <div class="featured-groups">
 
-    <!-- SEZIONE OCCHIALI DA SOLE -->
+   
     <div class="group" id="sole">
       <h3>Occhiali da sole</h3>
       <div class="grid-2x2">
@@ -182,7 +179,7 @@
       </div>
     </div>
 
-    <!-- SEZIONE OCCHIALI DA VISTA -->
+    
     <div class="group" id="vista">
       <h3>Occhiali da vista</h3>
       <div class="grid-2x2">

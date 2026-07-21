@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Prodotti - Area Amministratore</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
 <body>
 <%@ include file="../partials/header.jsp" %>
 <%
-    // Recupero del DataSource e DAO in modo dinamico all'interno della JSP
+   
     DataSource ds = null;
     try {
         InitialContext ctx = new InitialContext();
@@ -41,7 +41,7 @@
         Collection<VersioneOcchiale> versioniCorrenti = versioneDAO.doRetrieveByCorrente(true);
         Collection<Colore> tuttiColori = coloreDAO.doRetrieveAll(null);
 
-        // Controllo se siamo in modalità modifica caratteristiche o modifica colori
+        
         String editIdStr = request.getParameter("editId");
         String editCodiceStr = request.getParameter("editCodice");
         VersioneOcchiale versioneInModifica = null;
@@ -51,7 +51,7 @@
                 int editCodice = Integer.parseInt(editCodiceStr);
                 versioneInModifica = versioneDAO.doRetrieveByKey(editCodice, editId);
             } catch (Exception e) {
-                // Ignore parsing errors
+                
             }
         }
 
@@ -64,14 +64,14 @@
                 occhialeColori = occhialeDAO.doRetrieveByKey(manageColorsId);
                 coloriAssociati = disponibileDAO.doRetrieveByOcchiale(manageColorsId);
             } catch (Exception e) {
-                // Ignore
+                
             }
         }
 %>
 
 <div class="container">
     
-    <!-- Torna alla Dashboard Admin -->
+    
     <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-back">
         <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
         Torna alla Dashboard Admin
@@ -84,7 +84,7 @@
 
     <div class="main-layout">
         
-        <!-- SEZIONE 1: Lista Prodotti Esistenti -->
+        
         <div class="card">
             <div class="card-title">
                 <span>🕶️</span> Prodotti in Catalogo
@@ -176,7 +176,7 @@
             </div>
         </div>
 
-        <!-- AREA OPERAZIONI (Aggiungi, Modifica o Colori in base ai parametri) -->
+        <!-- AREA OPERAZIONI -->
         <div class="card" id="form-container">
             
             <% if (versioneInModifica != null) { %>
@@ -249,7 +249,7 @@
                 </form>
 
             <% } else if (occhialeColori != null) { %>
-                <!-- SEZIONE 4: Gestione Colori -->
+                
                 <div class="card-title">
                     <span>🎨</span> Gestione Colori & Scorte
                 </div>
@@ -258,12 +258,12 @@
                     Stai gestendo le varianti di colore del prodotto: <strong style="color: #ffffff;">ID <%= occhialeColori.getId() %></strong>
                 </div>
 
-                <!-- Lista colori correnti -->
+                
                 <div class="color-manager-list">
                     <%
                         if (coloriAssociati != null && !coloriAssociati.isEmpty()) {
                             for (Disponibile disp : coloriAssociati) {
-                                // Recupera nome colore
+                                
                                 Colore cDettaglio = coloreDAO.doRetrieveByKey(disp.getColore().getCodice());
                                 String nomeC = cDettaglio != null ? cDettaglio.getNome() : disp.getColore().getCodice();
                     %>
@@ -273,7 +273,7 @@
                                     </div>
                                     
                                     <div class="color-update-form">
-                                        <!-- Aggiornamento quantità -->
+                                        
                                         <form action="/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
                                             <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                                             <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
@@ -281,7 +281,7 @@
                                             <button type="submit" class="btn-mini save">Aggiorna</button>
                                         </form>
 
-                                        <!-- Rimozione colore -->
+                                        
                                         <a href="/admin/GestioneProdotti?action=updatecolori&subAction=removecolor&idOcchiale=<%= occhialeColori.getId() %>&codiceColore=<%= disp.getColore().getCodice() %>" 
                                            class="btn-mini delete" 
                                            onclick="return confirm('Sicuro di voler rimuovere questa variante colore? Verrà azzerato il magazzino per questa opzione.');">
@@ -301,7 +301,7 @@
                     %>
                 </div>
 
-                <!-- Form Aggiungi Nuova Variante Colore -->
+               
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
                     <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px; color: #ffffff;">Associa Nuova Variante Colore</div>
                     
@@ -337,7 +337,7 @@
                 </div>
 
             <% } else { %>
-                <!-- SEZIONE 2: Form di Inserimento (Aggiungi Nuovo Prodotto) -->
+               
                 <div class="card-title">
                     <span>➕</span> Aggiungi Nuovo Occhiale
                 </div>
@@ -398,7 +398,7 @@
                         </div>
                     </div>
 
-                    <!-- Inserimento Rapido Varianti Colore -->
+                    
                     <div class="color-variants-container">
                         <label>Inserisci Fino a 3 Varianti Colore Iniziali</label>
                         

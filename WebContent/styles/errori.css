@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GG EYEWEAR — Stili specifici della pagina di Errore Permessi (errorePermessi.css)
+   GG EYEWEAR — Stili comuni per tutte le Pagine di Errore (errori.css)
    ========================================================================== */
 
 body {
@@ -11,15 +11,15 @@ body {
 
 .error-card {
   width: calc(100% - 40px);
-  max-width: 500px;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  max-width: 520px;
+  background: var(--paper, #FFFFFF);
+  border: 1px solid var(--line, #E2DDD5);
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(43, 43, 43, 0.05);
-  padding: 40px;
+  padding: 44px 36px;
   text-align: center;
   animation: scaleUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  margin: 100px auto;
+  margin: 80px auto;
 }
 
 @keyframes scaleUp {
@@ -46,16 +46,25 @@ body {
   fill: currentColor;
 }
 
-h1 {
+.error-code {
+  font-family: 'Fraunces', serif;
+  font-size: 80px;
+  font-weight: 600;
+  color: var(--ink, #2B2B2B);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+h1, .error-title {
   font-size: 1.8rem;
   font-weight: 800;
   margin-bottom: 12px;
   color: var(--ink);
 }
 
-.error-message {
+.error-message, .error-desc {
   font-size: 1rem;
-  color: rgba(43, 43, 43, 0.6);
+  color: rgba(43, 43, 43, 0.65);
   line-height: 1.6;
   margin-bottom: 35px;
 }
@@ -67,9 +76,9 @@ h1 {
 }
 
 .btn-home {
-  background: var(--ink);
+  background: var(--ink, #2B2B2B);
   border: none;
-  color: var(--paper);
+  color: var(--paper, #FFFFFF);
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 700;
@@ -79,19 +88,20 @@ h1 {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(43, 43, 43, 0.15);
+  display: block;
 }
 
 .btn-home:hover {
   transform: translateY(-2px);
-  background: var(--amber);
-  color: var(--ink);
+  background: var(--amber, #D8CBB2);
+  color: var(--ink, #2B2B2B);
   box-shadow: 0 6px 16px rgba(43, 43, 43, 0.25);
 }
 
-.btn-login {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  color: var(--ink);
+.btn-login, .btn-secondary {
+  background: var(--paper, #FFFFFF);
+  border: 1px solid var(--line, #E2DDD5);
+  color: var(--ink, #2B2B2B);
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 600;
@@ -99,9 +109,10 @@ h1 {
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.3s ease;
+  display: block;
 }
 
-.btn-login:hover {
-  background: var(--paper-soft);
-  border-color: var(--grey);
+.btn-login:hover, .btn-secondary:hover {
+  background: var(--paper-soft, #FAF8F5);
+  border-color: var(--grey, #CCC);
 }

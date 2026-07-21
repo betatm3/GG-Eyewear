@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogo Occhiali - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 
     <h1><%= isOutlet ? "Outlet Occhiali — Sconti Esclusivi" : "Il nostro Catalogo Occhiali" %></h1>
 
-    <!-- Sezione Filtri -->
+    
     <div class="filters-section">
         <div class="filters-title">
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
@@ -120,7 +120,7 @@
                     double prezzoOriginale = prezzo > 0 ? (prezzo / (1 - (scontoPct / 100.0))) : 0.0;
         %>
                     <div class="card-occhiale" onclick="window.location.href='occhiale?id=<%= occhiale.getId() %>'">
-                        <!-- Contenitore Immagine -->
+                        
                         <div class="container-immagine">
                             <% if (isOutlet) { %>
                                 <span class="badge-sconto">-<%= scontoPct %>%</span>
@@ -150,7 +150,7 @@
                             %>
                         </div>
 
-                        <!-- Riga Titolo Modello + Icona Aggiungi al Carrello -->
+                        
                         <div class="card-title-row">
                             <h3 class="marca-modello"><%= modello %></h3>
                             <form action="carrello" method="POST" style="margin:0; padding:0; display:inline;" onclick="event.stopPropagation();">
@@ -164,7 +164,7 @@
                             </form>
                         </div>
 
-                        <!-- Riga Bottom: Prezzo + Stelle Voto Recensione -->
+                        
                         <div class="card-bottom-row">
                             <div class="prezzo-box">
                                 <span class="prezzo-attuale">€<%= String.format("%.2f", prezzo) %></span>
@@ -192,7 +192,7 @@
                         </div>
                     </div>
         <% 
-                } // Fine ciclo for
+                } 
             } else {
         %>
                 <div class="msg-vuoto">

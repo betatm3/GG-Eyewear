@@ -14,7 +14,7 @@ import dao.RecensioneDAOImpl;
 import model.Recensione;
 import model.Utente;
 
-@WebServlet("/common/recensione")
+@WebServlet("/recensione")
 public class RecensioneServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -25,7 +25,7 @@ public class RecensioneServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
-        Utente utenteLoggato = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
+        Utente utenteLoggato = (session != null) ? (Utente) session.getAttribute("utente") : null;
         
         String occhialeIdStr = request.getParameter("occhialeId");
         String votoStr = request.getParameter("voto");

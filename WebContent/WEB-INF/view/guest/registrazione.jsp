@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione - GG Eyewear</title>
     
-    <!-- Font Premium da Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
         <form action="registrazione" method="POST">
             <div class="form-grid">
                 
-                <!-- Nome e Cognome -->
+                
                 <div class="form-group">
                     <label for="nome">Nome</label>
                     <input type="text" id="nome" name="nome" required placeholder="Es. Mario" />
@@ -45,13 +45,13 @@
                     <input type="text" id="cognome" name="cognome" required placeholder="Es. Rossi" />
                 </div>
 
-                <!-- E-mail -->
+                
                 <div class="form-group full-width">
                     <label for="email">Indirizzo E-mail</label>
                     <input type="email" id="email" name="email" required placeholder="mario.rossi@email.it" />
                 </div>
 
-                <!-- Password e Conferma Password -->
+                
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" required placeholder="Scegli una password" />
@@ -62,7 +62,7 @@
                     <input type="password" id="confermaPassword" name="confermaPassword" required placeholder="Ripeti la password" />
                 </div>
 
-                <!-- Telefono e Data di Nascita -->
+                
                 <div class="form-group">
                     <label for="telefono">Numero di Telefono</label>
                     <input type="tel" id="telefono" name="telefono" required placeholder="Es. 3331234567" />
@@ -73,7 +73,7 @@
                     <input type="date" id="dataNascita" name="dataNascita" required />
                 </div>
 
-                <!-- Indirizzo di Spedizione Completo -->
+                
                 <div class="form-group full-width">
                     <label for="indirizzo">Indirizzo di Spedizione predefinito</label>
                     <input type="text" id="indirizzo" name="indirizzo" required placeholder="Es. Via Roma 12, 80100 Napoli" />
