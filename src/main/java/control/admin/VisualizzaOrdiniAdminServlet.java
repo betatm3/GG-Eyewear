@@ -68,7 +68,7 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
 
             if (haFiltriOcchiale) {
                 Collection<VersioneOcchiale> versioniFiltrate = versioneDAO.doRetrieveByFiltri(
-                        genere, null, null, marca, null, null, null, null);
+                        genere,null, null, null, marca, null, null, null, null);
 
                 if (versioniFiltrate != null && !versioniFiltrate.isEmpty()) {
                     Collection<Integer> codiciVersioni = new ArrayList<>();

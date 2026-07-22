@@ -64,6 +64,16 @@
                         <option value="Unisex" <%= "Unisex".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Unisex</option>
                     </select>
                 </div>
+                
+                <div class="filter-field">
+                    <label class="filter-label" for="filterMontatura">Montatura</label>
+                    <select id="filterMontatura" name="montatura" class="filter-input">
+                        <option value="">Tutti</option>
+                        <option value="Spessa" <%= "Spessa".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Spessa</option>
+                        <option value="Mezza" <%= "Mezza".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Mezza</option>
+                        <option value="Senza" <%= "Senza".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Senza</option>
+                    </select>
+                </div>
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterMateriale">Materiale</label>

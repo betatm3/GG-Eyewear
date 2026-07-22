@@ -336,7 +336,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
     
     @Override
-    public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
+    public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
         Collection<VersioneOcchiale> lista = new ArrayList<>();
         
         // Convertiamo il nome del colore nel suo ID tramite il ColoreDAO se è stato passato
@@ -368,6 +368,9 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         if (genere != null) {
             sql.append(" AND v.genere = ?");
         }
+        if (montatura != null) {
+            sql.append(" AND v.montatura = ?");
+        }
         if (materiale != null && !materiale.trim().isEmpty()) {
             sql.append(" AND v.materiale = ?");
         }
@@ -396,6 +399,9 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             
             if (genere != null) {
                 ps.setString(index++, genere.name());
+            }
+            if (montatura != null) {
+                ps.setString(index++, montatura.name());
             }
             if (materiale != null && !materiale.trim().isEmpty()) {
                 ps.setString(index++, materiale);

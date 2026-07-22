@@ -24,6 +24,7 @@ import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Tipologia;
 import model.Genere;
+import model.Montatura;
 import model.Recensione;
 
 // URL della servlet
@@ -43,6 +44,7 @@ public class CatalogoServlet extends HttpServlet {
         
         // Recupero dei parametri stringa inviati dal form di ricerca
         String genereStr = request.getParameter("genere");
+        String montaturaStr = request.getParameter("montatura");
         String materiale = request.getParameter("materiale");
         String forma = request.getParameter("forma");
         String marca = request.getParameter("marca");
@@ -67,8 +69,16 @@ public class CatalogoServlet extends HttpServlet {
                 genere = null;
             }
         }
-
-        // 5. Parsing sicuro dei prezzi Double
+        
+        Montatura montatura = null;
+        if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
+            try {
+                montatura = Montatura.valueOf(montaturaStr.toUpperCase().trim());
+            } catch (IllegalArgumentException e) {
+            	montatura = null;
+            }
+        }
+        
         Double prezzoMin = null;
         if (prezzoMinStr != null && !prezzoMinStr.trim().isEmpty()) {
             try {
@@ -89,7 +99,7 @@ public class CatalogoServlet extends HttpServlet {
 
         try {
             Collection<VersioneOcchiale> versioniFiltrate = versioneDAO.doRetrieveByFiltri(
-                genere, materiale, forma, marca, colore, taglia, prezzoMin, prezzoMax);
+                genere, montatura,materiale, forma, marca, colore, taglia, prezzoMin, prezzoMax);
             
             // Costruiamo la lista di Occhiale da passare alla JSP ed il calcolo delle medie voti
             Collection<Occhiale> listaOcchiali = new ArrayList<>();

@@ -39,7 +39,7 @@ public interface VersioneOcchialeDAO {
     
     Collection<VersioneOcchiale> doRetrieveByModello(String modelloScelto) throws SQLException;
     
-    Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException;
+    Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException;
     
     VersioneOcchiale doRetrieveCorrenteByOcchiale(int idOcchiale) throws SQLException;
 
