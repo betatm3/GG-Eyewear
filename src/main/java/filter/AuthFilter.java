@@ -38,7 +38,7 @@ public class AuthFilter implements Filter {
             }
         }
         
-        // 1. Controllo per le rotte Admin (/admin/*)
+        // Richieste /admin/*
         if (uri.contains("/admin/")) {
             if (utente == null || !utente.isAdmin()) {
                 httpRequest.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");
@@ -46,7 +46,7 @@ public class AuthFilter implements Filter {
                 return;
             }
         } else {
-            // 2. Controllo per le rotte Common o Area Utente (/common/*, /area-utente, /areaUtente)
+            // Richieste /common/*, /area-utente, /areaUtente
             if (utente == null) {
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
                 return;

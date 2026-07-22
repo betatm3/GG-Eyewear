@@ -152,7 +152,7 @@ public class CheckoutServlet extends HttpServlet {
             // Svuota il carrello dalla sessione
             session.removeAttribute("carrello");
 
-            request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo. Riceverai presto una mail di conferma.");
+            request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo.");
             
         } catch (SQLException e) {
             e.printStackTrace();

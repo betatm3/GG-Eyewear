@@ -1,6 +1,4 @@
-/* ==========================================================================
-   GG EYEWEAR — Stili specifici Area Utente (areaUtente.css)
-   ========================================================================== */
+
 
 body {
   font-family: 'Outfit', sans-serif;
@@ -83,7 +81,7 @@ h1 {
   position: relative;
 }
 
-/* Icona Utente Silhouette SVG */
+/* Icona Utente */
 .user-icon-container {
   width: 100px;
   height: 100px;

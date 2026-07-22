@@ -26,9 +26,9 @@ import dao.DisponibileDAOImpl;
 
 @WebServlet("/admin/GestioneProdotti")
 @jakarta.servlet.annotation.MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-    maxFileSize = 1024 * 1024 * 10,      // 10MB
-    maxRequestSize = 1024 * 1024 * 50    // 50MB
+    fileSizeThreshold = 1024 * 1024 * 2, 
+    maxFileSize = 1024 * 1024 * 10,      
+    maxRequestSize = 1024 * 1024 * 50    
 )
 
 public class GestioneProdottiAdminServlet extends HttpServlet {
@@ -40,9 +40,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-        response.setDateHeader("Expires", 0); // Proxies.
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+        response.setHeader("Pragma", "no-cache"); 
+        response.setDateHeader("Expires", 0); 
 
         String action = request.getParameter("action");
 
@@ -108,7 +108,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds); // Inizializziamo il DAO per la tabella ponte
         
-        // 1. Creazione e popolamento dell'oggetto OCCHIALE
+        // Creazione e popolamento dell'oggetto OCCHIALE
         Occhiale nuovoOcchiale = new Occhiale();
         nuovoOcchiale.setAttivo(true);
         
@@ -119,7 +119,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             nuovoOcchiale.setTipo(Tipologia.DA_SOLE);
         }
         
-        // 1.5 Salvataggio dell'oggetto OCCHIALE per generare l'ID nel DB
+        // Salvataggio dell'oggetto OCCHIALE per generare l'ID nel DB
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         int generatedId = occhialeDAO.doSave(nuovoOcchiale);
         nuovoOcchiale.setId(generatedId);
