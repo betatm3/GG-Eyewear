@@ -339,28 +339,16 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, String forma, String marca, String colore, String taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
         Collection<VersioneOcchiale> lista = new ArrayList<>();
         
-        // Convertiamo il nome del colore nel suo ID tramite il ColoreDAO se è stato passato
-        String codiceColore = null;
-        if (colore != null && !colore.trim().isEmpty()) {
-            ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
-            Colore c = coloreDAO.doRetrieveByNome(colore);
-            
-            if (c != null) {
-            	codiceColore = c.getCodice(); 
-            } else {
-                // Se il colore cercato non esiste, restituiamo la lista vuota
-                return lista; 
-            }
-        }
-        
         StringBuilder sql = new StringBuilder(
             "SELECT DISTINCT v.*, o.id AS o_id, o.attivo AS o_attivo, o.tipologia AS o_tipologia FROM versione_occhiale v " +
             "JOIN occhiale o ON v.occhiale_id = o.id "
         );
-        
-        // Per filtrare per colore, aggiungiamo la JOIN con la tabella disponibilità
-        if (codiceColore != null) {
-            sql.append("JOIN disponibilita d ON o.id = d.occhiale_id ");
+
+        // Se è stato passato il filtro sul colore, aggiungiamo le JOIN con disponibilita e colore
+        boolean hasColore = (colore != null && !colore.trim().isEmpty());
+        if (hasColore) {
+            sql.append("JOIN disponibile d ON o.id = d.occhiale_id ")
+               .append("JOIN colore c ON d.colore_codice = c.codice ");
         }
         
         sql.append("WHERE o.attivo = true AND v.corrente = true");
@@ -380,8 +368,8 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         if (marca != null && !marca.trim().isEmpty()) {
             sql.append(" AND v.marca = ?");
         }
-        if (codiceColore != null) {
-            sql.append(" AND d.colore_codice = ?"); 
+        if (hasColore) {
+            sql.append(" AND LOWER(c.nome) LIKE LOWER(?)"); 
         }
         if (taglia != null && !taglia.trim().isEmpty()) {
             sql.append(" AND v.taglia = ?");
@@ -412,8 +400,9 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             if (marca != null && !marca.trim().isEmpty()) {
                 ps.setString(index++, marca);
             }
-            if (codiceColore != null) {
-                ps.setString(index++, codiceColore);
+            if (hasColore) {
+                // % per il matching parziale
+                ps.setString(index++, "%" + colore.trim() + "%");
             }
             if (taglia != null && !taglia.trim().isEmpty()) {
                 ps.setString(index++, taglia);
@@ -427,6 +416,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             
             ResultSet rs = ps.executeQuery();
             OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
+            
             
             while (rs.next()) {
                 VersioneOcchiale versione = new VersioneOcchiale();
