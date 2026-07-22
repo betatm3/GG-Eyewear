@@ -23,7 +23,7 @@
 
     <div class="header-actions">
       <a href="<%= request.getContextPath() %>/area-utente" class="icon-btn" aria-label="Area utente">
-        <img src="<%= request.getContextPath() %>/images/icons8-user-24.png" alt="Area Utente" style="width: 20px; height: 20px; object-fit: contain;" />
+        <img src="<%= request.getContextPath() %>/images/user.png" alt="Area Utente" style="width: 20px; height: 20px; object-fit: contain;" />
       </a>
       <a href="<%= request.getContextPath() %>/carrello" class="icon-btn" aria-label="Carrello">
         <img src="<%= request.getContextPath() %>/images/icons8-cart-24.png" alt="Carrello" style="width: 20px; height: 20px; object-fit: contain;" />

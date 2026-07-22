@@ -44,8 +44,24 @@
             String errore = (String) request.getAttribute("errore");
             if (errore != null) {
         %>
-            <div class="errore-banner">
+            <div class="errore-banner" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgb(239, 68, 68); color: rgb(239, 68, 68); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
                 <span>⚠️</span> <%= errore %>
+            </div>
+        <% 
+            } 
+            String msgSuccesso = (String) request.getAttribute("msgSuccesso");
+            if (msgSuccesso != null) {
+        %>
+            <div class="successo-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgb(16, 185, 129); color: rgb(16, 185, 129); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
+                <span>✓</span> <%= msgSuccesso %>
+            </div>
+        <% 
+            } 
+            String msgErrore = (String) request.getAttribute("msgErrore");
+            if (msgErrore != null) {
+        %>
+            <div class="errore-banner" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgb(239, 68, 68); color: rgb(239, 68, 68); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
+                <span>⚠️</span> <%= msgErrore %>
             </div>
         <% 
             } 
@@ -59,10 +75,14 @@
             
             <div class="profile-card">
                 
-             	<a href="<%= request.getContextPath() %>/AreaUtenteServlet?action=modifica" class="btn-edit-profile" title="Modifica Profilo">
-        			<img src="<%= request.getContextPath() %>/images/editProfile.png" alt="Modifica Dati">
-    			</a>
-                <div class="user-icon-container">
+                <div style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: -15px; position: relative; z-index: 10;">
+                    <a href="javascript:void(0);" onclick="toggleEditProfile(true);" class="btn-edit-profile" title="Modifica dati" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 10px; font-weight: 700; color: #7F7159; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 0, 0, 0.04); padding: 6px 12px; border-radius: 20px; transition: all 0.2s ease;">
+                        <img src="<%= request.getContextPath() %>/images/editProfile.png" alt="Modifica Dati" style="width: 12px; height: 12px; object-fit: contain;">
+                        <span>Modifica dati</span>
+                    </a>
+                </div>
+                
+                <div class="user-icon-container" style="margin-top: 15px;">
                     <img src="<%= request.getContextPath() %>/images/user.png" alt="Profilo" style="width: 42px; height: 42px; object-fit: contain;" />
                 </div>
 
@@ -114,7 +134,7 @@
             </div>
 
            
-            <div class="orders-card">
+            <div class="orders-card" id="orders-card-section">
                 <div class="section-title">
                     <span>🛍️</span> Il tuo Storico Ordini
                 </div>
@@ -210,6 +230,56 @@
                 %>
             </div>
 
+            <!-- SCHEDA MODIFICA DATI UTENTE -->
+            <div class="orders-card" id="edit-profile-card" style="display: none;">
+                <div class="section-title">
+                    <span>✏️</span> Modifica Dati Utente
+                </div>
+                
+                <form action="<%= request.getContextPath() %>/area-utente" method="POST" class="edit-profile-form" style="display: flex; flex-direction: column; gap: 20px; font-family: 'Outfit', sans-serif;">
+                    <input type="hidden" name="action" value="modifica" />
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="edit_nome" style="font-size: 13px; font-weight: 600; color: #555;">Nome</label>
+                            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" required style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="edit_cognome" style="font-size: 13px; font-weight: 600; color: #555;">Cognome</label>
+                            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" required style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="edit_telefono" style="font-size: 13px; font-weight: 600; color: #555;">Telefono</label>
+                            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <label for="edit_data_nascita" style="font-size: 13px; font-weight: 600; color: #555;">Data di Nascita</label>
+                            <input type="date" id="edit_data_nascita" name="data_nascita" value="<%= utente.getDataNascita() != null ? utente.getDataNascita().toString() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="edit_indirizzo" style="font-size: 13px; font-weight: 600; color: #555;">Indirizzo di Spedizione</label>
+                        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <label for="edit_password" style="font-size: 13px; font-weight: 600; color: #555;">Nuova Password (Lascia vuoto per non cambiarla)</label>
+                        <input type="password" id="edit_password" name="password" placeholder="Minimo 6 caratteri..." style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 10px;">
+                        <button type="submit" class="btn-admin-dashboard" style="background: #2B2B2B; color: #FFF; width: auto; margin-top: 0; padding: 10px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600;">Salva modifiche</button>
+                        <button type="button" onclick="toggleEditProfile(false);" class="btn-cancel" style="background: #FAF8F5; color: #555; border: 1px solid var(--line); padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Annulla</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <% 
@@ -217,6 +287,23 @@
         %>
 
     </div>
+    
+    <script>
+        function toggleEditProfile(show) {
+            var ordersCard = document.getElementById("orders-card-section");
+            var editCard = document.getElementById("edit-profile-card");
+            if (ordersCard && editCard) {
+                if (show) {
+                    ordersCard.style.display = "none";
+                    editCard.style.display = "block";
+                } else {
+                    ordersCard.style.display = "block";
+                    editCard.style.display = "none";
+                }
+            }
+        }
+    </script>
+    
 <%@ include file="../partials/footer.jsp" %>
 </body>
 </html>

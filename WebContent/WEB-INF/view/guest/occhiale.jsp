@@ -58,15 +58,13 @@
                     for (String path : listaImmagini) {
                         if (path != null && !path.trim().isEmpty()) {
                             String trimmed = path.trim();
-                            if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                immaginiResolute.add(trimmed);
-                            } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                            	String cleanPath = trimmed.replace("img/prodotti/", "").replace("img/", "").replace("images/", "");
-                                if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
-                                immaginiResolute.add(request.getContextPath() + "/images/occhiali/" + cleanPath);
-                            } else {
-                                immaginiResolute.add("data:image/jpeg;base64," + trimmed);
-                            }
+                             if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                                 immaginiResolute.add(trimmed);
+                             } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
+                                 immaginiResolute.add(request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed);
+                             } else {
+                                 immaginiResolute.add("data:image/jpeg;base64," + trimmed);
+                             }
                         }
                     }
                 }

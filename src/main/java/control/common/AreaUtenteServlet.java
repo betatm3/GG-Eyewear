@@ -111,36 +111,70 @@ public class AreaUtenteServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-    	String action = request.getParameter("action");
+        String action = request.getParameter("action");
 
-    	if ("modifica".equals(action)) {
-    	    Utente utenteSessione = (Utente) request.getSession().getAttribute("utente");
+        if ("modifica".equals(action)) {
+            HttpSession session = request.getSession(false);
+            Utente utenteSessione = null;
+            if (session != null) {
+                utenteSessione = (Utente) session.getAttribute("utenteLoggato");
+                if (utenteSessione == null) {
+                    utenteSessione = (Utente) session.getAttribute("utente");
+                }
+            }
 
-    	    if (utenteSessione != null) {
-    	        String nuovoNome = request.getParameter("nome");
-    	        String nuovoTelefono = request.getParameter("telefono");
+            if (utenteSessione != null) {
+                String nuovoNome = request.getParameter("nome");
+                String nuovoCognome = request.getParameter("cognome");
+                String nuovoTelefono = request.getParameter("telefono");
+                String nuovoIndirizzo = request.getParameter("indirizzo");
+                String nuovaDataNascitaStr = request.getParameter("data_nascita");
+                String nuovaPassword = request.getParameter("password");
 
-    	        utenteSessione.setNome(nuovoNome);
-    	        utenteSessione.setTelefono(nuovoTelefono);
+                if (nuovoNome != null && !nuovoNome.trim().isEmpty()) {
+                    utenteSessione.setNome(nuovoNome.trim());
+                }
+                if (nuovoCognome != null && !nuovoCognome.trim().isEmpty()) {
+                    utenteSessione.setCognome(nuovoCognome.trim());
+                }
+                if (nuovoTelefono != null) {
+                    utenteSessione.setTelefono(nuovoTelefono.trim());
+                }
+                if (nuovoIndirizzo != null) {
+                    utenteSessione.setIndirizzo(nuovoIndirizzo.trim());
+                }
+                if (nuovaDataNascitaStr != null && !nuovaDataNascitaStr.trim().isEmpty()) {
+                    try {
+                        utenteSessione.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    utenteSessione.setDataNascita(null);
+                }
+                if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
+                    utenteSessione.setPassword(nuovaPassword.trim());
+                }
 
-    	        UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
-    	        boolean success=false;
-				
-    	        try {
-					success = utenteDao.doUpdate(utenteSessione);
-					if (success) {
-						request.getSession().setAttribute("utente", utenteSessione);
-						request.setAttribute("msgSuccesso", "Dati aggiornati con successo!");
-					}
-					else {
-						request.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}         
-    	    }
-    	    
-    	    request.getRequestDispatcher("/WEB-INF/jsp/AreaUtente.jsp").forward(request, response);
-    	}
+                UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
+                boolean success = false;
+                try {
+                    success = utenteDao.doUpdate(utenteSessione);
+                    if (success) {
+                        session.setAttribute("utenteLoggato", utenteSessione);
+                        session.setAttribute("utente", utenteSessione);
+                        request.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
+                    } else {
+                        request.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    request.setAttribute("msgErrore", "Errore del database: " + e.getMessage());
+                }
+            }
+            
+            // Richiama doGet per ricaricare lo storico ordini e inoltrare alla corretta view JSP
+            doGet(request, response);
+        }
     }
 }
