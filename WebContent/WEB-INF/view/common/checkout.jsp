@@ -107,7 +107,7 @@
 
                         <div class="form-group">
                             <label for="telefono">Recapito Telefonico</label>
-                            <input type="tel" id="telefono" name="telefono" value="<%= telefono %>" required placeholder="Es. 3331234567" />
+                            <input type="tel" id="telefono" name="telefono" value="<%= telefono %>" required placeholder="Es. 3331234567" maxlength="16" />
                         </div>
 
                         <div class="section-title" style="margin-top: 40px;">
@@ -156,7 +156,13 @@
                                                 if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
                                                     imgSrcCheck = trimmed;
                                                 } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                    imgSrcCheck = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                	String cleanPath = trimmed.replace("img/", "")
+                                                            .replace("images/occhiali/", "")
+                                                            .replace("images/", "");
+                             					    if (cleanPath.startsWith("/")) {
+                                      					cleanPath = cleanPath.substring(1);
+                                  					}
+                                 					imgSrcCheck= request.getContextPath() + "/images/occhiali/" + cleanPath;  
                                                 } else {
                                                     imgSrcCheck = "data:image/jpeg;base64," + trimmed;
                                                 }

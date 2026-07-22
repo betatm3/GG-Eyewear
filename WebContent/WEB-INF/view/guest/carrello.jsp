@@ -65,7 +65,13 @@
                                                     if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
                                                         imgSrcCart = trimmed;
                                                     } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                        imgSrcCart = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                                    	String cleanPath = trimmed.replace("img/", "")
+                                                                .replace("images/occhiali/", "")
+                                                                .replace("images/", "");
+                                      				if (cleanPath.startsWith("/")) {
+                                          				cleanPath = cleanPath.substring(1);
+                                     				}
+                                      					imgSrcCart= request.getContextPath() + "/images/occhiali/" + cleanPath;
                                                     } else {
                                                         imgSrcCart = "data:image/jpeg;base64," + trimmed;
                                                     }

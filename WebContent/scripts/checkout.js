@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     const regexCitta = /^[a-zA-ZàèéìòùÀÈÉÌÒÙ\s']{2,50}$/;
     const regexCap = /^\d{5}$/;
-    const regexTelefono = /^(\+39)?\s?3\d{2}\s?\d{6,7}$/;
+    const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 
     function showFieldError(input, message) {
         let parent = input.parentElement;
