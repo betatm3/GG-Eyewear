@@ -30,6 +30,7 @@ import dao.DisponibileDAOImpl;
     maxFileSize = 1024 * 1024 * 10,      // 10MB
     maxRequestSize = 1024 * 1024 * 50    // 50MB
 )
+
 public class GestioneProdottiAdminServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -39,9 +40,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Controllo Sicurezza
-        if (!checkAdminPrivileges(request, response)) return;
-
         String action = request.getParameter("action");
 
         try {
@@ -62,9 +60,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Controllo Sicurezza
-        if (!checkAdminPrivileges(request, response)) return;
-
         String action = request.getParameter("action");
         if (action == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Azione mancante.");
@@ -93,19 +88,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     }
 
     // --- METODI PRIVATI DI SUPPORTO ---
-
-    private boolean checkAdminPrivileges(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
-        
-        if (utente == null || !utente.isAdmin()) {
-            request.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/errors/errorePermessi.jsp");
-            dispatcher.forward(request, response);
-            return false;
-        }
-        return true;
-    }
 
     private void rimuoviOcchialeLogico(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
         int idOcchiale = Integer.parseInt(request.getParameter("id"));

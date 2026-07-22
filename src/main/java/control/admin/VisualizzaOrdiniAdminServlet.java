@@ -11,10 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import model.Utente;
 import model.Ordine;
 import model.Stato;
 import model.VersioneOcchiale;
@@ -32,8 +30,6 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        if (!checkAdminPrivileges(request, response)) return;
-
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
@@ -105,21 +101,9 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nel caricamento o nel filtraggio cronologico degli ordini.");
         }
     }
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doGet(request, response);
     }
-
-    private boolean checkAdminPrivileges(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
-        
-        if (utente == null || !utente.isAdmin()) {
-            request.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/errors/errorePermessi.jsp");
-            dispatcher.forward(request, response);
-            return false;
-        }
-        return true;
-    } 
 }

@@ -3,19 +3,16 @@ package control.admin;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import dao.OrdineDAOImpl;
 import model.Ordine;
 import model.Stato;
-import model.Utente;
 
 @WebServlet("/admin/ModificaStato")
 public class ModificaStatoOrdineServlet extends HttpServlet {
@@ -27,8 +24,6 @@ public class ModificaStatoOrdineServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        if (!checkAdminPrivileges(request, response)) return;
-
         String idOrdineStr = request.getParameter("idOrdine");
         String nuovoStatoStr = request.getParameter("nuovoStato");
 
@@ -72,18 +67,5 @@ public class ModificaStatoOrdineServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Metodo GET non supportato per questa operazione.");
-    }
-
-    private boolean checkAdminPrivileges(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
-        
-        if (utente == null || !utente.isAdmin()) {
-            request.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/errors/errorePermessi.jsp");
-            dispatcher.forward(request, response);
-            return false;
-        }
-        return true;
     }
 }

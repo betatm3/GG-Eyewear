@@ -2,7 +2,7 @@
 -- SCRIPT SQL POPOLAMENTO DATABASE - ECOMMERCE OCCHIALI (GG EYEWEAR)
 -- Contiene: 
 -- 1. Colori
--- 2. 20 Occhiali + Versioni + Disponibilità (10 DA_SOLE e 10 DA_VISTA)
+-- 2. 22 Occhiali + Versioni + Disponibilità (12 DA_SOLE e 10 DA_VISTA)
 -- 3. Utenti (Clienti ed Amministratore)
 -- 4. Ordini Storici e Prodotti Acquistati (con sole tipologie DA_SOLE e DA_VISTA)
 -- 5. Recensioni con Voti e Commenti (con sole tipologie DA_SOLE e DA_VISTA)
@@ -36,7 +36,7 @@ INSERT IGNORE INTO colore (codice, nome) VALUES
 ('C_ROSA', 'Rosa Cipria');
 
 -- ====================================================================================
--- 2. TIPOLOGIA: DA_SOLE (10 Prodotti ID 201 - 210)
+-- 2. TIPOLOGIA: DA_SOLE (12 Prodotti ID 201 - 210, 233, 234)
 -- ====================================================================================
 INSERT INTO occhiale (id, attivo, tipologia) VALUES (201, 1, 'DA_SOLE');
 INSERT INTO versione_occhiale (codice, marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (201, 'Tom Ford', 'Snowdon FT0237', 'UNISEX', 'L', 'SPESSA', 'Squadrata', 'Acetato', 295.00, 1, 201);
@@ -77,6 +77,14 @@ INSERT INTO disponibile (occhiale_id, colore_codice, quantita) VALUES (209, 'C_N
 INSERT INTO occhiale (id, attivo, tipologia) VALUES (210, 1, 'DA_SOLE');
 INSERT INTO versione_occhiale (codice, marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (210, 'Vogue Eyewear', 'VO5338S Hailey Bieber', 'DONNA', 'S', 'SPESSA', 'Cat-Eye', 'Acetato', 99.00, 1, 210);
 INSERT INTO disponibile (occhiale_id, colore_codice, quantita) VALUES (210, 'C_ROSA', 18), (210, 'C_TART', 12);
+
+INSERT INTO occhiale (id, attivo, tipologia) VALUES (233, 1, 'DA_SOLE');
+INSERT INTO versione_occhiale (codice, marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (233, 'Ray-Ban', 'Original Wayfarer Classic', 'UNISEX', 'M', 'SPESSA', 'Squadrata', 'Acetato', 155.00, 1, 233);
+INSERT INTO disponibile (occhiale_id, colore_codice, quantita) VALUES (233, 'C_NERO', 10), (233, 'C_TART', 5);
+
+INSERT INTO occhiale (id, attivo, tipologia) VALUES (234, 1, 'DA_SOLE');
+INSERT INTO versione_occhiale (codice, marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (234, 'Ray-Ban', 'Clubmaster Classic', 'UNISEX', 'L', 'MEZZA', 'Clubmaster', 'Acetato e Metallo', 165.00, 1, 234);
+INSERT INTO disponibile (occhiale_id, colore_codice, quantita) VALUES (234, 'C_NERO', 8), (234, 'C_ORO', 12);
 
 -- ====================================================================================
 -- 3. TIPOLOGIA: DA_VISTA (10 Prodotti ID 221 - 230)
@@ -177,45 +185,49 @@ INSERT IGNORE INTO recensisce (utente_email, occhiale_id, descrizione, voto) VAL
 -- 7. GALLERIA IMMAGINI PRODOTTI (DA_SOLE E DA_VISTA)
 -- ====================================================================================
 INSERT INTO immagine (path_Img, id_occhiale) VALUES 
-('images/Tom_Ford_Snowdon1.jpeg', 201),
-('images/Tom_Ford_Snowdon2.jpg', 201),
-('images/Gucci_GG0061S_1.jpg', 202),
-('images/Gucci_GG0061S_2.jpg', 202),
-('images/Prada_Symbole_1.jpg', 203),
-('images/Prada_Symbole_2.jpg', 203),
-('images/Oliver_Peoples_Gregory_1.jpg', 204),
-('images/Oliver_Peoples_Gregory_2.jpg', 204),
-('images/Persol_714sm-steve-mcqueen-havan_1.jpg', 205),
-('images/Persol_714sm-steve-mcqueen-havan_2.jpg', 205),
-('images/Saint_Laurent_SL276_1.jpg', 206),
-('images/Saint_Laurent_SL276_2.jpg', 206),
-('images/Dior_Dioright_1.jpg', 207),
-('images/Dior_Dioright_2.jpg', 207),
-('images/Giorgio Armani - AR6099 Frames_1.jpg', 208),
-('images/Giorgio Armani - AR6099 Frames_2.jpg', 208),
-('images/Police - Origins 1 SPLC04_1.jpg', 209),
-('images/Police - Origins 1 SPLC04_2.jpg', 209),
-('images/Vogue Eyewear - VO5338S Hailey Bieber_1.jpg', 210),
-('images/Vogue Eyewear - VO5338S Hailey Bieber_2.jpg', 210),
-('images/Oliver Peoples - O Malley OV5183_1.jpg', 221),
-('images/Oliver Peoples - O Malley OV5183_2.jpg', 221),
-('images/Tom Ford - FT5634-B Blue Block_1.jpg', 222),
-('images/Tom Ford - FT5634-B Blue Block_2.jpg', 222),
-('images/Prada - PR 11RV Journal_1.jpg', 223),
-('images/Prada - PR 11RV Journal_2.jpg', 223),
-('images/Lindberg - Air Titanium Morten_1.jpg', 224),
-('images/Lindberg - Air Titanium Morten_2.jpg', 224),
-('images/Moscot - Miltzen Classic_1.jpg', 225),
-('images/Moscot - Miltzen Classic_2.jpg', 225),
-('images/Ray-Ban - RX5154 Clubmaster Optic_1.jpg', 226),
-('images/Ray-Ban - RX5154 Clubmaster Optic_2.jpg', 226),
-('images/Giorgio Armani - AR7004 Executive_1.jpg', 227),
-('images/Giorgio Armani - AR7004 Executive_2.jpg', 227),
-('images/Gucci - GG0396O Metal Gold_1.jpg', 228),
-('images/Gucci - GG0396O Metal Gold_2.jpg', 228),
-('images/Silhouette - TMA Must 5515_1.jpg', 229),
-('images/Silhouette - TMA Must 5515_2.jpg', 229),
-('images/Persol - PO3007V Vintage_1.jpg', 230),
-('images/Persol - PO3007V Vintage_2.jpg', 230);
+('images/occhiali/Tom_Ford_Snowdon1.jpeg', 201),
+('images/occhiali/Tom_Ford_Snowdon2.jpg', 201),
+('images/occhiali/Gucci_GG0061S_1.jpg', 202),
+('images/occhiali/Gucci_GG0061S_2.jpg', 202),
+('images/occhiali/Prada_Symbole_1.jpg', 203),
+('images/occhiali/Prada_Symbole_2.jpg', 203),
+('images/occhiali/Oliver_Peoples_Gregory_1.jpg', 204),
+('images/occhiali/Oliver_Peoples_Gregory_2.jpg', 204),
+('images/occhiali/Persol_714sm-steve-mcqueen-havan_1.jpg', 205),
+('images/occhiali/Persol_714sm-steve-mcqueen-havan_2.jpg', 205),
+('images/occhiali/Saint_Laurent_SL276_1.jpg', 206),
+('images/occhiali/Saint_Laurent_SL276_2.jpg', 206),
+('images/occhiali/Dior_Dioright_1.jpg', 207),
+('images/occhiali/Dior_Dioright_2.jpg', 207),
+('images/occhiali/Giorgio Armani - AR6099 Frames_1.jpg', 208),
+('images/occhiali/Giorgio Armani - AR6099 Frames_2.jpg', 208),
+('images/occhiali/Police - Origins 1 SPLC04_1.jpg', 209),
+('images/occhiali/Police - Origins 1 SPLC04_2.jpg', 209),
+('images/occhiali/Vogue Eyewear - VO5338S Hailey Bieber_1.jpg', 210),
+('images/occhiali/Vogue Eyewear - VO5338S Hailey Bieber_2.jpg', 210),
+('images/occhiali/Oliver Peoples - O Malley OV5183_1.jpg', 221),
+('images/occhiali/Oliver Peoples - O Malley OV5183_2.jpg', 221),
+('images/occhiali/Tom Ford - FT5634-B Blue Block_1.jpg', 222),
+('images/occhiali/Tom Ford - FT5634-B Blue Block_2.jpg', 222),
+('images/occhiali/Prada - PR 11RV Journal_1.jpg', 223),
+('images/occhiali/Prada - PR 11RV Journal_2.jpg', 223),
+('images/occhiali/Lindberg - Air Titanium Morten_1.jpg', 224),
+('images/occhiali/Lindberg - Air Titanium Morten_2.jpg', 224),
+('images/occhiali/Moscot - Miltzen Classic_1.jpg', 225),
+('images/occhiali/Moscot - Miltzen Classic_2.jpg', 225),
+('images/occhiali/Ray-Ban - RX5154 Clubmaster Optic_1.jpg', 226),
+('images/occhiali/Ray-Ban - RX5154 Clubmaster Optic_2.jpg', 226),
+('images/occhiali/Giorgio Armani - AR7004 Executive_1.jpg', 227),
+('images/occhiali/Giorgio Armani - AR7004 Executive_2.jpg', 227),
+('images/occhiali/Gucci - GG0396O Metal Gold_1.jpg', 228),
+('images/occhiali/Gucci - GG0396O Metal Gold_2.jpg', 228),
+('images/occhiali/Silhouette - TMA Must 5515_1.jpg', 229),
+('images/occhiali/Silhouette - TMA Must 5515_2.jpg', 229),
+('images/occhiali/Persol - PO3007V Vintage_1.jpg', 230),
+('images/occhiali/Persol - PO3007V Vintage_2.jpg', 230),
+('images/occhiali/Ray-Ban-Wayfarer_1.jpg', 233),
+('images/occhiali/Ray-Ban-Wayfarer_2.jpg', 233),
+('images/occhiali/ray-ban-clubmaster_1.jpg', 234),
+('images/occhiali/ray-ban-clubmaster_2.jpg', 234);
 
 -- FINE SCRIPT SQL
