@@ -40,6 +40,10 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+        response.setDateHeader("Expires", 0); // Proxies.
+
         String action = request.getParameter("action");
 
         try {
@@ -165,12 +169,12 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         primaVersione.setOcchiale(nuovoOcchiale); 
         versioneDAO.doSave(primaVersione);
 
-        // --- NUOVA PORZIONE DI CODICE: AGGIUNTA DEI COLORI E QUANTITÀ ---
+        //AGGIUNTA DEI COLORI E QUANTITÀ 
 
         String[] codiciColori = request.getParameterValues("codiceColore");
         String[] quantitaColori = request.getParameterValues("quantitaColore");
 
-        // Controlliamo che l'admin abbia effettivamente selezionato almeno un colore
+        
         if (codiciColori != null && quantitaColori != null && codiciColori.length == quantitaColori.length) {
             for (int i = 0; i < codiciColori.length; i++) {
                 String codiceColore = codiciColori[i];

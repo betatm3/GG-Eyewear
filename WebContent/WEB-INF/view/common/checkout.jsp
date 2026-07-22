@@ -32,7 +32,7 @@
             <div class="alert alert-success">
                 <h2>🎉 Ordine Confermato!</h2>
                 <p><%= successo %></p>
-                <a href="catalogo" class="btn-success-home">Continua lo Shopping</a>
+                <a href="${pageContext.request.contextPath}/catalogo" class="btn-success-home">Continua lo Shopping</a>
             </div>
         <% 
             } else { 

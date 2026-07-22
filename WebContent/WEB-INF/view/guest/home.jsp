@@ -67,7 +67,7 @@
 
       
       <div style="position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 70px; z-index: 12; pointer-events: none;">
-        <a href="${pageContext.request.contextPath}/catalogo" class="btn-primary" style="pointer-events: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.18);">
+        <a id="heroDiscoverBtn" href="${pageContext.request.contextPath}/catalogo?marca=Ray-Ban" class="btn-primary" style="pointer-events: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.18);">
           Scopri la collezione
           <img src="${pageContext.request.contextPath}/images/icons8-right-arrow-24 (1).png" alt="->" style="width: 14px; height: 14px; margin-left: 8px; vertical-align: middle;" />
         </a>
@@ -282,12 +282,14 @@
 </section>
 
 <%@ include file="../partials/footer.jsp" %>
-
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     const slides = document.querySelectorAll(".hero-slide");
     const dots = document.querySelectorAll(".slider-dot");
+    const discoverBtn = document.getElementById("heroDiscoverBtn");
     let currentSlide = 0;
+
+    const brands = ["Ray-Ban", "Gucci", "Tom Ford"];
 
     function showSlide(index) {
       slides[currentSlide].classList.remove("active");
@@ -295,6 +297,11 @@
       currentSlide = (index + slides.length) % slides.length;
       slides[currentSlide].classList.add("active");
       dots[currentSlide].classList.add("active");
+      
+      // Update href based on current slide brand
+      if (discoverBtn) {
+        discoverBtn.href = "${pageContext.request.contextPath}/catalogo?marca=" + encodeURIComponent(brands[currentSlide]);
+      }
     }
 
     dots.forEach((dot, index) => {
@@ -302,6 +309,7 @@
         showSlide(index);
       });
     });
+
   });
 </script>
 

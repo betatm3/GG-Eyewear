@@ -24,32 +24,39 @@ public class OcchialeDAOImpl implements OcchialeDAO {
         String insertSQL = "INSERT INTO " + TABLE_NAME + " (attivo, tipologia) VALUES (?, ?)";
         
         try (Connection connection = ds.getConnection()) {
-            connection.setAutoCommit(false); 
-            
-            try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setBoolean(1, occhiale.isAttivo());
-                preparedStatement.setString(2, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
-              
-                preparedStatement.executeUpdate();
+            try {
+                connection.setAutoCommit(false); 
                 
-                int generatedId = -1;
-                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        generatedId = generatedKeys.getInt(1);
-                        occhiale.setId(generatedId);
-                    } else {
-                        throw new SQLException("Inserimento fallito, nessun ID generato dal database.");
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                    preparedStatement.setBoolean(1, occhiale.isAttivo());
+                    preparedStatement.setString(2, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
+                  
+                    preparedStatement.executeUpdate();
+                    
+                    int generatedId = -1;
+                    try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            generatedId = generatedKeys.getInt(1);
+                            occhiale.setId(generatedId);
+                        } else {
+                            throw new SQLException("Inserimento fallito, nessun ID generato dal database.");
+                        }
                     }
+
+                    salvaImmagini(occhiale.getImmagini(), generatedId, connection);
+
+                    connection.commit(); 
+                    return generatedId;
                 }
-
-                salvaImmagini(occhiale.getImmagini(), generatedId, connection);
-
-                connection.commit(); 
-                return generatedId;
-                
             } catch (SQLException e) {
                 connection.rollback(); 
                 throw e;
+            } finally {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    // Ignore reset exceptions on closing connection
+                }
             }
         }
     }
@@ -60,23 +67,30 @@ public class OcchialeDAOImpl implements OcchialeDAO {
         int result = 0;
         
         try (Connection connection = ds.getConnection()) {
-            connection.setAutoCommit(false); // transazione necessaria per salvare tutto o niente (atomicità)
-            
-            try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-                preparedStatement.setBoolean(1, occhiale.isAttivo());
-                preparedStatement.setString(2, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
-                preparedStatement.setInt(3, occhiale.getId());
-
-                result = preparedStatement.executeUpdate();
-
-                eliminaImmagini(occhiale.getId(), connection);
-                salvaImmagini(occhiale.getImmagini(), occhiale.getId(), connection);
-
-                connection.commit(); // Conferma transazione
+            try {
+                connection.setAutoCommit(false); // transazione necessaria per salvare tutto o niente (atomicità)
                 
+                try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+                    preparedStatement.setBoolean(1, occhiale.isAttivo());
+                    preparedStatement.setString(2, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
+                    preparedStatement.setInt(3, occhiale.getId());
+
+                    result = preparedStatement.executeUpdate();
+
+                    eliminaImmagini(occhiale.getId(), connection);
+                    salvaImmagini(occhiale.getImmagini(), occhiale.getId(), connection);
+
+                    connection.commit(); // Conferma transazione
+                }
             } catch (SQLException e) {
                 connection.rollback(); // Annulla tutto in caso di errore
                 throw e;
+            } finally {
+                try {
+                    connection.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    // Ignore reset exceptions on closing connection
+                }
             }
         }
         return (result != 0);

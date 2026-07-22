@@ -282,7 +282,7 @@
                 
                 <div class="write-review-card">
                     <h3>Scrivi la tua Recensione</h3>
-                    <form action="${pageContext.request.contextPath}/recensione" method="POST" class="review-form">
+                    <form action="${pageContext.request.contextPath}/common/recensione" method="POST" class="review-form">
                         <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
                         
                         <% 
