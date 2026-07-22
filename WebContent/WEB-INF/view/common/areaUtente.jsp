@@ -59,9 +59,11 @@
             
             <div class="profile-card">
                 
-             
+             	<a href="<%= request.getContextPath() %>/AreaUtenteServlet?action=modifica" class="btn-edit-profile" title="Modifica Profilo">
+        			<img src="<%= request.getContextPath() %>/images/editProfile.png" alt="Modifica Dati">
+    			</a>
                 <div class="user-icon-container">
-                    <img src="<%= request.getContextPath() %>/images/icons8-user-24.png" alt="Profilo" style="width: 42px; height: 42px; object-fit: contain;" />
+                    <img src="<%= request.getContextPath() %>/images/user.png" alt="Profilo" style="width: 42px; height: 42px; object-fit: contain;" />
                 </div>
 
                 <div class="profile-name"><%= utente.getNome() %> <%= utente.getCognome() %></div>

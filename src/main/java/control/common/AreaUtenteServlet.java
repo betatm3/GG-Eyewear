@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 
 import dao.OrdineDAOImpl;
 import dao.ProdottoAcquistatoDAOImpl;
+import dao.UtenteDAOImpl;
 import dao.OcchialeDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
 import dao.ColoreDAOImpl;
@@ -110,6 +111,36 @@ public class AreaUtenteServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        doGet(request, response);
+    	String action = request.getParameter("action");
+
+    	if ("modifica".equals(action)) {
+    	    Utente utenteSessione = (Utente) request.getSession().getAttribute("utente");
+
+    	    if (utenteSessione != null) {
+    	        String nuovoNome = request.getParameter("nome");
+    	        String nuovoTelefono = request.getParameter("telefono");
+
+    	        utenteSessione.setNome(nuovoNome);
+    	        utenteSessione.setTelefono(nuovoTelefono);
+
+    	        UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
+    	        boolean success=false;
+				
+    	        try {
+					success = utenteDao.doUpdate(utenteSessione);
+					if (success) {
+						request.getSession().setAttribute("utente", utenteSessione);
+						request.setAttribute("msgSuccesso", "Dati aggiornati con successo!");
+					}
+					else {
+						request.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}         
+    	    }
+    	    
+    	    request.getRequestDispatcher("/WEB-INF/jsp/AreaUtente.jsp").forward(request, response);
+    	}
     }
 }
