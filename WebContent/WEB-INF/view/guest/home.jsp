@@ -125,7 +125,13 @@
                                 if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
                                     imgSrcSole = trimmed;
                                 } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                    imgSrcSole = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                    String cleanPath = trimmed.replace("img/", "")
+                                                              .replace("images/occhiali/", "")
+                                                              .replace("images/", "");
+                                    if (cleanPath.startsWith("/")) {
+                                        cleanPath = cleanPath.substring(1);
+                                    }
+                                    imgSrcSole= request.getContextPath() + "/images/occhiali/" + cleanPath;
                                 } else {
                                     imgSrcSole = "data:image/jpeg;base64," + trimmed;
                                 }
@@ -211,7 +217,13 @@
                                 if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
                                     imgSrcVista = trimmed;
                                 } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                    imgSrcVista = request.getContextPath() + (trimmed.startsWith("/") ? "" : "/") + trimmed;
+                                    String cleanPath = trimmed.replace("img/", "")
+                                                              .replace("images/occhiali/", "")
+                                                              .replace("images/", "");
+                                    if (cleanPath.startsWith("/")) {
+                                        cleanPath = cleanPath.substring(1);
+                                    }
+                                    imgSrcVista=request.getContextPath() + "/images/occhiali/" + cleanPath;
                                 } else {
                                     imgSrcVista = "data:image/jpeg;base64," + trimmed;
                                 }
