@@ -43,19 +43,24 @@
       <div class="hero-slides" style="width: 100%; height: 100%; position: relative;">
         
         <div class="hero-slide active" style="background: url('<%= request.getContextPath() %>/images/RayBan_banner.jpg') center/cover no-repeat;">
-        </div>
+			<div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+         	   <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Ray-Ban</h4>
+          	   <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Design contemporaneo e comfort per ogni momento della tua giornata</p>
+         	 </div>       
+		</div>
         
-        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;">
+        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('<%= request.getContextPath() %>/images/Gucci_banner.jpg') center/cover no-repeat;">
           <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Gucci</h4>
             <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Montature da Vista Premium</h4>
-            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Design contemporaneo e comfort per ogni momento della tua giornata</p>
+            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">	Questa stagione, diventa protagonista</p>
           </div>
         </div>
         
-        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1508296695146-257a814070b4?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;">
+        <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('<%= request.getContextPath() %>/images/TomFord_banner.jpg') center/cover no-repeat;">
           <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Artigianato GG Eyewear</h4>
-            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Materiali nobili lavorati con cura ed attenzione sartoriale</p>
+            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Tom Ford</h4>
+            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Materiali nobili solo per gli occhiali più esclusivi</p>
           </div>
         </div>
       </div>

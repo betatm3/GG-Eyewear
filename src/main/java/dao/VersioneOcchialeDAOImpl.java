@@ -360,13 +360,13 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             sql.append(" AND v.montatura = ?");
         }
         if (materiale != null && !materiale.trim().isEmpty()) {
-            sql.append(" AND v.materiale = ?");
+            sql.append(" AND LOWER(v.materiale) = LOWER(?)");
         }
         if (forma != null && !forma.trim().isEmpty()) {
-            sql.append(" AND v.forma = ?");
+            sql.append(" AND LOWER(v.forma) = LOWER(?)");
         }
         if (marca != null && !marca.trim().isEmpty()) {
-            sql.append(" AND v.marca = ?");
+            sql.append(" AND LOWER(v.marca) = LOWER(?)");
         }
         if (hasColore) {
             sql.append(" AND LOWER(c.nome) LIKE LOWER(?)"); 
