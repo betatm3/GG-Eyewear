@@ -135,9 +135,25 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        String urlImmagine = request.getParameter("urlImmagine");
+             String urlImmagine = request.getParameter("urlImmagine");
         if (urlImmagine != null && !urlImmagine.trim().isEmpty()) {
-            nuovoOcchiale.addImmagine(urlImmagine.trim());
+            if (nuovoOcchiale.getImmagini() == null) {
+            	nuovoOcchiale.setImmagini(new java.util.ArrayList<>());
+            }
+            
+            String nomeImmagine = urlImmagine.trim();
+            
+            String percorsoCompleto;
+            if (nomeImmagine.startsWith("images/")) {
+                percorsoCompleto = nomeImmagine;
+            } else {
+                if (nomeImmagine.startsWith("/")) {
+                    nomeImmagine = nomeImmagine.substring(1);
+                }
+                percorsoCompleto = "images/" + nomeImmagine;
+            }
+
+            nuovoOcchiale.addImmagine(percorsoCompleto);
             occhialeDAO.doUpdate(nuovoOcchiale);
         }
 
@@ -252,7 +268,20 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 if (occhialeModificato.getImmagini() == null) {
                     occhialeModificato.setImmagini(new java.util.ArrayList<>());
                 }
-                occhialeModificato.addImmagine(urlImmagine.trim());
+                
+                String nomeImmagine = urlImmagine.trim();
+                
+                String percorsoCompleto;
+                if (nomeImmagine.startsWith("images/")) {
+                    percorsoCompleto = nomeImmagine;
+                } else {
+                    if (nomeImmagine.startsWith("/")) {
+                        nomeImmagine = nomeImmagine.substring(1);
+                    }
+                    percorsoCompleto = "images/" + nomeImmagine;
+                }
+
+                occhialeModificato.addImmagine(percorsoCompleto);
             }
           
             occhialeDAO.doUpdate(occhialeModificato);
@@ -351,7 +380,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             String nomeFile = "immagine" + System.currentTimeMillis() + "_" + idOcchiale + estensione;
             part.write(uploadDir + java.io.File.separator + nomeFile);
 
-            return "img/prodotti/" + nomeFile;
+            return "images/occhiali/" + nomeFile;
         }
         return null;
     }
