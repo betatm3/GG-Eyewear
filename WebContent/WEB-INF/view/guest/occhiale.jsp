@@ -46,7 +46,11 @@
                 }
 
                 double prezzo = (versione != null) ? versione.getPrezzo() : 0.00;
-                String taglia = (versione != null && versione.getTaglia() != null) ? versione.getTaglia() : "M";
+                String taglia = (versione != null && versione.getTaglia() != null) ? switch (versione.getTaglia()) {
+                	case S -> "S ( <50 mm)";
+                	case M -> "M ( 51 - 54 mm)";
+                	case L -> "L ( > 55 mm)";
+            	} : "N/D";
                 String materiale = (versione != null && versione.getMateriale() != null) ? versione.getMateriale() : "N/D";
                 String genere = (versione != null && versione.getGenere() != null) ? versione.getGenere().name() : "N/D";
                 String forma = (versione != null && versione.getForma() != null) ? versione.getForma() : "N/D";

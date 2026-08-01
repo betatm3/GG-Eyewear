@@ -10,19 +10,16 @@ document.addEventListener("DOMContentLoaded", () => {
         activeCart.addEventListener("click", (event) => {
             const target = event.target;
 
-            // 1. Clic su Incremento (+) o Decremento (-) della Quantità
             if (target.classList.contains("btn-qty")) {
                 event.preventDefault();
                 gestisciModificaQuantita(target);
             }
 
-            // 2. Clic su Rimuovi (Cestino 🗑️)
             if (target.classList.contains("btn-remove")) {
                 event.preventDefault();
                 gestisciRimozione(target);
             }
 
-            // 3. Clic su Svuota Carrello
             if (target.classList.contains("btn-clear-cart")) {
                 event.preventDefault();
                 gestisciSvuota(target);
@@ -30,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Gestione asincrona modifica quantità (+ / -)
     function gestisciModificaQuantita(link) {
         const urlObj = new URL(link.href, window.location.origin);
         urlObj.searchParams.set("ajax", "true");
@@ -78,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             btnPlus.href = plusUrl.pathname + plusUrl.search;
                         }
 
-                        // Aggiorna il totale del carrello
                         aggiornaTotaleCarrello(data.totaleCarrello);
                     }
                 }
@@ -90,7 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Gestione asincrona rimozione singola riga
     function gestisciRimozione(link) {
         const urlObj = new URL(link.href, window.location.origin);
         urlObj.searchParams.set("ajax", "true");
@@ -120,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Gestione asincrona svuotamento totale del carrello
     function gestisciSvuota(link) {
         const urlObj = new URL(link.href, window.location.origin);
         urlObj.searchParams.set("ajax", "true");
@@ -141,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Helper per aggiornare il totale visivo del carrello
     function aggiornaTotaleCarrello(nuovoTotale) {
         if (cartTotal) {
             cartTotal.textContent = "€ " + nuovoTotale.toFixed(2);
@@ -161,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 400);
     }
 
-    // Helper per commutare la vista su carrello vuoto
     function mostraCarrelloVuoto() {
         if (activeCart) activeCart.style.display = "none";
         if (emptyCart) {

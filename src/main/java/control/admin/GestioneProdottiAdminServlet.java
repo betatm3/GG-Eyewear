@@ -9,15 +9,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import model.Utente;
 import model.Colore;
 import model.Disponibile;
 import model.Genere;
 import model.Montatura;
 import model.Occhiale;
+import model.Taglia;
 import model.Tipologia;
 import model.VersioneOcchiale;
 import dao.OcchialeDAOImpl;
@@ -165,7 +164,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         primaVersione.setModello(request.getParameter("modello"));
         primaVersione.setMateriale(request.getParameter("materiale"));
         primaVersione.setForma(request.getParameter("forma"));
-        primaVersione.setTaglia(request.getParameter("taglia"));
         
         String prezzoStr = request.getParameter("prezzo");
         if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
@@ -180,6 +178,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         String montaturaStr = request.getParameter("montatura");
         if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
             primaVersione.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
+        }
+        
+        String tagliaStr = request.getParameter("taglia");
+        if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
+            primaVersione.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
         }
         
         primaVersione.setOcchiale(nuovoOcchiale); 
@@ -292,7 +295,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             versioneModificata.setModello(request.getParameter("modello"));
             versioneModificata.setMateriale(request.getParameter("materiale"));
             versioneModificata.setForma(request.getParameter("forma"));
-            versioneModificata.setTaglia(request.getParameter("taglia"));
 
             String prezzoStr = request.getParameter("prezzo");
             if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
@@ -307,6 +309,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             String montaturaStr = request.getParameter("montatura");
             if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
                 versioneModificata.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
+            }
+            
+            String tagliaStr = request.getParameter("taglia");
+            if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
+                versioneModificata.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
             }
 
             versioneDAO.doUpdate(versioneModificata);
@@ -384,4 +391,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
         return null;
     }
+    
+    
 }

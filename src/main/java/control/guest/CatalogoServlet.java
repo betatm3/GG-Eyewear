@@ -26,6 +26,7 @@ import model.Tipologia;
 import model.Genere;
 import model.Montatura;
 import model.Recensione;
+import model.Taglia;
 
 // URL della servlet
 @WebServlet("/catalogo")
@@ -45,11 +46,12 @@ public class CatalogoServlet extends HttpServlet {
         // Recupero dei parametri stringa inviati dal form di ricerca
         String genereStr = request.getParameter("genere");
         String montaturaStr = request.getParameter("montatura");
+        String tagliaStr = request.getParameter("taglia");
+        
         String materiale = request.getParameter("materiale");
         String forma = request.getParameter("forma");
         String marca = request.getParameter("marca");
         String colore = request.getParameter("colore");
-        String taglia = request.getParameter("taglia");
         
         String prezzoMinStr = request.getParameter("prezzoMin");
         String prezzoMaxStr = request.getParameter("prezzoMax");
@@ -59,7 +61,6 @@ public class CatalogoServlet extends HttpServlet {
         if (forma != null && forma.trim().isEmpty()) forma = null;
         if (marca != null && marca.trim().isEmpty()) marca = null;
         if (colore != null && colore.trim().isEmpty()) colore = null;
-        if (taglia != null && taglia.trim().isEmpty()) taglia = null;
 
         Genere genere = null;
         if (genereStr != null && !genereStr.trim().isEmpty()) {
@@ -76,6 +77,15 @@ public class CatalogoServlet extends HttpServlet {
                 montatura = Montatura.valueOf(montaturaStr.toUpperCase().trim());
             } catch (IllegalArgumentException e) {
             	montatura = null;
+            }
+        }
+        
+        Taglia taglia = null;
+        if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
+            try {
+            	taglia = Taglia.valueOf(tagliaStr.toUpperCase().trim());
+            } catch (IllegalArgumentException e) {
+            	taglia = null;
             }
         }
         
@@ -175,14 +185,13 @@ public class CatalogoServlet extends HttpServlet {
 
         if (isAjax) {
             // Rinvii solo il file con le sole schedine dei prodotti (es. componenti/grigliaProdotti.jsp)
-            request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp").forward(request, response);
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp");
+        	dispatcher.forward(request, response);
         } else {
             // Caricamento normale della pagina intera
-            request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp").forward(request, response);
+        	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp");
+        	dispatcher.forward(request, response);
         }
-        
-        /*RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp");
-        dispatcher.forward(request, response);*/
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 

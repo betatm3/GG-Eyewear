@@ -79,9 +79,9 @@
                     <label class="filter-label" for="filterTaglia">Taglia</label>
 					<select id="filterTaglia" name="taglia" class="filter-input">
                         <option value="">Tutti</option>
-                        <option value="L" <%= "L".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>L</option>
-                        <option value="M" <%= "M".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>M</option>
-                        <option value="S" <%= "S".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>S</option>
+                        <option value="L" <%= "L".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>L ( > 55 mm)</option>
+                        <option value="M" <%= "M".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>M ( 51 - 54 mm)</option>
+                        <option value="S" <%= "S".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>S ( < 50 mm)</option>
                     </select>                
                 </div>
 

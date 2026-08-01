@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Selezioniamo il form 'catalogo'
     const filterForm = document.getElementById("filtri");
     const catalogContainer = document.getElementById("catalogoContainer"); // Il div che contiene i prodotti
 
@@ -11,12 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Selezioniamo tutti gli input e select dentro il form 'catalogo'
     const filterInputs = filterForm.querySelectorAll("input, select");
 
-    // Funzione che invia la richiesta AJAX
     function applyFilters() {
         const formData = new FormData(filterForm);
         const searchParams = new URLSearchParams(formData).toString();
 
-        // Chiamata alla Servlet (percorso relativo al contesto web)
         fetch(contextPath+ "/catalogo?" + searchParams, {
             headers: {
                 "X-Requested-With": "XMLHttpRequest" // Per far capire alla Servlet che è una richiesta AJAX

@@ -89,7 +89,7 @@
                                         <div class="product-title"><%= marca %> - <%= modello %></div>
                                         <div class="product-details">
                                             <span>Colore: <strong><%= nomeColore %></strong></span> | 
-                                            <span>Taglia: <strong><%= item.getVersioneOcchiale().getTaglia() != null ? item.getVersioneOcchiale().getTaglia() : "N/D" %></strong></span>
+                                            <span>Taglia: <strong><%= item.getVersioneOcchiale().getTaglia().name() != null ? item.getVersioneOcchiale().getTaglia().name() : "N/D" %></strong></span>
                                         </div>
                                     </td>
 
