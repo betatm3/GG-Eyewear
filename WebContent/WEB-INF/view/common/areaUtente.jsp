@@ -29,7 +29,7 @@
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
             <% 
                 Utente utenteCheckAdmin = (Utente) session.getAttribute("utenteLoggato");
-                if (utenteCheckAdmin != null && utenteCheckAdmin.getRuolo() != null && "AMMINISTRATORE".equalsIgnoreCase(utenteCheckAdmin.getRuolo().name())) { 
+                if (utenteCheckAdmin != null && utenteCheckAdmin.getRuolo() != null && "ADMIN".equalsIgnoreCase(utenteCheckAdmin.getRuolo().name())) { 
             %>
                 <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard" style="width: auto; margin-top: 0; padding: 8px 16px;">
                     <img src="<%= request.getContextPath() %>/images/icons8-product-24.png" alt="Admin" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
@@ -236,7 +236,7 @@
                     <span>✏️</span> Modifica Dati Utente
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/area-utente" method="POST" class="edit-profile-form" style="display: flex; flex-direction: column; gap: 20px; font-family: 'Outfit', sans-serif;">
+                <form action="<%= request.getContextPath() %>/common/area-utente" method="POST" class="edit-profile-form" style="display: flex; flex-direction: column; gap: 20px; font-family: 'Outfit', sans-serif;">
                     <input type="hidden" name="action" value="modifica" />
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">

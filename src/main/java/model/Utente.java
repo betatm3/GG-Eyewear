@@ -78,7 +78,7 @@ public class Utente implements Cloneable{
 	}
 	
 	public boolean isAdmin() {
-		return this.ruolo != null && this.ruolo == Ruolo.AMMINISTRATORE;
+		return this.ruolo != null && this.ruolo == Ruolo.ADMIN;
 	}
 	
 	public LocalDate getDataNascita() {

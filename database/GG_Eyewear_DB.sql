@@ -191,7 +191,7 @@ CREATE TABLE `utente` (
   `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `indirizzo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `data_nascita` date NOT NULL,
-  `ruolo` enum('AMMINISTRATORE','CLIENTE') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ruolo` enum('ADMIN','USER') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -202,7 +202,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES ('adminGE@email.it','Gennaro','Esposito','password','3331112222','Via Carducci 12, 80121 Napoli','2005-28-06','AMMINISTRATORE'),('adminGV@email.it','Gerardo','Vertolomo','password','3339876543','Via Toledo 150, 80132 Napoli','2006-10-03','AMMINISTRATORE');
+INSERT INTO `utente` VALUES ('adminGE@email.it','Gennaro','Esposito','password','3331112222','Via Carducci 12, 80121 Napoli','2005-28-06','ADMIN'),('adminGV@email.it','Gerardo','Vertolomo','password','3339876543','Via Toledo 150, 80132 Napoli','2006-10-03','ADMIN');
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 

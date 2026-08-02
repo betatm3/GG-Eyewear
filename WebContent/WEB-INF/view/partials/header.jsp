@@ -22,7 +22,7 @@
     </nav>
 
     <div class="header-actions">
-      <a href="<%= request.getContextPath() %>/area-utente" class="icon-btn" aria-label="Area utente">
+      <a href="<%= request.getContextPath() %>/common/area-utente" class="icon-btn" aria-label="Area utente">
         <img src="<%= request.getContextPath() %>/images/user.png" alt="Area Utente" style="width: 20px; height: 20px; object-fit: contain;" />
       </a>
       <a href="<%= request.getContextPath() %>/carrello" class="icon-btn" aria-label="Carrello">

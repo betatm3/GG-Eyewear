@@ -4,6 +4,7 @@ import java.io.IOException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -13,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Utente;
 
-@WebFilter(urlPatterns = {"/admin/*", "/common/*", "/area-utente", "/areaUtente"})
+@WebFilter(urlPatterns = {"/admin/*", "/common/*"})
 public class AuthFilter implements Filter {
 
     @Override
@@ -42,11 +43,12 @@ public class AuthFilter implements Filter {
         if (uri.contains("/admin/")) {
             if (utente == null || !utente.isAdmin()) {
                 httpRequest.setAttribute("messaggioErrore", "Accesso negato: area riservata agli amministratori.");
-                httpRequest.getRequestDispatcher("/WEB-INF/view/errors/errorePermessi.jsp").forward(httpRequest, httpResponse);
+                RequestDispatcher dispatcher = httpRequest.getRequestDispatcher("/WEB-INF/view/errors/errorePermessi.jsp");
+                dispatcher.forward(httpRequest, httpResponse);
                 return;
             }
         } else {
-            // Richieste /common/*, /area-utente, /areaUtente
+            // Richieste /common/*
             if (utente == null) {
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
                 return;

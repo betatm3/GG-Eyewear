@@ -1,6 +1,6 @@
 package model;
 public enum Ruolo {
-        AMMINISTRATORE,
-        CLIENTE
+        ADMIN,
+        USER
     }
 

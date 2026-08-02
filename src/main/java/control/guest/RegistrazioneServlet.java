@@ -89,7 +89,7 @@ public class RegistrazioneServlet extends HttpServlet {
             nuovoUtente.setNome(nome.trim());
             nuovoUtente.setCognome(cognome.trim());
             nuovoUtente.setEmail(email.trim().toLowerCase());
-            nuovoUtente.setRuolo(Ruolo.CLIENTE); 
+            nuovoUtente.setRuolo(Ruolo.USER); 
             nuovoUtente.setIndirizzo(indirizzo.trim());
             nuovoUtente.setDataNascita(dataNascita);
             nuovoUtente.setTelefono(telefono.replaceAll("\\s+", ""));

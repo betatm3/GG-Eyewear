@@ -29,7 +29,7 @@ import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Colore;
 
-@WebServlet({"/area-utente", "/common/area-utente", "/areaUtente"})
+@WebServlet("/common/area-utente")
 public class AreaUtenteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

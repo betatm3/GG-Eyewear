@@ -130,14 +130,14 @@ INSERT INTO versione_occhiale (codice, marca, modello, genere, taglia, montatura
 INSERT INTO disponibile (occhiale_id, colore_codice, quantita) VALUES (230, 'C_TART', 20), (230, 'C_NERO', 15);
 
 -- ====================================================================================
--- 4. UTENTI (CLIENTI ED AMMINISTRATORE)
+-- 4. UTENTI (USER ED ADMIN)
 -- ====================================================================================
 INSERT IGNORE INTO utente (email, password, nome, cognome, data_nascita, indirizzo, telefono, ruolo) VALUES 
-('admin@email.it', 'admin', 'Luigi', 'Bianchi', '1985-05-15', 'Via Carducci 12, 80121 Napoli', '3331112222', 'AMMINISTRATORE'),
-('cliente@email.it', 'password', 'Mario', 'Rossi', '1990-01-01', 'Via Toledo 150, 80132 Napoli', '3339876543', 'CLIENTE'),
-('giuseppe.verdi@email.it', 'password123', 'Giuseppe', 'Verdi', '1992-04-12', 'Via Roma 45, 00100 Roma', '3401234567', 'CLIENTE'),
-('francesca.neri@email.it', 'password123', 'Francesca', 'Neri', '1995-09-23', 'Corso Vittorio Emanuele 88, 20121 Milano', '3398765432', 'CLIENTE'),
-('marco.gialli@email.it', 'password123', 'Marco', 'Gialli', '1988-11-05', 'Via Garibaldi 12, 50100 Firenze', '3351122334', 'CLIENTE');
+('admin@email.it', 'admin', 'Luigi', 'Bianchi', '1985-05-15', 'Via Carducci 12, 80121 Napoli', '3331112222', 'ADMIN'),
+('cliente@email.it', 'password', 'Mario', 'Rossi', '1990-01-01', 'Via Toledo 150, 80132 Napoli', '3339876543', 'USER'),
+('giuseppe.verdi@email.it', 'password123', 'Giuseppe', 'Verdi', '1992-04-12', 'Via Roma 45, 00100 Roma', '3401234567', 'USER'),
+('francesca.neri@email.it', 'password123', 'Francesca', 'Neri', '1995-09-23', 'Corso Vittorio Emanuele 88, 20121 Milano', '3398765432', 'USER'),
+('marco.gialli@email.it', 'password123', 'Marco', 'Gialli', '1988-11-05', 'Via Garibaldi 12, 50100 Firenze', '3351122334', 'USER');
 
 -- ====================================================================================
 -- 5. ORDINI STORICI E PRODOTTI ACQUISTATI
