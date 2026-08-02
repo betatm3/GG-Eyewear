@@ -221,17 +221,17 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
-        // Recuperiamo le chiavi passate come parametri
+        // Recupero chiavi passate 
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
         int codiceVersione = Integer.parseInt(request.getParameter("codiceVersione"));
 
-        // Recuperiamo i record correnti dal database
+        // Recupero record correnti dal db
         Occhiale occhialeModificato = occhialeDAO.doRetrieveByKey(idOcchiale);
-        VersioneOcchiale versioneModificata = versioneDAO.doRetrieveByKey(codiceVersione, idOcchiale);
-
-        if (occhialeModificato != null && versioneModificata != null) {
-            
-            // --- AGGIORNAMENTO ATTRIBUTI OCCHIALE ---
+        VersioneOcchiale versioneVecchia = versioneDAO.doRetrieveByKey(codiceVersione, idOcchiale);
+        VersioneOcchiale versioneModificata = versioneVecchia.clone();
+        
+        // --- AGGIORNAMENTO ATTRIBUTI OCCHIALE ---
+        if (occhialeModificato != null && versioneModificata != null) {         
             
             String tipologiaStr = request.getParameter("tipologia");
             if (tipologiaStr != null && !tipologiaStr.trim().isEmpty()) {
@@ -246,11 +246,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             try {
                 String pathImg = salvaImmagine(request, idOcchiale);
                 if (pathImg != null) {
-                    // Eliminazione vecchio file immagine se presente fisicamente in img/prodotti
+                    // Eliminazione vecchio file immagine se presente fisicamente in images/occhiali
                     String oldPath = (occhialeModificato.getImmagini() != null && !occhialeModificato.getImmagini().isEmpty())
                                      ? occhialeModificato.getImmagini().get(0) : null;
                     if (oldPath != null && !oldPath.startsWith("http") && !oldPath.startsWith("data:")) {
-                        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "img" + java.io.File.separator + "prodotti");
+                        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "images" + java.io.File.separator + "occhiali");
                         String oldFileName = java.nio.file.Paths.get(oldPath).getFileName().toString();
                         java.io.File oldFile = new java.io.File(uploadDir, oldFileName);
                         if (oldFile.exists()) {
@@ -316,7 +316,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 versioneModificata.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
             }
 
-            versioneDAO.doUpdate(versioneModificata);
+            int nuovoCodice = versioneDAO.doSave(versioneModificata);
+            versioneModificata.setCodice(nuovoCodice);
+            versioneDAO.disattivaVersione(versioneVecchia);
         }
 
         response.sendRedirect(request.getContextPath() + "/admin/dashboard?msg=ProdottoModificato");

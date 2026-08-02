@@ -8,11 +8,13 @@ import java.sql.SQLException;
 
 public interface VersioneOcchialeDAO {
 
-	boolean doSave(VersioneOcchiale versione) throws SQLException;
+	int doSave(VersioneOcchiale versione) throws SQLException;
 
     boolean doUpdate(VersioneOcchiale versione) throws SQLException;
 
     boolean doDelete(int codice) throws SQLException;
+    
+    boolean disattivaVersione(VersioneOcchiale versione) throws SQLException;
 
     VersioneOcchiale doRetrieveByKey(int codice, int id_occhiale) throws SQLException;
 

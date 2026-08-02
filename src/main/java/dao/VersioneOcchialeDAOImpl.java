@@ -25,27 +25,40 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
 
     @Override
-    public boolean doSave(VersioneOcchiale versione) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (codice, marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        int result = 0;
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
-            
-            preparedStatement.setInt(1, versione.getCodice());
-            preparedStatement.setString(2, versione.getMarca());
-            preparedStatement.setString(3, versione.getModello());
-            preparedStatement.setString(4, versione.getGenere() != null ? versione.getGenere().name() : null);
-            preparedStatement.setString(5, versione.getTaglia() != null ? versione.getTaglia().name() : null);
-            preparedStatement.setString(6, versione.getMontatura()!= null ? versione.getMontatura().name() : null);
-            preparedStatement.setString(7, versione.getForma());
-            preparedStatement.setString(8, versione.getMateriale());
-            preparedStatement.setDouble(9, versione.getPrezzo());
-            preparedStatement.setBoolean(10, versione.isCorrente());
-            preparedStatement.setInt(11, versione.getOcchiale() != null ? versione.getOcchiale().getId() : 0);
+    public int doSave(VersioneOcchiale versione) throws SQLException {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (marca, modello, genere, taglia, montatura, forma, materiale, prezzo, corrente, occhiale_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        int generatedCodice = -1;
 
-            result = preparedStatement.executeUpdate();
+        // Aggiungiamo Statement.RETURN_GENERATED_KEYS
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+            
+            preparedStatement.setString(1, versione.getMarca());
+            preparedStatement.setString(2, versione.getModello());
+            preparedStatement.setString(3, versione.getGenere() != null ? versione.getGenere().name() : null);
+            preparedStatement.setString(4, versione.getTaglia() != null ? versione.getTaglia().name() : null);
+            preparedStatement.setString(5, versione.getMontatura() != null ? versione.getMontatura().name() : null);
+            preparedStatement.setString(6, versione.getForma());
+            preparedStatement.setString(7, versione.getMateriale());
+            preparedStatement.setDouble(8, versione.getPrezzo());
+            preparedStatement.setBoolean(9, versione.isCorrente());
+            preparedStatement.setInt(10, versione.getOcchiale() != null ? versione.getOcchiale().getId() : 0);
+
+            preparedStatement.executeUpdate();
+
+            // Recuperiamo la chiave auto-incrementata (codice)
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    generatedCodice = generatedKeys.getInt(1); // prima colonna
+                    versione.setCodice(generatedCodice); 
+                } else {
+                    throw new SQLException("Inserimento versione fallito, nessun codice generato dal database.");
+                }
+            }
         }
-        return (result != 0);
+
+        return generatedCodice;
     }
 
     @Override
@@ -86,6 +99,30 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         return (result != 0);
     }
 
+    public boolean disattivaVersione(VersioneOcchiale versione) throws SQLException {
+        if (versione == null || versione.getOcchiale() == null) {
+            return false;
+        }
+        //false verrà convertito automaticamente in 0 nle TINYINT
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET corrente = false WHERE codice = ? AND occhiale_id = ?";
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setInt(1, versione.getCodice());
+            preparedStatement.setInt(2, versione.getOcchiale().getId());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                versione.setCorrente(false);
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
     @Override
     public VersioneOcchiale doRetrieveByKey(int codice, int idOcchiale) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE codice = ? AND occhiale_id = ?";
