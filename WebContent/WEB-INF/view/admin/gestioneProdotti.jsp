@@ -238,7 +238,11 @@
                         </div>
                         <div class="form-group">
                             <label for="edit_taglia">Taglia</label>
-                            <input type="text" id="edit_taglia" name="taglia" required value="<%= versioneInModifica.getTaglia() %>" />
+                            <select id="edit_taglia" name="taglia">
+                                <% for (Taglia t : Taglia.values()) { %>
+                                    <option value="<%= t.name() %>" <%= versioneInModifica.getTaglia() == t ? "selected" : "" %>><%= t.getDescrizione()%></option>
+                                <% } %>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="edit_materiale">Materiale</label>
@@ -401,7 +405,11 @@
                         </div>
                         <div class="form-group">
                             <label for="taglia">Taglia</label>
-                            <input type="text" id="taglia" name="taglia" required placeholder="Es. L / 58-14" />
+                            <select id="taglia" name="taglia">
+                                <% for (Taglia t : Taglia.values()) { %>
+                                    <option value="<%= t.name() %>"><%= t.getDescrizione()%></option>
+                                <% } %>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="materiale">Materiale</label>
