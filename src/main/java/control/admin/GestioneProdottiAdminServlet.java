@@ -106,6 +106,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     private void aggiungiNuovoProdotto(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds); // Inizializziamo il DAO per la tabella ponte
+        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         
         // Creazione e popolamento dell'oggetto OCCHIALE
         Occhiale nuovoOcchiale = new Occhiale();
@@ -118,8 +119,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             nuovoOcchiale.setTipo(Tipologia.DA_SOLE);
         }
         
-        // Salvataggio dell'oggetto OCCHIALE per generare l'ID nel DB
-        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         int generatedId = occhialeDAO.doSave(nuovoOcchiale);
         nuovoOcchiale.setId(generatedId);
 
@@ -132,28 +131,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-             String urlImmagine = request.getParameter("urlImmagine");
-        if (urlImmagine != null && !urlImmagine.trim().isEmpty()) {
-            if (nuovoOcchiale.getImmagini() == null) {
-            	nuovoOcchiale.setImmagini(new java.util.ArrayList<>());
-            }
-            
-            String nomeImmagine = urlImmagine.trim();
-            
-            String percorsoCompleto;
-            if (nomeImmagine.startsWith("images/")) {
-                percorsoCompleto = nomeImmagine;
-            } else {
-                if (nomeImmagine.startsWith("/")) {
-                    nomeImmagine = nomeImmagine.substring(1);
-                }
-                percorsoCompleto = "images/" + nomeImmagine;
-            }
-
-            nuovoOcchiale.addImmagine(percorsoCompleto);
-            occhialeDAO.doUpdate(nuovoOcchiale);
         }
 
         // 2. Creazione e popolamento dell'oggetto VERSIONEOCCHIALE
@@ -254,10 +231,10 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                         String oldFileName = java.nio.file.Paths.get(oldPath).getFileName().toString();
                         java.io.File oldFile = new java.io.File(uploadDir, oldFileName);
                         if (oldFile.exists()) {
-                            oldFile.delete();
+                            oldFile.delete();  //rimuove fisicamente
                         }
                     }
-                    
+                    // 2. Imposta il nuovo percorso calcolato nell'oggetto Java
                     java.util.ArrayList<String> nuoveImmagini = new java.util.ArrayList<>();
                     nuoveImmagini.add(pathImg);
                     occhialeModificato.setImmagini(nuoveImmagini);
@@ -266,27 +243,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            String urlImmagine = request.getParameter("urlImmagine");
-            if (urlImmagine != null && !urlImmagine.trim().isEmpty()) {
-                if (occhialeModificato.getImmagini() == null) {
-                    occhialeModificato.setImmagini(new java.util.ArrayList<>());
-                }
-                
-                String nomeImmagine = urlImmagine.trim();
-                
-                String percorsoCompleto;
-                if (nomeImmagine.startsWith("images/")) {
-                    percorsoCompleto = nomeImmagine;
-                } else {
-                    if (nomeImmagine.startsWith("/")) {
-                        nomeImmagine = nomeImmagine.substring(1);
-                    }
-                    percorsoCompleto = "images/" + nomeImmagine;
-                }
-
-                occhialeModificato.addImmagine(percorsoCompleto);
-            }
-          
             occhialeDAO.doUpdate(occhialeModificato);
 
             // --- AGGIORNAMENTO ATTRIBUTI VERSIONEOCCHIALE ---
@@ -367,7 +323,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     }
 
     private String salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {
-        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "img" + java.io.File.separator + "prodotti");
+        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "images" + java.io.File.separator + "occhiali");
         java.io.File folder = new java.io.File(uploadDir);
         if (!folder.exists()) {
             folder.mkdirs();
@@ -387,7 +343,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
 
             String nomeFile = "immagine" + System.currentTimeMillis() + "_" + idOcchiale + estensione;
-            part.write(uploadDir + java.io.File.separator + nomeFile);
+            part.write(uploadDir + java.io.File.separator + nomeFile);  //modifica fisica su disco del nome
 
             return "images/occhiali/" + nomeFile;
         }
