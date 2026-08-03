@@ -1,7 +1,13 @@
 package control.admin;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -227,15 +233,15 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     String oldPath = (occhialeModificato.getImmagini() != null && !occhialeModificato.getImmagini().isEmpty())
                                      ? occhialeModificato.getImmagini().get(0) : null;
                     if (oldPath != null && !oldPath.startsWith("http") && !oldPath.startsWith("data:")) {
-                        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "images" + java.io.File.separator + "occhiali");
+                        String uploadDir = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
                         String oldFileName = java.nio.file.Paths.get(oldPath).getFileName().toString();
-                        java.io.File oldFile = new java.io.File(uploadDir, oldFileName);
+                        File oldFile = new File(uploadDir, oldFileName);
                         if (oldFile.exists()) {
                             oldFile.delete();  //rimuove fisicamente
                         }
                     }
-                    // 2. Imposta il nuovo percorso calcolato nell'oggetto Java
-                    java.util.ArrayList<String> nuoveImmagini = new java.util.ArrayList<>();
+
+                    ArrayList<String> nuoveImmagini = new ArrayList<>();
                     nuoveImmagini.add(pathImg);
                     occhialeModificato.setImmagini(nuoveImmagini);
                 }
@@ -323,11 +329,18 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     }
 
     private String salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {
-        String uploadDir = getServletContext().getRealPath(java.io.File.separator + "images" + java.io.File.separator + "occhiali");
-        java.io.File folder = new java.io.File(uploadDir);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
+        
+    	String uploadDir1 = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
+    	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/TuoProgetto/images/occhiali).
+    	
+    	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\Progetto_tsw\\WebContent\\images\\occhiali";
+    	//per memorizzarla in locale
+    	
+    	File folder1 = new File(uploadDir1);
+        if (!folder1.exists()) folder1.mkdirs();
+        
+        File folder2 = new File(uploadDir2);
+        if (!folder2.exists()) folder2.mkdirs();
 
         jakarta.servlet.http.Part part = request.getPart("immagine");
         if (part != null && part.getSize() > 0 
@@ -343,12 +356,20 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
 
             String nomeFile = "immagine" + System.currentTimeMillis() + "_" + idOcchiale + estensione;
-            part.write(uploadDir + java.io.File.separator + nomeFile);  //modifica fisica su disco del nome
+            
+            // Uso pulito delle classi Path, Paths e Files senza il prefisso del pacchetto
+            Path pathLocale = Paths.get(uploadDir2, nomeFile);
+            Path pathTomcat = Paths.get(uploadDir1, nomeFile);
+
+            // Scrittura del file nella cartella di lavoro
+            part.write(pathLocale.toString());
+
+            // Copia nella cartella di esecuzione Tomcat
+            Files.copy(pathLocale, pathTomcat, StandardCopyOption.REPLACE_EXISTING);
 
             return "images/occhiali/" + nomeFile;
         }
         return null;
     }
-    
     
 }
