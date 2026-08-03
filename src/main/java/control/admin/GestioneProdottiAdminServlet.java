@@ -233,11 +233,20 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     String oldPath = (occhialeModificato.getImmagini() != null && !occhialeModificato.getImmagini().isEmpty())
                                      ? occhialeModificato.getImmagini().get(0) : null;
                     if (oldPath != null && !oldPath.startsWith("http") && !oldPath.startsWith("data:")) {
-                        String uploadDir = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
-                        String oldFileName = java.nio.file.Paths.get(oldPath).getFileName().toString();
-                        File oldFile = new File(uploadDir, oldFileName);
-                        if (oldFile.exists()) {
-                            oldFile.delete();  //rimuove fisicamente
+                        String oldFileName = Paths.get(oldPath).getFileName().toString();
+                    	
+                        // 1. Percorso temporaneo di Tomcat
+                        String uploadDir1 = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
+                        File oldFileTomcat = new File(uploadDir1, oldFileName);
+                        if (oldFileTomcat.exists()) {
+                            oldFileTomcat.delete();
+                        }
+
+                        // 2. Percorso sorgente locale del progetto
+                        String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\Progetto_tsw\\WebContent\\images\\occhiali";
+                        File oldFileLocale = new File(uploadDir2, oldFileName);
+                        if (oldFileLocale.exists()) {
+                            oldFileLocale.delete();
                         }
                     }
 
