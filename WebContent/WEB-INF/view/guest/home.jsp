@@ -125,32 +125,17 @@
                         <% 
                             String primaImgSole = (occhiale != null) ? occhiale.getImmagine(0) : null;
                             String imgSrcSole = null;
+                            
                             if (primaImgSole != null && !primaImgSole.trim().isEmpty()) {
-                                String trimmed = primaImgSole.trim();
-                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                    imgSrcSole = trimmed;
-                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                    String cleanPath = trimmed.replace("img/", "")
-                                                              .replace("images/occhiali/", "")
-                                                              .replace("images/", "");
-                                    if (cleanPath.startsWith("/")) {
-                                        cleanPath = cleanPath.substring(1);
-                                    }
-                                    imgSrcSole= request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                } else {
-                                    imgSrcSole = "data:image/jpeg;base64," + trimmed;
-                                }
+                                imgSrcSole = request.getContextPath() + "/" + primaImgSole.trim();
                             }
+                            
                             if (imgSrcSole != null) {
                         %>
                                 <img src="<%= imgSrcSole %>" alt="Foto <%= nomeProdotto %>" />
-                        <% 
-                            } else { 
-                        %>
+                        <% } else {%>
                                 <span style="font-size: 11px; color: #888; text-align: center; padding: 10px; font-weight: 500;">Immagine non disponibile</span>
-                        <% 
-                            } 
-                        %>
+                        <% }  %>
                       </div>
                       <div class="product-info">
                         <div class="product-name"><%= nomeProdotto %></div>
@@ -217,33 +202,18 @@
                         <% 
                             String primaImgVista = (occhiale != null) ? occhiale.getImmagine(0) : null;
                             String imgSrcVista = null;
+                          
                             if (primaImgVista != null && !primaImgVista.trim().isEmpty()) {
-                                String trimmed = primaImgVista.trim();
-                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                    imgSrcVista = trimmed;
-                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                    String cleanPath = trimmed.replace("img/", "")
-                                                              .replace("images/occhiali/", "")
-                                                              .replace("images/", "");
-                                    if (cleanPath.startsWith("/")) {
-                                        cleanPath = cleanPath.substring(1);
-                                    }
-                                    imgSrcVista=request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                } else {
-                                    imgSrcVista = "data:image/jpeg;base64," + trimmed;
-                                }
+                                imgSrcVista = request.getContextPath() + "/" + primaImgVista.trim();
                             }
                             if (imgSrcVista != null) {
                         %>
                                 <img src="<%= imgSrcVista %>" alt="Foto <%= nomeProdotto %>" />
-                        <% 
-                            } else { 
-                        %>
+                        <% } else { %>
                                 <span style="font-size: 11px; color: #888; text-align: center; padding: 10px; font-weight: 500;">Immagine non disponibile</span>
-                        <% 
-                            } 
-                        %>
+                        <% } %>
                       </div>
+                      
                       <div class="product-info">
                         <div class="product-name"><%= nomeProdotto %></div>
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">

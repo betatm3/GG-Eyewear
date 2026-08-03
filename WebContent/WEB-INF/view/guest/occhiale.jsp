@@ -58,26 +58,15 @@
                 
                 ArrayList<String> listaImmagini = (occhiale != null) ? occhiale.getImmagini() : null;
                 List<String> immaginiResolute = new ArrayList<>();
+                
                 if (listaImmagini != null && !listaImmagini.isEmpty()) {
-                    for (String path : listaImmagini) {
-                        if (path != null && !path.trim().isEmpty()) {
-                            String trimmed = path.trim();
-                             if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                 immaginiResolute.add(trimmed);
-                             } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                 String cleanPath = trimmed.replace("img/", "")
-                                                           .replace("images/occhiali/", "")
-                                                           .replace("images/", "");
-                                 if (cleanPath.startsWith("/")) {
-                                     cleanPath = cleanPath.substring(1);
-                                 }
-                                 immaginiResolute.add(request.getContextPath() + "/images/occhiali/" + cleanPath);
-                             } else {
-                                 immaginiResolute.add("data:image/jpeg;base64," + trimmed);
-                             }
-                        }
-                    }
-                }
+				    for (String path : listaImmagini) {
+				        if (path != null && !path.trim().isEmpty()) {
+				            // Aggiungiamo il contextPath davanti al percorso salvato nel DB
+				            immaginiResolute.add(request.getContextPath() + "/" + path.trim());
+				        }
+				    }
+				}
                 if (immaginiResolute.isEmpty()) {
                     immaginiResolute.add("https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop&q=80");
                 }

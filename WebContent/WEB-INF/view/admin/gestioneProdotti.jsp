@@ -113,30 +113,18 @@
                                         <td class="prod-td">
                                             <div class="prod-img-container">
                                                  <% 
-                                                    String primaImgProd = (occ != null) ? occ.getImmagine(0) : null;
-                                                    String imgSrcProd = null;
-                                                    if (primaImgProd != null && !primaImgProd.trim().isEmpty()) {
-                                                        String trimmed = primaImgProd.trim();
-                                                        if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                                            imgSrcProd = trimmed;
-                                                        } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                        	String cleanPath = trimmed.replace("img/", "")
-                                                                    .replace("images/occhiali/", "")
-                                                                    .replace("images/", "");
-                                          					if (cleanPath.startsWith("/")) {
-                                              					cleanPath = cleanPath.substring(1);
-                                          					}
-                                          					imgSrcProd= request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                                        } else {
-                                                            imgSrcProd = "data:image/jpeg;base64," + trimmed;
-                                                        }
+                                                    String primaImg = (occ != null) ? occ.getImmagine(0) : null;
+                                                    String imgSrc = null, altText=null;
+                                                    
+                                                    if (primaImg != null && !primaImg.trim().isEmpty()) {
+                                                        imgSrc = request.getContextPath() + "/" + primaImg.trim();
+                                                        altText = (v != null) ? v.getModello() : "Occhiale";
+                                                    } else {
+                                                        imgSrc = "https://via.placeholder.com/60x45?text=No+Img";
+                                                        altText = "No Image";
                                                     }
-                                                    if (imgSrcProd != null) { 
-                                                 %>
-                                                     <img class="prod-img" src="<%= imgSrcProd %>" alt="<%= v.getModello() %>" />
-                                                 <% } else { %>
-                                                     <img class="prod-img" src="https://via.placeholder.com/60x45?text=No" alt="No Image" />
-                                                 <% } %>
+                                                %>
+                                                <img class="prod-img" src="<%= imgSrc %>" alt="<%= altText %>" />
                                             </div>
                                         </td>
                                         <td class="prod-td">
