@@ -60,22 +60,11 @@
                                              <% 
                                                 String primaImgCart = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
                                                 String imgSrcCart = null;
+                                                
                                                 if (primaImgCart != null && !primaImgCart.trim().isEmpty()) {
-                                                    String trimmed = primaImgCart.trim();
-                                                    if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                                        imgSrcCart = trimmed;
-                                                    } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                    	String cleanPath = trimmed.replace("img/", "")
-                                                                .replace("images/occhiali/", "")
-                                                                .replace("images/", "");
-                                      				if (cleanPath.startsWith("/")) {
-                                          				cleanPath = cleanPath.substring(1);
-                                     				}
-                                      					imgSrcCart= request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                                    } else {
-                                                        imgSrcCart = "data:image/jpeg;base64," + trimmed;
-                                                    }
+                                                    imgSrcCart = request.getContextPath() + "/" + primaImgCart.trim();
                                                 }
+                                                
                                                 if (imgSrcCart != null) { 
                                              %>
                                                  <img class="product-img" src="<%= imgSrcCart %>" alt="<%= modello %>" />

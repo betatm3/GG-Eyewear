@@ -43,7 +43,6 @@
                     double prezzoOriginale = prezzo > 0 ? (prezzo / (1 - (scontoPct / 100.0))) : 0.0;
         %>
                     <div class="card-occhiale" onclick="window.location.href='occhiale?id=<%= occhiale.getId() %>'">
-                        
                         <div class="container-immagine">
                             <% if (isOutlet) { %>
                                 <span class="badge-sconto">-<%= scontoPct %>%</span>
@@ -51,30 +50,18 @@
                             <% 
                                 String primaImgCat = (occhiale != null) ? occhiale.getImmagine(0) : null;
                                 String imgSrcCat = null;
+                                
                                 if (primaImgCat != null && !primaImgCat.trim().isEmpty()) {
-                                    String trimmed = primaImgCat.trim();
-                                    if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                        imgSrcCat = trimmed;
-                                    } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                    	String cleanPath = trimmed.replace("images/occhiali/", "").replace("img/", "").replace("images/", "");
-                                        if (cleanPath.startsWith("/")) cleanPath = cleanPath.substring(1);
-                                        imgSrcCat = request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                    } else {
-                                        imgSrcCat = "data:image/jpeg;base64," + trimmed;
-                                    }
+                                    imgSrcCat = request.getContextPath() + "/" + primaImgCat.trim();
                                 }
+                               
                                 if (imgSrcCat != null) {
                             %>
                                     <img class="img-occhiale" src="<%= imgSrcCat %>" alt="Foto <%= modello %>" />
-                            <% 
-                                } else { 
-                            %>
+                            <% } else { %>
                                     <img class="img-occhiale" src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&auto=format&fit=crop&q=60" alt="<%= modello %>" />
-                            <% 
-                                } 
-                            %>
+                            <% }%>
                         </div>
-
                         
                         <div class="card-title-row">
                             <h3 class="marca-modello"><%= marca %> <%= modello %></h3>

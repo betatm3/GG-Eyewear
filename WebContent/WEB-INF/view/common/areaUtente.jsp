@@ -183,22 +183,11 @@
                                                          <% 
                                                             String primaImgUser = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
                                                             String imgSrcUser = null;
+                                                            
                                                             if (primaImgUser != null && !primaImgUser.trim().isEmpty()) {
-                                                                String trimmed = primaImgUser.trim();
-                                                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                                                    imgSrcUser = trimmed;
-                                                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                                	String cleanPath = trimmed.replace("img/", "")
-                                                                            .replace("images/occhiali/", "")
-                                                                            .replace("images/", "");
-					                                                 if (cleanPath.startsWith("/")) {
-					                                                     cleanPath = cleanPath.substring(1);
-					                                                 }
-					                                                 imgSrcUser= request.getContextPath() + "/images/occhiali/" + cleanPath;
-                                                                } else {
-                                                                    imgSrcUser = "data:image/jpeg;base64," + trimmed;
-                                                                }
+                                                                imgSrcUser = request.getContextPath() + "/" + primaImgUser.trim();
                                                             }
+                                                            
                                                             if (imgSrcUser != null) { 
                                                          %>
                                                              <img class="item-img" src="<%= imgSrcUser %>" alt="<%= modello %>" />

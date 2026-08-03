@@ -151,22 +151,11 @@
                                          <% 
                                             String primaImgCheck = (item.getOcchiale() != null) ? item.getOcchiale().getImmagine(0) : null;
                                             String imgSrcCheck = null;
+                                            
                                             if (primaImgCheck != null && !primaImgCheck.trim().isEmpty()) {
-                                                String trimmed = primaImgCheck.trim();
-                                                if (trimmed.startsWith("data:") || trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                                                    imgSrcCheck = trimmed;
-                                                } else if (trimmed.startsWith("/") || trimmed.startsWith("images/") || trimmed.startsWith("img/")) {
-                                                	String cleanPath = trimmed.replace("img/", "")
-                                                            .replace("images/occhiali/", "")
-                                                            .replace("images/", "");
-                             					    if (cleanPath.startsWith("/")) {
-                                      					cleanPath = cleanPath.substring(1);
-                                  					}
-                                 					imgSrcCheck= request.getContextPath() + "/images/occhiali/" + cleanPath;  
-                                                } else {
-                                                    imgSrcCheck = "data:image/jpeg;base64," + trimmed;
-                                                }
+                                                imgSrcCheck = request.getContextPath() + "/" + primaImgCheck.trim();
                                             }
+                                            
                                             if (imgSrcCheck != null) { 
                                          %>
                                              <img class="item-img" src="<%= imgSrcCheck %>" alt="<%= modello %>" />
