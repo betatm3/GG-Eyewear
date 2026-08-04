@@ -79,7 +79,7 @@ public class RegistrazioneServlet extends HttpServlet {
         try {
             // Controllo unicità dell'email
             if (utenteDAO.doRetrieveByKey(email) != null) {
-                request.setAttribute("errore", "Questa email è già associata a un account esistente.");
+                request.setAttribute("errore", "Email già in uso.");
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
             	dispatcher.forward(request, response);
             	return;

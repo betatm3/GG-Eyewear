@@ -52,7 +52,7 @@
         </a>
 
       
-        <a href="${pageContext.request.contextPath}/admin/VisualizzaOrdini" class="action-card">
+        <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="action-card">
             <div class="action-icon">
                 <img src="${pageContext.request.contextPath}/images/icons8-order-24.png" alt="Gestione Ordini" style="width: 28px; height: 28px; object-fit: contain;" />
             </div>

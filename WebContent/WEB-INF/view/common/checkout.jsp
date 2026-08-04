@@ -91,23 +91,23 @@
 
                         <div class="form-group">
                             <label for="indirizzo">Indirizzo (Via, Piazza, Numero Civico)</label>
-                            <input type="text" id="indirizzo" name="indirizzo" value="<%= via %>" required placeholder="Es. Via Roma 12" />
+                            <input type="text" id="indirizzo" name="indirizzo" value="<%= via %>" placeholder="Es. Via Roma 12" />
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="citta">Città</label>
-                                <input type="text" id="citta" name="citta" value="<%= cittaVal %>" required placeholder="Es. Napoli" />
+                                <input type="text" id="citta" name="citta" value="<%= cittaVal %>" placeholder="Es. Napoli" />
                             </div>
                             <div class="form-group">
                                 <label for="cap">CAP</label>
-                                <input type="text" id="cap" name="cap" value="<%= capVal %>" required placeholder="Es. 80100" />
+                                <input type="text" id="cap" name="cap" value="<%= capVal %>" placeholder="Es. 80100" />
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="telefono">Recapito Telefonico</label>
-                            <input type="tel" id="telefono" name="telefono" value="<%= telefono %>" required placeholder="Es. 3331234567" maxlength="16" />
+                            <input type="tel" id="telefono" name="telefono" value="<%= telefono %>" placeholder="Es. 3331234567" maxlength="16" />
                         </div>
 
                         <div class="section-title" style="margin-top: 40px;">
@@ -116,7 +116,7 @@
 
                         <div class="form-group">
                             <label for="metodoPagamento">Scegli come pagare</label>
-                            <select id="metodoPagamento" name="metodoPagamento" required>
+                            <select id="metodoPagamento" name="metodoPagamento">
                                 <option value="" disabled selected>Seleziona un'opzione...</option>
                                 <option value="Carta di Credito">Carta di Credito / Debito</option>
                                 <option value="PayPal">PayPal</option>

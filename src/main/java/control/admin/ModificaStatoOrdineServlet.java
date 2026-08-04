@@ -48,7 +48,7 @@ public class ModificaStatoOrdineServlet extends HttpServlet {
                 
                 ordine.setStato(nuovoStato);
                 if (ordineDAO.doUpdate(ordine)) {
-                    response.sendRedirect(request.getContextPath() + "/admin/VisualizzaOrdini?msg=StatoAggiornato");
+                    response.sendRedirect(request.getContextPath() + "/admin/GestioneOrdini?msg=StatoAggiornato");
                 } else {
                     response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile aggiornare lo stato dell'ordine nel database.");
                 }

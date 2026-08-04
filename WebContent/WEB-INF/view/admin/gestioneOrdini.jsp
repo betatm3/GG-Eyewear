@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/visualizzaOrdiniAdmin.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/gestioneOrdiniAdmin.css">
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
@@ -67,7 +67,7 @@
         String paramDataFine = request.getParameter("dataFine");
         if (paramDataFine == null) paramDataFine = "";
     %>
-    <form action="${pageContext.request.contextPath}/admin/VisualizzaOrdini" method="GET" class="filters-section">
+    <form action="${pageContext.request.contextPath}/admin/GestioneOrdini" method="GET" class="filters-section">
         <div class="filters-title">
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
             Filtra gli Ordini
@@ -125,7 +125,7 @@
             </div>
         </div>
         <div class="filters-actions">
-            <a href="${pageContext.request.contextPath}/admin/VisualizzaOrdini" class="btn-reset">Azzera filtri</a>
+            <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="btn-reset">Azzera filtri</a>
             <button type="submit" class="btn-filter">Filtra</button>
         </div>
     </form>

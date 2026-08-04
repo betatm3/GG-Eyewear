@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
             showFieldError(emailInput, "L'email è obbligatoria.");
             return false;
         } else if (!regexEmail.test(val)) {
-            showFieldError(emailInput, "Inserisci un indirizzo email valido.");
+            showFieldError(emailInput, "Inserisci un indirizzo email valido (es. mario.rossi@email.it).");
             return false;
         }
         showFieldError(emailInput, null);
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const v2 = validatePassword();
 
         if (!(v1 && v2)) {
-            event.preventDefault();
+            event.preventDefault(); //blocca l'invio del form e mostra i messaggi di errore
         }
     });
 });

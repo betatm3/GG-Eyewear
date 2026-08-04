@@ -37,46 +37,46 @@
                 
                 <div class="form-group">
                     <label for="nome">Nome</label>
-                    <input type="text" id="nome" name="nome" required placeholder="Es. Mario" />
+                    <input type="text" id="nome" name="nome" placeholder="Es. Mario" />
                 </div>
 
                 <div class="form-group">
                     <label for="cognome">Cognome</label>
-                    <input type="text" id="cognome" name="cognome" required placeholder="Es. Rossi" />
+                    <input type="text" id="cognome" name="cognome" placeholder="Es. Rossi" />
                 </div>
 
                 
                 <div class="form-group full-width">
                     <label for="email">Indirizzo E-mail</label>
-                    <input type="email" id="email" name="email" required placeholder="mario.rossi@email.it" />
+                    <input type="email" id="email" name="email" placeholder="mario.rossi@email.it" />
                 </div>
 
                 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="Scegli una password" />
+                    <input type="password" id="password" name="password" placeholder="Scegli una password" />
                 </div>
 
                 <div class="form-group">
                     <label for="confermaPassword">Conferma Password</label>
-                    <input type="password" id="confermaPassword" name="confermaPassword" required placeholder="Ripeti la password" />
+                    <input type="password" id="confermaPassword" name="confermaPassword" placeholder="Ripeti la password" />
                 </div>
 
                 
                 <div class="form-group">
                     <label for="telefono">Numero di Telefono</label>
-                    <input type="tel" id="telefono" name="telefono" required placeholder="Es. 3331234567" maxlength="16"/>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Es. 3331234567" maxlength="16"/>
                 </div>
 
                 <div class="form-group">
                     <label for="dataNascita">Data di Nascita</label>
-                    <input type="date" id="dataNascita" name="dataNascita" required />
+                    <input type="date" id="dataNascita" name="dataNascita" />
                 </div>
 
                 
                 <div class="form-group full-width">
                     <label for="indirizzo">Indirizzo di Spedizione predefinito</label>
-                    <input type="text" id="indirizzo" name="indirizzo" required placeholder="Es. Via Roma 12, 80100 Napoli" />
+                    <input type="text" id="indirizzo" name="indirizzo" placeholder="Es. Via Roma 12, 80100 Napoli" />
                 </div>
             </div>
 

@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const v5 = validateMetodoPagamento();
 
         if (!(v1 && v2 && v3 && v4 && v5)) {
-            event.preventDefault();
+            event.preventDefault(); //blocca l'invio del form e mostra i messaggi di errore
         }
     });
 });

@@ -34,12 +34,12 @@
         <form action="login" method="POST">
             <div class="form-group">
                 <label for="email">Indirizzo E-mail</label>
-                <input type="email" id="email" name="email" required placeholder="Inserisci la tua email" />
+                <input type="email" id="email" name="email" placeholder="Inserisci la tua email" />
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="Inserisci la tua password" />
+                <input type="password" id="password" name="password" placeholder="Inserisci la tua password" />
             </div>
 
             <button type="submit" class="btn-submit">Accedi</button>

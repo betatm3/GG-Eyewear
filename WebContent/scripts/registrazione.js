@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const v8 = validateIndirizzo();
 
         if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
-            event.preventDefault(); 
+            event.preventDefault();  //blocca l'invio del form e mostra i messaggi di errore
         }
     });
 });
