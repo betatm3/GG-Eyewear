@@ -119,6 +119,10 @@
                 <label class="filter-label">Data Fine</label>
                 <input type="date" name="dataFine" value="<%= paramDataFine %>" class="filter-input" />
             </div>
+            <div class="filter-field">
+                <label class="filter-label">Email Utente</label>
+                <input type="email" name="email" required placeholder="mario.rossi@email.it" class="filter-input" />
+            </div>
         </div>
         <div class="filters-actions">
             <a href="${pageContext.request.contextPath}/admin/VisualizzaOrdini" class="btn-reset">Azzera filtri</a>

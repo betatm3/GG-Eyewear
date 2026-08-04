@@ -20,8 +20,8 @@ import model.Genere;
 import dao.OrdineDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
 
-@WebServlet("/admin/VisualizzaOrdini")
-public class VisualizzaOrdiniAdminServlet extends HttpServlet {
+@WebServlet("/admin/GestioneOrdini")
+public class GestioneOrdiniAdminServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @jakarta.annotation.Resource(name = "jdbc/ecommerce_db")
@@ -93,7 +93,7 @@ public class VisualizzaOrdiniAdminServlet extends HttpServlet {
             }
                     
             request.setAttribute("listaOrdini", ordiniFiltrati);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/visualizzaOrdini.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneOrdini.jsp");
             dispatcher.forward(request, response);
 
         } catch (SQLException | NumberFormatException | java.time.format.DateTimeParseException e) {
