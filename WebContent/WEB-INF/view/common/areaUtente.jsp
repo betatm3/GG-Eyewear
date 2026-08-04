@@ -231,48 +231,48 @@
                     <span>✏️</span> Modifica Dati Utente
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/common/area-utente" method="POST" class="edit-profile-form" style="display: flex; flex-direction: column; gap: 20px; font-family: 'Outfit', sans-serif;">
-                    <input type="hidden" name="action" value="modifica" />
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <label for="edit_nome" style="font-size: 13px; font-weight: 600; color: #555;">Nome</label>
-                            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" required style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                        </div>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <label for="edit_cognome" style="font-size: 13px; font-weight: 600; color: #555;">Cognome</label>
-                            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" required style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <label for="edit_telefono" style="font-size: 13px; font-weight: 600; color: #555;">Telefono</label>
-                            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                        </div>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <label for="edit_data_nascita" style="font-size: 13px; font-weight: 600; color: #555;">Data di Nascita</label>
-                            <input type="date" id="edit_data_nascita" name="data_nascita" value="<%= utente.getDataNascita() != null ? utente.getDataNascita().toString() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <label for="edit_indirizzo" style="font-size: 13px; font-weight: 600; color: #555;">Indirizzo di Spedizione</label>
-                        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 6px;">
-                        <label for="edit_password" style="font-size: 13px; font-weight: 600; color: #555;">Nuova Password (Lascia vuoto per non cambiarla)</label>
-                        <input type="password" id="edit_password" name="password" placeholder="Minimo 6 caratteri..." style="padding: 10px 14px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #FFF;" />
-                    </div>
-                    
-                    <div style="display: flex; gap: 12px; margin-top: 10px;">
-                        <button type="submit" class="btn-admin-dashboard" style="background: #2B2B2B; color: #FFF; width: auto; margin-top: 0; padding: 10px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600;">Salva modifiche</button>
-                        <button type="button" onclick="toggleEditProfile(false);" class="btn-cancel" style="background: #FAF8F5; color: #555; border: 1px solid var(--line); padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Annulla</button>
-                    </div>
-                </form>
+                <form action="<%= request.getContextPath() %>/common/area-utente" method="POST" class="edit-profile-form">
+				    <input type="hidden" name="action" value="modifica" />
+				    
+				    <div class="form-grid-2">
+				        <div class="form-group">
+				            <label for="edit_nome">Nome</label>
+				            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" required />
+				        </div>
+				        
+				        <div class="form-group">
+				            <label for="edit_cognome">Cognome</label>
+				            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" required />
+				        </div>
+				    </div>
+				    
+				    <div class="form-grid-2">
+				        <div class="form-group">
+				            <label for="edit_telefono">Telefono</label>
+				            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" />
+				        </div>
+				        
+				        <div class="form-group">
+				            <label for="edit_data_nascita">Data di Nascita</label>
+				            <input type="date" id="edit_data_nascita" name="data_nascita" value="<%= utente.getDataNascita() != null ? utente.getDataNascita().toString() : "" %>" />
+				        </div>
+				    </div>
+				    
+				    <div class="form-group">
+				        <label for="edit_indirizzo">Indirizzo di Spedizione</label>
+				        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" />
+				    </div>
+				
+				    <div class="form-group">
+				        <label for="edit_password">Nuova Password (Lascia vuoto per non cambiarla)</label>
+				        <input type="password" id="edit_password" name="password" placeholder="Minimo 6 caratteri..." />
+				    </div>
+				    
+				    <div class="form-actions">
+				        <button type="submit" class="btn-save">Salva modifiche</button>
+				        <button type="button" onclick="toggleEditProfile(false);" class="btn-cancel">Annulla</button>
+				    </div>
+				</form>
             </div>
 
         </div>

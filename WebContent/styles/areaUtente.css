@@ -293,6 +293,105 @@ h1 {
   display: block;
 }
 
+/* Form principale */
+.edit-profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Griglia per disporre i campi su due colonne */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Contenitore del singolo campo input + label */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Etichette (Label) */
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555555;
+}
+
+/* Campi di input */
+.form-group input {
+    padding: 10px 14px;
+    border: 1px solid var(--line, #E2DDD5);
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #FFFFFF;
+    color: var(--ink, #2B2B2B);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Effetto Focus quando l'utente clicca nel campo */
+.form-group input:focus {
+    border-color: #2B2B2B;
+    box-shadow: 0 0 0 2px rgba(43, 43, 43, 0.05);
+}
+
+/* Contenitore dei pulsanti */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Pulsante "Salva modifiche" */
+.btn-save {
+    background-color: #2B2B2B;
+    color: #FFFFFF;
+    width: auto;
+    margin-top: 0;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+
+.btn-save:hover {
+    opacity: 0.9;
+}
+
+/* Pulsante "Annulla" */
+.btn-cancel {
+    background-color: #FAF8F5;
+    color: #555555;
+    border: 1px solid var(--line, #E2DDD5);
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #F0ECE1;
+}
+
+/* Responsive: i campi affiancati vanno uno sotto l'altro */
+@media (max-width: 600px) {
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
 .errore-banner {
   background: rgba(200, 106, 85, 0.1);
   border: 1px solid rgba(200, 106, 85, 0.2);

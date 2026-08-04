@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("form[action='checkout']");
+	const form = document.getElementById("checkoutForm");
+    //const form = document.querySelector("form[action='checkout']");
     if (!form) return;
 
     const indirizzoInput = document.getElementById("indirizzo");
