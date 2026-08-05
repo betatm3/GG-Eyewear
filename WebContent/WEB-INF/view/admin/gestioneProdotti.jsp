@@ -179,62 +179,62 @@
                     <span>✏️</span> Modifica Caratteristiche
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecaratteristiche" method="POST" enctype="multipart/form-data">
+                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecaratteristiche" method="POST" enctype="multipart/form-data" class="product-form">
                     <input type="hidden" name="idOcchiale" value="<%= versioneInModifica.getOcchiale().getId() %>" />
                     <input type="hidden" name="codiceVersione" value="<%= versioneInModifica.getCodice() %>" />
                     
                     <div class="form-grid">
                         <div class="form-group">
-                            <label for="edit_marca">Marca</label>
-                            <input type="text" id="edit_marca" name="marca" required value="<%= versioneInModifica.getMarca() %>" />
+                            <label for="marca">Marca</label>
+                            <input type="text" id="marca" name="marca" value="<%= versioneInModifica.getMarca() %>" />
                         </div>
                         <div class="form-group">
-                            <label for="edit_modello">Modello</label>
-                            <input type="text" id="edit_modello" name="modello" required value="<%= versioneInModifica.getModello() %>" />
+                            <label for="modello">Modello</label>
+                            <input type="text" id="modello" name="modello" value="<%= versioneInModifica.getModello() %>" />
                         </div>
                         <div class="form-group">
-                            <label for="edit_prezzo">Prezzo (€)</label>
-                            <input type="number" id="edit_prezzo" name="prezzo" step="0.01" required value="<%= versioneInModifica.getPrezzo() %>" />
+                            <label for="prezzo">Prezzo (€)</label>
+                            <input type="number" id="prezzo" name="prezzo" step="0.01" value="<%= versioneInModifica.getPrezzo() %>" />
                         </div>
                         <div class="form-group">
-                            <label for="edit_tipologia">Tipologia</label>
-                            <select id="edit_tipologia" name="tipologia">
+                            <label for="tipologia">Tipologia</label>
+                            <select id="tipologia" name="tipologia">
                                 <% for (Tipologia t : Tipologia.values()) { %>
                                     <option value="<%= t.name() %>" <%= versioneInModifica.getOcchiale().getTipo() == t ? "selected" : "" %>><%= t.name().replace("_", " ") %></option>
                                 <% } %>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit_genere">Genere</label>
-                            <select id="edit_genere" name="genere">
+                            <label for="genere">Genere</label>
+                            <select id="genere" name="genere">
                                 <% for (Genere g : Genere.values()) { %>
                                     <option value="<%= g.name() %>" <%= versioneInModifica.getGenere() == g ? "selected" : "" %>><%= g.name() %></option>
                                 <% } %>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit_montatura">Montatura</label>
-                            <select id="edit_montatura" name="montatura">
+                            <label for="montatura">Montatura</label>
+                            <select id="montatura" name="montatura">
                                 <% for (Montatura m : Montatura.values()) { %>
                                     <option value="<%= m.name() %>" <%= versioneInModifica.getMontatura() == m ? "selected" : "" %>><%= m.name() %></option>
                                 <% } %>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit_forma">Forma Lenti</label>
-                            <input type="text" id="edit_forma" name="forma" required value="<%= versioneInModifica.getForma() %>" />
+                            <label for="forma">Forma Lenti</label>
+                            <input type="text" id="forma" name="forma" value="<%= versioneInModifica.getForma() %>" />
                         </div>
                         <div class="form-group">
-                            <label for="edit_taglia">Taglia</label>
-                            <select id="edit_taglia" name="taglia">
+                            <label for="taglia">Taglia</label>
+                            <select id="taglia" name="taglia">
                                 <% for (Taglia t : Taglia.values()) { %>
                                     <option value="<%= t.name() %>" <%= versioneInModifica.getTaglia() == t ? "selected" : "" %>><%= t.getDescrizione()%></option>
                                 <% } %>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit_materiale">Materiale</label>
-                            <input type="text" id="edit_materiale" name="materiale" required value="<%= versioneInModifica.getMateriale() %>" />
+                            <label for="materiale">Materiale</label>
+                            <input type="text" id="materiale" name="materiale" value="<%= versioneInModifica.getMateriale() %>" />
                         </div>
                         <% if (!versioneInModifica.getOcchiale().isAttivo()) { %>
                             <div class="form-group">
@@ -246,7 +246,7 @@
                             </div>
                         <% } %>
                         <div class="form-group full-width">
-                            <label for="edit_immagine">Nuova Immagine (Lascia vuoto per non cambiare)</label>
+                            <label for="immagine">Nuova Immagine (Lascia vuoto per non cambiare)</label>
                             <input type="file" id="edit_immagine" name="immagine" accept="image/*" />
                         </div>
                     </div>
@@ -284,7 +284,7 @@
                                         <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
                                             <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                                             <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
-                                            <input type="number" name="quantita" value="<%= disp.getQuantita() %>" min="0" required />
+                                            <input type="number" name="quantita" value="<%= disp.getQuantita() %>" min="0"  />
                                             <button type="submit" class="btn-mini save">Aggiorna</button>
                                         </form>
 
@@ -318,7 +318,7 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="nuovo_colore">Colore</label>
-                                <select id="nuovo_colore" name="codiceColore" required>
+                                <select id="nuovo_colore" name="codiceColore">
                                     <option value="">Seleziona Colore...</option>
                                     <%
                                         if (tuttiColori != null) {
@@ -334,7 +334,7 @@
                             
                             <div class="form-group">
                                 <label for="nuova_quantita">Quantità Iniziale</label>
-                                <input type="number" id="nuova_quantita" name="quantita" min="0" required value="10" />
+                                <input type="number" id="nuova_quantita" name="quantita" min="0" value="10" />
                             </div>
                         </div>
                         
@@ -349,19 +349,19 @@
                     <span>➕</span> Aggiungi Nuovo Occhiale
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=add" method="POST" enctype="multipart/form-data">
+                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=add" method="POST" enctype="multipart/form-data" class="product-form">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="marca">Marca</label>
-                            <input type="text" id="marca" name="marca" required placeholder="Es. Ray-Ban" />
+                            <input type="text" id="marca" name="marca" placeholder="Es. Ray-Ban" />
                         </div>
                         <div class="form-group">
                             <label for="modello">Modello</label>
-                            <input type="text" id="modello" name="modello" required placeholder="Es. Aviator Classic" />
+                            <input type="text" id="modello" name="modello" placeholder="Es. Aviator Classic" />
                         </div>
                         <div class="form-group">
                             <label for="prezzo">Prezzo (€)</label>
-                            <input type="number" id="prezzo" name="prezzo" step="0.01" required placeholder="Es. 129.90" />
+                            <input type="number" id="prezzo" name="prezzo" step="0.01" placeholder="Es. 129.90" />
                         </div>
                         <div class="form-group">
                             <label for="tipologia">Tipologia</label>
@@ -389,7 +389,7 @@
                         </div>
                         <div class="form-group">
                             <label for="forma">Forma Lenti</label>
-                            <input type="text" id="forma" name="forma" required placeholder="Es. Goccia / Tonda" />
+                            <input type="text" id="forma" name="forma" placeholder="Es. Goccia / Tonda" />
                         </div>
                         <div class="form-group">
                             <label for="taglia">Taglia</label>
@@ -401,11 +401,11 @@
                         </div>
                         <div class="form-group">
                             <label for="materiale">Materiale</label>
-                            <input type="text" id="materiale" name="materiale" required placeholder="Es. Metallo dorato" />
+                            <input type="text" id="materiale" name="materiale" placeholder="Es. Metallo dorato" />
                         </div>
                         <div class="form-group full-width">
                             <label for="immagine">Immagine Prodotto</label>
-                            <input type="file" id="immagine" name="immagine" accept="image/*" required />
+                            <input type="file" id="immagine" name="immagine" accept="image/*" />
                         </div>
                     </div>
 
@@ -464,5 +464,7 @@
     }
 %>
 <%@ include file="../partials/footer.jsp" %>
+<script src="${pageContext.request.contextPath}/scripts/gestioneProdotti.js"></script>
+
 </body>
 </html>

@@ -28,6 +28,21 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         
+     // --- APPLICAZIONE HEADER ANTI-CACHE ---
+        httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); 
+        //no-cache: Costringe il browser a convalidare la pagina con il server prima di usarne una copia memorizzata.
+        //no-store: Non salvare mai una copia di questa pagina privata sul disco.
+        //must-revalidate: Ogni volta che l'utente prova ad aprire questa pagina (anche dalla cronologia o col tasto "Indietro"),
+        //devi prima chiedere al server se è ancora valida
+        
+        httpResponse.setHeader("Pragma", "no-cache"); 
+        //Serve per retrocompatibilità. I vecchi browser che non supportano lo standard HTTP 1.1 (e la direttiva Cache-Control)
+        //leggono questo header per capire che non devono salvarsi la pagina in cache.
+        
+        httpResponse.setDateHeader("Expires", 0); 
+        //Imposta la data di "scadenza" del contenuto al timestamp 0 (ovvero l'1 Gennaio 1970). La pagina risulta già scaduta 
+        //nel momento stesso in cui la riceve, quindi non la salverà in cache
+        
         String uri = httpRequest.getRequestURI();
         HttpSession session = httpRequest.getSession(false);
         
