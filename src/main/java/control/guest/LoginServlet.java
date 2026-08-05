@@ -25,6 +25,26 @@ public class LoginServlet extends HttpServlet {
     // Il GET mostra semplicemente la pagina JSP con il form di login
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+    	// 1. Controlla se l'utente è già loggato in sessione
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Utente utente = (Utente) session.getAttribute("utenteLoggato");
+            if (utente == null) {
+                utente = (Utente) session.getAttribute("utente");
+            }
+            // Se l'utente è già loggato, fai il redirect alla pagina corretta
+            if (utente != null) {
+                if (utente.isAdmin()) {
+                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                }
+                return; // Blocca l'esecuzione per evitare di mostrare la JSP
+            }
+        }
+
+        // 2. Se NON è loggato, gestisci i messaggi di errore e mostra il form
+        
     	String erroreParam = request.getParameter("errore");
     	if ("auth_required".equals(erroreParam)) {
     	    request.setAttribute("errore", "Devi effettuare il login prima di effettuare altre azioni.");
