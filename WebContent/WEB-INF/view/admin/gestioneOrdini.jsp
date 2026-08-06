@@ -34,9 +34,15 @@
         String msg = request.getParameter("msg");
         if ("StatoAggiornato".equals(msg)) {
     %>
-            <div class="success-banner">
-                Stato dell'ordine aggiornato con successo!
-            </div>
+		<div class="success-banner" style="display: flex ; align-items: center ; justify-content: space-between ;">    
+			<div></div>        	
+			<div style="display: flex; align-items: center; gap: 8px;">
+			        <span>✓</span>
+                	<span>Stato dell'ordine aggiornato con successo!</span>
+                </div>
+                <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';" style=" color:  #5A7261;">✕</button>
+                
+        </div>
     <% 
         } 
     %>

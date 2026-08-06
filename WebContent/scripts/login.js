@@ -8,6 +8,21 @@ document.addEventListener("DOMContentLoaded", function() {
     
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+	
+	function showBannerError(message) {
+	    const banner = document.getElementById("js-error-banner");
+	    const bannerText = document.getElementById("js-error-text");
+	        
+	    if (banner && bannerText) {
+	        if (message) {
+	            bannerText.textContent = message;
+	            banner.style.display = "flex"; // Mostra il banner
+	        } else {
+	            banner.style.display = "none";  // Nasconde il banner
+	        }
+	    }
+	}
+		
     function showFieldError(input, message) {
         let parent = input.parentElement;
         let errorSpan = parent.querySelector(".error-msg");
@@ -68,8 +83,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const v1 = validateEmail();
         const v2 = validatePassword();
 
-        if (!(v1 && v2)) {
-            event.preventDefault(); //blocca l'invio del form e mostra i messaggi di errore
-        }
+		if (!(v1 && v2)) {
+		    event.preventDefault(); // Blocca l'invio del form
+		    showBannerError("Inserisci i dati obbligatori correttamente.");
+		 } else {
+		     //Nasconde il banner prima dell'invio se tutto è OK
+		     showBannerError(null);
+		 }
     });
 });

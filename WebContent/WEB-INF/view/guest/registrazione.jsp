@@ -25,9 +25,11 @@
 		   boolean haErroreServlet = (erroreServlet != null && !erroreServlet.trim().isEmpty());
 		%>
 		
-		<div id="js-error-banner" class="error-banner" style="<%= haErroreServlet ? "display: flex;" : "display: none;" %>">
+		<div id="js-error-banner" class="error-banner" style="<%= haErroreServlet ? "display: flex;" : "display: none;" %> align-items: center; justify-content: space-between;">
 		    <span>⚠️</span>
 		    <span id="js-error-text"><%= haErroreServlet ? erroreServlet : "" %></span>
+		    <button type="button" style="text-align: right;" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+		    
 		</div>
 
         <form action="registrazione" method="POST">

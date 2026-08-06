@@ -41,8 +41,13 @@
             <h1>Completa il tuo Ordine</h1>
 
             <% if (errore != null) { %>
-                <div class="alert alert-error">
+                <div class="error-banner" style="align-items: center; justify-content: space-between;">
+                    <div></div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
                     <span>⚠️</span> <%= errore %>
+                    </div>
+                    <button type="button" style="text-align: right;" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+                    
                 </div>
             <% } %>
 
