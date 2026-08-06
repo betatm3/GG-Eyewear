@@ -237,16 +237,19 @@
 				    <div class="form-grid-2">
 				        <div class="form-group">
 				            <label for="edit_nome">Nome</label>
-				            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" required />
+				            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" />
 				        </div>
 				        
 				        <div class="form-group">
 				            <label for="edit_cognome">Cognome</label>
-				            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" required />
+				            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" />
 				        </div>
-				    </div>
 				    
-				    <div class="form-grid-2">
+					    <div class="form-group">
+		                    <label for="email">Indirizzo E-mail</label>
+		                    <input type="email" id="email" name="email" value="<%= utente.getEmail() %>" />
+		                </div>
+                
 				        <div class="form-group">
 				            <label for="edit_telefono">Telefono</label>
 				            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" />
@@ -256,18 +259,28 @@
 				            <label for="edit_data_nascita">Data di Nascita</label>
 				            <input type="date" id="edit_data_nascita" name="data_nascita" value="<%= utente.getDataNascita() != null ? utente.getDataNascita().toString() : "" %>" />
 				        </div>
+				   
+					    <div class="form-group">
+					        <label for="edit_indirizzo">Indirizzo di Spedizione</label>
+					        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" />
+					    </div>
+					</div>
+					
+					<div class="form-group">
+				        <label for="old_password">Vecchia Password</label>
+				        <input type="password" id="old_password" name="old_password"/>
 				    </div>
 				    
-				    <div class="form-group">
-				        <label for="edit_indirizzo">Indirizzo di Spedizione</label>
-				        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" />
-				    </div>
-				
 				    <div class="form-group">
 				        <label for="edit_password">Nuova Password (Lascia vuoto per non cambiarla)</label>
-				        <input type="password" id="edit_password" name="password" placeholder="Minimo 6 caratteri..." />
+				        <input type="password" id="edit_password" name="new_password" placeholder="Scegli la nuova password" />
 				    </div>
 				    
+				    <div class="form-group">
+				        <label for="conferma_password">Conferma Password (Lascia vuoto per non cambiarla)</label>
+				        <input type="password" id="conferma_password" name="conferma_password" placeholder = "Ripeti la nuova password"/>
+				    </div>
+				
 				    <div class="form-actions">
 				        <button type="submit" class="btn-save">Salva modifiche</button>
 				        <button type="button" onclick="toggleEditProfile(false);" class="btn-cancel">Annulla</button>
@@ -300,5 +313,7 @@
     </script>
     
 <%@ include file="../partials/footer.jsp" %>
+<script src="${pageContext.request.contextPath}/scripts/areaUtente.js"></script>
+
 </body>
 </html>

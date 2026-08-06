@@ -129,33 +129,50 @@ public class AreaUtenteServlet extends HttpServlet {
                 String nuovoTelefono = request.getParameter("telefono");
                 String nuovoIndirizzo = request.getParameter("indirizzo");
                 String nuovaDataNascitaStr = request.getParameter("data_nascita");
-                String nuovaPassword = request.getParameter("password");
+                String nuovaEmail = request.getParameter("email");
+                
+                String oldPassword = request.getParameter("old_password");
+                String nuovaPassword = request.getParameter("new_password");
 
-                if (nuovoNome != null && !nuovoNome.trim().isEmpty()) {
-                    utenteSessione.setNome(nuovoNome.trim());
+                // --- 1. CONTROLLO DI OBBLIGATORIETÀ LATO SERVER ---
+                if (nuovoNome == null || nuovoNome.trim().isEmpty() ||
+                    nuovoCognome == null || nuovoCognome.trim().isEmpty() ||
+                    nuovaEmail == null || nuovaEmail.trim().isEmpty() ||
+                    nuovoTelefono == null || nuovoTelefono.trim().isEmpty() ||
+                    nuovoIndirizzo == null || nuovoIndirizzo.trim().isEmpty() ||
+                    nuovaDataNascitaStr == null || nuovaDataNascitaStr.trim().isEmpty()) {
+
+                    request.setAttribute("msgErrore", "Impossibile salvare: tutti i campi anagrafici sono obbligatori.");
+                    doGet(request, response);
+                    return;
                 }
-                if (nuovoCognome != null && !nuovoCognome.trim().isEmpty()) {
-                    utenteSessione.setCognome(nuovoCognome.trim());
-                }
-                if (nuovoTelefono != null) {
-                    utenteSessione.setTelefono(nuovoTelefono.trim());
-                }
-                if (nuovoIndirizzo != null) {
-                    utenteSessione.setIndirizzo(nuovoIndirizzo.trim());
-                }
-                if (nuovaDataNascitaStr != null && !nuovaDataNascitaStr.trim().isEmpty()) {
-                    try {
-                        utenteSessione.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    utenteSessione.setDataNascita(null);
-                }
+
+                // --- 2. CONTROLLO GESTIONE PASSWORD (OPZIONALE) ---
                 if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
+                    // Se vuole cambiare password, verifichiamo che la vecchia password coincida
+                    if (oldPassword == null || !oldPassword.equals(utenteSessione.getPassword())) {
+                        request.setAttribute("msgErrore", "La password inserita non è corretta.");
+                        doGet(request, response);
+                        return; 
+                    }
                     utenteSessione.setPassword(nuovaPassword.trim());
                 }
 
+                utenteSessione.setNome(nuovoNome.trim());
+                utenteSessione.setCognome(nuovoCognome.trim());
+                utenteSessione.setEmail(nuovaEmail.trim());
+                utenteSessione.setTelefono(nuovoTelefono.trim());
+                utenteSessione.setIndirizzo(nuovoIndirizzo.trim());
+                
+                try {
+                    utenteSessione.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
+                } catch (Exception e) {
+                    request.setAttribute("msgErrore", "Formato data di nascita non valido.");
+                    doGet(request, response);
+                    return;
+                }
+
+                // --- 4. SALVATAGGIO SU DATABASE ---
                 UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
                 boolean success = false;
                 try {

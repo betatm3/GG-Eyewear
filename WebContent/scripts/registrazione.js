@@ -169,8 +169,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!val) {
             showFieldError(indirizzoInput, "L'indirizzo di spedizione è obbligatorio.");
             return false;
-        } else if (val.length < 5) {
-            showFieldError(indirizzoInput, "Inserisci un indirizzo valido (minimo 5 caratteri).");
+        } else if (val.length < 10) {
+            showFieldError(indirizzoInput, "Inserisci un indirizzo valido (minimo 10 caratteri).");
             return false;
         }
         showFieldError(indirizzoInput, null);
@@ -213,6 +213,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     
     form.addEventListener("submit", function(event) {
+		try{
         const v1 = validateNome();
         const v2 = validateCognome();
         const v3 = validateEmail();
@@ -225,5 +226,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
             event.preventDefault();  //blocca l'invio del form e mostra i messaggi di errore
         }
+		} catch (e) {
+		        // Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
+		        console.error("Errore durante la validazione:", e);
+		        event.preventDefault();
+		    }
     });
 });
