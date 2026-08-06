@@ -193,6 +193,40 @@ nav.main-nav a.outlet {
   justify-content: center;
 }
 
+
+/* Banner errori */
+.error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgb(239, 68, 68);
+  color: rgb(239, 68, 68);
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Stile pulsante di chiusura (X) */
+.close-banner-btn {
+  background: transparent;
+  border: none;
+  color: rgb(239, 68, 68);
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.close-banner-btn:hover {
+  opacity: 1;
+}
+
 /* ---------- FOOTER ---------- */
 footer {
   border-top: 1px solid var(--ink);

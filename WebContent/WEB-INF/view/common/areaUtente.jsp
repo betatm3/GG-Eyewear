@@ -44,27 +44,39 @@
             String errore = (String) request.getAttribute("errore");
             if (errore != null) {
         %>
-            <div class="errore-banner" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgb(239, 68, 68); color: rgb(239, 68, 68); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
+            <div class="error-banner" style="border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center;">
                 <span>⚠️</span> <%= errore %>
             </div>
         <% 
             } 
             String msgSuccesso = (String) request.getAttribute("msgSuccesso");
             if (msgSuccesso != null) {
-        %>
-            <div class="successo-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgb(16, 185, 129); color: rgb(16, 185, 129); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
-                <span>✓</span> <%= msgSuccesso %>
-            </div>
+	        %>
+	        <div class="successo-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgb(16, 185, 129); color: rgb(16, 185, 129); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+			    <div></div>
+			    <div style="display: flex; align-items: center; gap: 8px;">
+			        <span>✓</span>
+			        <span><%= msgSuccesso %></span>
+			    </div>
+			    
+			    <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';" style=" color: rgb(16, 185, 129);">✕</button>
+			</div>
+	        <% 
+			} 
+			
+			String msgErroreServlet = (String) request.getAttribute("msgErrore");
+			boolean haErroreServlet = (msgErroreServlet != null && !msgErroreServlet.trim().isEmpty());
+		%>
+		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>; align-items: center; justify-content: space-between; border-radius: 8px; margin-bottom: 20px;">
+			<div></div>
+			<div style="display: flex; align-items: center; gap: 8px;">
+				<span>⚠️</span>
+				<span id="js-error-text"><%= haErroreServlet ? msgErroreServlet : "" %></span>
+			</div>
+			<button type="button" style="text-align: right;" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+		</div> 
+
         <% 
-            } 
-            String msgErrore = (String) request.getAttribute("msgErrore");
-            if (msgErrore != null) {
-        %>
-            <div class="errore-banner" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgb(239, 68, 68); color: rgb(239, 68, 68); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center; font-family: 'Outfit', sans-serif;">
-                <span>⚠️</span> <%= msgErrore %>
-            </div>
-        <% 
-            } 
             
             Utente utente = (Utente) session.getAttribute("utenteLoggato");
             if (utente != null) {
@@ -247,7 +259,7 @@
 				    
 					    <div class="form-group">
 		                    <label for="email">Indirizzo E-mail</label>
-		                    <input type="email" id="email" name="email" value="<%= utente.getEmail() %>" />
+		                    <input type="email" id="edit_email" name="email" value="<%= utente.getEmail() %>" />
 		                </div>
                 
 				        <div class="form-group">

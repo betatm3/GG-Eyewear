@@ -119,20 +119,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   box-shadow: 0 6px 16px rgba(43, 43, 43, 0.25);
 }
 
-/* Banner errori */
-.error-banner {
-  background: rgba(200, 106, 85, 0.1);
-  border: 1px solid rgba(200, 106, 85, 0.2);
-  color: var(--rust);
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 /* Footer links */
 .footer-links {

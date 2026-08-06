@@ -42,6 +42,20 @@ document.addEventListener("DOMContentLoaded", function() {
             input.style.borderColor = "#E2DDD5";
         }
     }
+	
+	function showBannerError(message) {
+	    const banner = document.getElementById("js-error-banner");
+	    const bannerText = document.getElementById("js-error-text");
+	    
+	    if (banner && bannerText) {
+	        if (message) {
+	            bannerText.textContent = message;
+	            banner.style.display = "flex"; // Mostra il banner
+	        } else {
+	            banner.style.display = "none";  // Nasconde il banner se non ci sono errori
+	        }
+	    }
+	}
 
    
     function validateNome() {
@@ -214,22 +228,25 @@ document.addEventListener("DOMContentLoaded", function() {
     
     form.addEventListener("submit", function(event) {
 		try{
-        const v1 = validateNome();
-        const v2 = validateCognome();
-        const v3 = validateEmail();
-        const v4 = validatePassword();
-        const v5 = validateConfermaPassword();
-        const v6 = validateTelefono();
-        const v7 = validateDataNascita();
-        const v8 = validateIndirizzo();
-
-        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
-            event.preventDefault();  //blocca l'invio del form e mostra i messaggi di errore
-        }
+	        const v1 = validateNome();
+	        const v2 = validateCognome();
+	        const v3 = validateEmail();
+	        const v4 = validatePassword();
+	        const v5 = validateConfermaPassword();
+	        const v6 = validateTelefono();
+	        const v7 = validateDataNascita();
+	        const v8 = validateIndirizzo();
+	
+	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
+	            event.preventDefault();  //blocca l'invio del form e mostra i messaggi di errore
+				showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
+			} else {
+				showBannerError(null); // Rimuove il banner se tutti i dati sono corretti
+			}
 		} catch (e) {
-		        // Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
-		        console.error("Errore durante la validazione:", e);
-		        event.preventDefault();
-		    }
+		    // Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
+		    console.error("Errore durante la validazione:", e);
+		    event.preventDefault();
+		}
     });
 });

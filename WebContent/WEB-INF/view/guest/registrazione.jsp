@@ -20,16 +20,15 @@
         <h2>Crea un Account</h2>
         <div class="subtitle">Registrati per ordinare online e salvare il tuo indirizzo</div>
 
-        <% 
-            String errore = (String) request.getAttribute("errore");
-            if (errore != null) {
-        %>
-            <div class="error-banner">
-                <span>⚠️</span> <%= errore %>
-            </div>
-        <% 
-            } 
-        %>
+       <% 
+		   String erroreServlet = (String) request.getAttribute("errore");
+		   boolean haErroreServlet = (erroreServlet != null && !erroreServlet.trim().isEmpty());
+		%>
+		
+		<div id="js-error-banner" class="error-banner" style="<%= haErroreServlet ? "display: flex;" : "display: none;" %>">
+		    <span>⚠️</span>
+		    <span id="js-error-text"><%= haErroreServlet ? erroreServlet : "" %></span>
+		</div>
 
         <form action="registrazione" method="POST">
             <div class="form-grid">

@@ -52,6 +52,13 @@ public class AreaUtenteServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+        
+        if (session != null && session.getAttribute("msgSuccesso") != null) {
+            // Passiamo il messaggio alla request per la JSP
+            request.setAttribute("msgSuccesso", session.getAttribute("msgSuccesso"));
+            // Lo rimuoviamo dalla sessione per non farlo mostrare ai successivi refresh
+            session.removeAttribute("msgSuccesso");
+        }
 
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
         ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
@@ -180,7 +187,10 @@ public class AreaUtenteServlet extends HttpServlet {
                     if (success) {
                         session.setAttribute("utenteLoggato", utenteSessione);
                         session.setAttribute("utente", utenteSessione);
-                        request.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
+                        session.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
+                        
+                        response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                        return;
                     } else {
                         request.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
                     }

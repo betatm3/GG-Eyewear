@@ -2,7 +2,8 @@
 //novalidate: Disabilita i messaggi di errore automatici del browser, lasciando il controllo totale al nostro script.
 
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("form.edit-profile-form");
+    //const form = document.querySelector("form.edit-profile-form");
+	const form = document.querySelector("form[action*='area-utente']");
     if (!form) return;
 
     form.setAttribute("novalidate", "true");
@@ -23,6 +24,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
     const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 	
+	const closeBtn = document.querySelector("#js-error-banner .close-banner-btn");
+	if (closeBtn) {
+	    closeBtn.addEventListener("click", function() {
+	        showBannerError(null); // Nasconde il banner tramite la tua funzione
+	    });
+	}
 
     function showFieldError(input, message) {
         if (!input) return;
@@ -48,6 +55,20 @@ document.addEventListener("DOMContentLoaded", function() {
             input.style.borderColor = "#E2DDD5";
         }
     }
+	
+	function showBannerError(message) {
+	    const banner = document.getElementById("js-error-banner");
+	    const bannerText = document.getElementById("js-error-text");
+	    
+	    if (banner && bannerText) {
+	        if (message) {
+	            bannerText.textContent = message;
+	            banner.style.display = "flex"; // Mostra il banner
+	        } else {
+	            banner.style.display = "none";  // Nasconde il banner se non ci sono errori
+	        }
+	    }
+	}
 
     function validateNome() {
         const val = nomeInput.value.trim();
@@ -219,17 +240,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Controllo al Submit
     form.addEventListener("submit", function(event) {
-		
+		try{
         const v1 = validateNome();
-        const v2 = validateCognome();
-        const v3 = validateEmail();
-        const v4 = validateTelefono();
-        const v5 = validateDataNascita();
-        const v6 = validateIndirizzo();
-        const v7 = validatePasswords();
-
-        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7)) {
-            event.preventDefault();
-        }
+	        const v2 = validateCognome();
+	        const v3 = validateEmail();
+	        const v4 = validateTelefono();
+	        const v5 = validateDataNascita();
+	        const v6 = validateIndirizzo();
+	        const v7 = validatePasswords();
+	
+	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7)) {
+	            event.preventDefault();
+	  			showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
+			} else {
+			    showBannerError(null); // Rimuove il banner se tutti i dati sono corretti
+			}
+		} catch (e) {
+			// Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
+			console.error("Errore durante la validazione:", e);
+			event.preventDefault();
+		}
     });
 });
