@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
@@ -20,29 +21,43 @@ public class ColoreDAOImpl implements ColoreDAO {
     }
 
     @Override
-    public boolean doSave(Colore colore) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (codice, nome) VALUES (?, ?)";
-        int result = 0;
+    public int doSave(Colore colore) throws SQLException {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (codice, nome, hex) VALUES (?, ?, ?)";
+        int generatedId = -1;
+
+        // Statement.RETURN_GENERATED_KEYS serve per recuperare l'id AUTO_INCREMENT dal DB
         try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
             
             preparedStatement.setString(1, colore.getCodice());
             preparedStatement.setString(2, colore.getNome());
+            preparedStatement.setString(3, colore.getHex());
 
-            result = preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        generatedId = rs.getInt(1);
+                        colore.setIdColore(generatedId); 
+                    }
+                }
+            }
         }
-        return (result != 0);
+        return generatedId;
     }
-
     @Override
     public boolean doUpdate(Colore colore) throws SQLException {
-        String updateSQL = "UPDATE " + TABLE_NAME + " SET nome = ? WHERE codice = ?";
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET codice = ?, nome = ?, hex = ? WHERE id_colore = ?";
         int result = 0;
+
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             
-            preparedStatement.setString(1, colore.getNome());
-            preparedStatement.setString(2, colore.getCodice());
+            preparedStatement.setString(1, colore.getCodice());
+            preparedStatement.setString(2, colore.getNome());
+            preparedStatement.setString(3, colore.getHex());
+            preparedStatement.setInt(4, colore.getIdColore());
 
             result = preparedStatement.executeUpdate();
         }
@@ -50,28 +65,28 @@ public class ColoreDAOImpl implements ColoreDAO {
     }
 
     @Override
-    public boolean doDelete(String codice) throws SQLException {
-        String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE codice = ?";
+    public boolean doDelete(int idColore) throws SQLException {
+        String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE id_colore = ?";
         int result = 0;
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             
-            preparedStatement.setString(1, codice);
+            preparedStatement.setInt(1, idColore);
             result = preparedStatement.executeUpdate();
         }
         return (result != 0);
     }
 
     @Override
-    public Colore doRetrieveByKey(String codice) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE codice = ?";
+    public Colore doRetrieveByKey(int idColore) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id_colore = ?";
         Colore colore = null;
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setString(1, codice);
+            preparedStatement.setInt(1, idColore);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next())
@@ -90,6 +105,25 @@ public class ColoreDAOImpl implements ColoreDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
             preparedStatement.setString(1, nomeScelto);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                	colore = leggiDBColore(rs);
+                }
+            }
+        }
+        return colore;
+    }
+    
+    @Override
+    public Colore doRetrieveByHex(String hex) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE hex = ?";
+        Colore colore = null;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+            
+            preparedStatement.setString(1, hex);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
@@ -144,9 +178,11 @@ public class ColoreDAOImpl implements ColoreDAO {
     
     
     private Colore leggiDBColore(ResultSet rs) throws SQLException {
-        Colore colore = new Colore();
-        colore.setCodice(rs.getString("codice"));
-        colore.setNome(rs.getString("nome"));
-        return colore;
+        Colore c = new Colore();
+        c.setIdColore(rs.getInt("id_colore"));
+        c.setCodice(rs.getString("codice"));
+        c.setNome(rs.getString("nome"));
+        c.setHex(rs.getString("hex"));
+        return c;
     }
 }

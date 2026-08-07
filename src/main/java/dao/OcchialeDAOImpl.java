@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
@@ -27,7 +28,7 @@ public class OcchialeDAOImpl implements OcchialeDAO {
             try {
                 connection.setAutoCommit(false); 
                 
-                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
                     preparedStatement.setBoolean(1, occhiale.isAttivo());
                     preparedStatement.setString(2, occhiale.getTipo() != null ? occhiale.getTipo().name() : null);
                   

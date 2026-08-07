@@ -93,7 +93,7 @@ public class AreaUtenteServlet extends HttpServlet {
                             
                             // Carica i dettagli del colore
                             if (prod.getColore() != null) {
-                                Colore colCompleto = coloreDAO.doRetrieveByKey(prod.getColore().getCodice());
+                                Colore colCompleto = coloreDAO.doRetrieveByKey(prod.getColore().getIdColore());
                                 if (colCompleto != null) {
                                     prod.setColore(colCompleto);
                                 }

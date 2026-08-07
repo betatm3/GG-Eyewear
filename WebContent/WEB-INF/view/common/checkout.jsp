@@ -40,7 +40,11 @@
 
             <h1>Completa il tuo Ordine</h1>
 
-            <% if (errore != null) { %>
+            <% if (errore != null) { 
+            //in altre jsp come areUtente e registrazione, per i banner uso showBanner error in modo che 
+            //il banner di errore appaia anche quando si compila male il form
+            %>
+            
                 <div class="error-banner" style="align-items: center; justify-content: space-between;">
                     <div></div>
                     <div style="display: flex; align-items: center; gap: 8px;">

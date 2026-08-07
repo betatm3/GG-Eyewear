@@ -122,8 +122,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
         
         int generatedId = occhialeDAO.doSave(nuovoOcchiale);
-        nuovoOcchiale.setId(generatedId);
-
+        //INSERIRE CONTROLLO SU ID SE IL DOSAVE HA AVUTO SUCCESSO?
         // Salvataggio dell'immagine caricata
         try {
             String pathImg = salvaImmagine(request, generatedId);

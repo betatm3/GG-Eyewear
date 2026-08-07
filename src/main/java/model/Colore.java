@@ -1,12 +1,16 @@
 package model;
 
 public class Colore implements  Cloneable{
-	private String codice;
-	private String nome;
+	private int idColore;
+    private String codice;
+    private String nome;
+    private String hex;
 	
-	public Colore(String codice, String nome) {
+	public Colore(int idColore, String codice, String nome, String hex) {
+		this.idColore = idColore;
 		this.codice = codice;
 		this.nome = nome;
+		this.hex = hex;
 	}
 	
 	public Colore() {
@@ -18,6 +22,24 @@ public class Colore implements  Cloneable{
 	public String getNome() {
 		return nome;
 	}
+	
+	
+	public int getIdColore() {
+		return idColore;
+	}
+
+	public String getHex() {
+		return hex;
+	}
+
+	public void setIdColore(int idColore) {
+		this.idColore = idColore;
+	}
+
+	public void setHex(String hex) {
+		this.hex = hex;
+	}
+
 	public void setCodice(String codice) {
 		this.codice = codice;
 	}
@@ -25,6 +47,13 @@ public class Colore implements  Cloneable{
 		this.nome = nome;
 	}
 
+	@Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Colore colore = (Colore) o;
+        return idColore == colore.idColore;
+    }
+	
     @Override
     public Colore clone(){
         try{

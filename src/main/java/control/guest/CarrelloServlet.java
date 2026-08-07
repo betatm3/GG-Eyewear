@@ -124,14 +124,14 @@ public class CarrelloServlet extends HttpServlet {
     private void aggiungiProdotto(HttpServletRequest request, ArrayList<ProdottoAcquistato> carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
         int codiceVersioneOcchiale = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
-        String coloreScelto = request.getParameter("coloreScelto");
+        int coloreScelto = Integer.parseInt(request.getParameter("coloreScelto"));
         
         // Controlliamo se lo STESSO identico prodotto (stessa versione e colore) è già nel carrello
         ProdottoAcquistato giaEsistente = null;
         for (ProdottoAcquistato p : carrello) {
             if (p.getVersioneOcchiale().getOcchiale().getId() == idOcchiale && 
                 p.getVersioneOcchiale().getCodice() == codiceVersioneOcchiale && 
-                p.getColore().getCodice().equalsIgnoreCase(coloreScelto)) {
+                p.getColore().getIdColore()==coloreScelto) {
             	
                 giaEsistente = p;
                 giaEsistente.setQuantita(giaEsistente.getQuantita() + 1);
