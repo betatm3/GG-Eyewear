@@ -271,7 +271,7 @@
                         if (coloriAssociati != null && !coloriAssociati.isEmpty()) {
                             for (Disponibile disp : coloriAssociati) {
                                 
-                                Colore cDettaglio = coloreDAO.doRetrieveByKey(disp.getColore().getCodice());
+                                Colore cDettaglio = coloreDAO.doRetrieveByKey(disp.getColore().getIdColore());
                                 String nomeC = cDettaglio != null ? cDettaglio.getNome() : disp.getColore().getCodice();
                     %>
                                 <div class="color-manager-item">
@@ -281,7 +281,7 @@
                                     
                                     <div class="color-update-form">
                                         
-                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
+                                        <form id="formUpdateQuantity" action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
                                             <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                                             <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
                                             <input type="number" name="quantita" value="<%= disp.getQuantita() %>" min="0"  />
@@ -312,7 +312,7 @@
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
                     <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px; color: #ffffff;">Associa Nuova Variante Colore</div>
                     
-                    <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=addcolor" method="POST">
+                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=addcolor" method="POST">
                         <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                         
                         <div class="form-grid">
@@ -465,6 +465,6 @@
 %>
 <%@ include file="../partials/footer.jsp" %>
 <script src="${pageContext.request.contextPath}/scripts/gestioneProdotti.js"></script>
-
+<script src="${pageContext.request.contextPath}/scripts/gestioneColori.js"></script>
 </body>
 </html>
