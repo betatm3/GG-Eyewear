@@ -97,6 +97,25 @@ public class ColoreDAOImpl implements ColoreDAO {
     }
     
     @Override
+    public Colore doRetrieveByCodice(String codice) throws SQLException {
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE codice = ?";
+        Colore colore = null;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+            
+            preparedStatement.setString(1, codice);
+
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                	colore = leggiDBColore(rs);
+                }
+            }
+        }
+        return colore;
+    }
+    
+    @Override
     public Colore doRetrieveByNome(String nomeScelto) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE nome = ?";
         Colore colore = null;

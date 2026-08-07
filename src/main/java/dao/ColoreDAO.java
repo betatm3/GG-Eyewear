@@ -14,6 +14,8 @@ public interface ColoreDAO {
     
     Colore doRetrieveByKey(int idColore) throws SQLException;
     
+    Colore doRetrieveByCodice(String codice) throws SQLException;
+    
     Collection<Colore> doRetrieveByNomeGenerico(String nomeScelto) throws SQLException;
     
     Colore doRetrieveByNome(String nomeScelto) throws SQLException;

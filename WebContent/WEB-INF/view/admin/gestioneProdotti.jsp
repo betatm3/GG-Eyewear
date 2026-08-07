@@ -271,7 +271,7 @@
                         if (coloriAssociati != null && !coloriAssociati.isEmpty()) {
                             for (Disponibile disp : coloriAssociati) {
                                 
-                                Colore cDettaglio = coloreDAO.doRetrieveByKey(disp.getColore().getIdColore());
+                                Colore cDettaglio = coloreDAO.doRetrieveByCodice(disp.getColore().getCodice());
                                 String nomeC = cDettaglio != null ? cDettaglio.getNome() : disp.getColore().getCodice();
                     %>
                                 <div class="color-manager-item">
@@ -281,10 +281,12 @@
                                     
                                     <div class="color-update-form">
                                         
-                                        <form id="formUpdateQuantity" action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
+                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
                                             <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                                             <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
-                                            <input type="number" name="quantita" value="<%= disp.getQuantita() %>" min="0"  />
+                                            <div class="input-group-wrapper" style="display: flex; flex-direction: column;">
+                                            	<input type="number" name="quantita" value="<%= disp.getQuantita() %>"  />
+                                            </div>
                                             <button type="submit" class="btn-mini save">Aggiorna</button>
                                         </form>
 
@@ -334,7 +336,7 @@
                             
                             <div class="form-group">
                                 <label for="nuova_quantita">Quantità Iniziale</label>
-                                <input type="number" id="nuova_quantita" name="quantita" min="0" value="10" />
+                                <input type="number" id="nuova_quantita" name="quantita" value="10" />
                             </div>
                         </div>
                         
@@ -420,7 +422,7 @@
                                     <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
                                 <% } } %>
                             </select>
-                            <input type="number" name="quantitaColore" min="0" placeholder="Qta scorta" />
+                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
                         </div>
 
                         <div class="color-row">
@@ -430,7 +432,7 @@
                                     <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
                                 <% } } %>
                             </select>
-                            <input type="number" name="quantitaColore" min="0" placeholder="Qta scorta" />
+                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
                         </div>
 
                         <div class="color-row">
@@ -440,7 +442,7 @@
                                     <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
                                 <% } } %>
                             </select>
-                            <input type="number" name="quantitaColore" min="0" placeholder="Qta scorta" />
+                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
                         </div>
                     </div>
                     
