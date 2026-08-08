@@ -49,30 +49,16 @@
 
     
     <%
-        String paramGenere = request.getParameter("genere");
-        if (paramGenere == null) paramGenere = "";
-        
-        String paramMarca = request.getParameter("marca");
-        if (paramMarca == null) paramMarca = "";
-        
-        String paramStato = request.getParameter("stato");
-        if (paramStato == null) paramStato = "";
-        
-        String paramMetodo = request.getParameter("metodoPagamento");
-        if (paramMetodo == null) paramMetodo = "";
-        
-        String paramPrezzoMin = request.getParameter("prezzoMin");
-        if (paramPrezzoMin == null) paramPrezzoMin = "";
-        
-        String paramPrezzoMax = request.getParameter("prezzoMax");
-        if (paramPrezzoMax == null) paramPrezzoMax = "";
-        
-        String paramDataInizio = request.getParameter("dataInizio");
-        if (paramDataInizio == null) paramDataInizio = "";
-        
-        String paramDataFine = request.getParameter("dataFine");
-        if (paramDataFine == null) paramDataFine = "";
-    %>
+    String paramGenere = request.getParameter("genere") != null ? request.getParameter("genere") : "";
+    String paramMarca = request.getParameter("marca") != null ? request.getParameter("marca") : "";
+    String paramStato = request.getParameter("stato") != null ? request.getParameter("stato") : "";
+    String paramMetodo = request.getParameter("metodoPagamento") != null ? request.getParameter("metodoPagamento") : "";
+    String paramPrezzoMin = request.getParameter("prezzoMin") != null ? request.getParameter("prezzoMin") : "";
+    String paramPrezzoMax = request.getParameter("prezzoMax") != null ? request.getParameter("prezzoMax") : "";
+    String paramDataInizio = request.getParameter("dataInizio") != null ? request.getParameter("dataInizio") : "";
+    String paramDataFine = request.getParameter("dataFine") != null ? request.getParameter("dataFine") : "";
+    String paramEmailUtente = request.getParameter("emailUtente") != null ? request.getParameter("emailUtente") : "";
+%>
     <form action="${pageContext.request.contextPath}/admin/GestioneOrdini" method="GET" class="filters-section">
         <div class="filters-title">
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
@@ -111,11 +97,11 @@
             </div>
             <div class="filter-field">
                 <label class="filter-label">Prezzo Min (€)</label>
-                <input type="number" name="prezzoMin" step="0.01" value="<%= paramPrezzoMin %>" placeholder="Min" class="filter-input" />
+                <input type="number" name="prezzoMin" step="0.1" value="<%= paramPrezzoMin %>" placeholder="Min" class="filter-input" />
             </div>
             <div class="filter-field">
                 <label class="filter-label">Prezzo Max (€)</label>
-                <input type="number" name="prezzoMax" step="0.01" value="<%= paramPrezzoMax %>" placeholder="Max" class="filter-input" />
+                <input type="number" name="prezzoMax" step="0.1" value="<%= paramPrezzoMax %>" placeholder="Max" class="filter-input" />
             </div>
             <div class="filter-field">
                 <label class="filter-label">Data Inizio</label>
@@ -127,7 +113,7 @@
             </div>
             <div class="filter-field">
                 <label class="filter-label">Email Utente</label>
-                <input type="email" name="email" required placeholder="mario.rossi@email.it" class="filter-input" />
+                <input type="email" name="emailUtente" value="<%= paramEmailUtente %>" placeholder="mario.rossi@email.it" class="filter-input" />
             </div>
         </div>
         <div class="filters-actions">

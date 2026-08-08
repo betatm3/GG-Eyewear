@@ -26,6 +26,16 @@
     <% 
         Boolean isOutlet = (Boolean) request.getAttribute("isOutlet");
         if (isOutlet == null) isOutlet = "true".equalsIgnoreCase(request.getParameter("outlet"));
+        
+        String paramMarca = request.getParameter("marca") != null ? request.getParameter("marca") : "";
+        String paramGenere = request.getParameter("genere") != null ? request.getParameter("genere") : "";
+        String paramMontatura = request.getParameter("montatura") != null ? request.getParameter("montatura") : "";
+        String paramTaglia = request.getParameter("taglia") != null ? request.getParameter("taglia") : "";
+        String paramMateriale = request.getParameter("materiale") != null ? request.getParameter("materiale") : "";
+        String paramForma = request.getParameter("forma") != null ? request.getParameter("forma") : "";
+        String paramColore = request.getParameter("colore") != null ? request.getParameter("colore") : "";
+        String paramPrezzoMin = request.getParameter("prezzoMin") != null ? request.getParameter("prezzoMin") : "";
+        String paramPrezzoMax = request.getParameter("prezzoMax") != null ? request.getParameter("prezzoMax") : "";
     %>
 
     <h1><%= isOutlet ? "Outlet Occhiali — Sconti Esclusivi" : "Il nostro Catalogo Occhiali" %></h1>
@@ -52,16 +62,16 @@
             <div class="filters-grid">
                 <div class="filter-field">
                     <label class="filter-label" for="filterMarca">Marca</label>
-                    <input type="text" id="filterMarca" name="marca" class="filter-input" placeholder="Es. Ray-Ban..." value="<%= request.getParameter("marca") != null ? request.getParameter("marca") : "" %>" />
+                    <input type="text" id="filterMarca" name="marca" class="filter-input" placeholder="Es. Ray-Ban..." value="<%= paramMarca%>" />
                 </div>
                 
                 <div class="filter-field">
                     <label class="filter-label" for="filterGenere">Genere</label>
                     <select id="filterGenere" name="genere" class="filter-input">
                         <option value="">Tutti</option>
-                        <option value="Uomo" <%= "Uomo".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Uomo</option>
-                        <option value="Donna" <%= "Donna".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Donna</option>
-                        <option value="Unisex" <%= "Unisex".equalsIgnoreCase(request.getParameter("genere")) ? "selected" : "" %>>Unisex</option>
+                        <option value="Uomo" <%= "Uomo".equalsIgnoreCase(paramGenere) ? "selected" : "" %>>Uomo</option>
+                        <option value="Donna" <%= "Donna".equalsIgnoreCase(paramGenere) ? "selected" : "" %>>Donna</option>
+                        <option value="Unisex" <%= "Unisex".equalsIgnoreCase(paramGenere) ? "selected" : "" %>>Unisex</option>
                     </select>
                 </div>
                 
@@ -69,9 +79,9 @@
                     <label class="filter-label" for="filterMontatura">Montatura</label>
                     <select id="filterMontatura" name="montatura" class="filter-input">
                         <option value="">Tutti</option>
-                        <option value="Spessa" <%= "Spessa".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Spessa</option>
-                        <option value="Mezza" <%= "Mezza".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Mezza</option>
-                        <option value="Senza" <%= "Senza".equalsIgnoreCase(request.getParameter("montatura")) ? "selected" : "" %>>Senza</option>
+                        <option value="Spessa" <%= "Spessa".equalsIgnoreCase(paramMontatura) ? "selected" : "" %>>Spessa</option>
+                        <option value="Mezza" <%= "Mezza".equalsIgnoreCase(paramMontatura) ? "selected" : "" %>>Mezza</option>
+                        <option value="Senza" <%= "Senza".equalsIgnoreCase(paramMontatura) ? "selected" : "" %>>Senza</option>
                     </select>
                 </div>
 
@@ -79,38 +89,43 @@
                     <label class="filter-label" for="filterTaglia">Taglia</label>
 					<select id="filterTaglia" name="taglia" class="filter-input">
                         <option value="">Tutti</option>
-                        <option value="L" <%= "L".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>L ( > 55 mm)</option>
-                        <option value="M" <%= "M".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>M ( 51 - 54 mm)</option>
-                        <option value="S" <%= "S".equalsIgnoreCase(request.getParameter("taglia")) ? "selected" : "" %>>S ( < 50 mm)</option>
+                        <option value="L" <%= "L".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>L ( > 55 mm)</option>
+                        <option value="M" <%= "M".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>M ( 51 - 54 mm)</option>
+                        <option value="S" <%= "S".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>S ( < 50 mm)</option>
                     </select>                
                 </div>
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterMateriale">Materiale</label>
-                    <input type="text" id="filterMateriale" name="materiale" class="filter-input" placeholder="Es. Acetato, Metallo..." value="<%= request.getParameter("materiale") != null ? request.getParameter("materiale") : "" %>" />
+                    <input type="text" id="filterMateriale" name="materiale" class="filter-input" placeholder="Es. Acetato, Metallo..." value="<%= paramMateriale%>" />
                 </div>
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterForma">Forma</label>
-                    <input type="text" id="filterForma" name="forma" class="filter-input" placeholder="Es. Rotonda, Aviator..." value="<%= request.getParameter("forma") != null ? request.getParameter("forma") : "" %>" />
+                    <input type="text" id="filterForma" name="forma" class="filter-input" placeholder="Es. Rotonda, Aviator..." value="<%= paramForma%>" />
                 </div>
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterColore">Colore</label>
-                    <input type="text" id="filterColore" name="colore" class="filter-input" placeholder="Es. Nero, Oro..." value="<%= request.getParameter("colore") != null ? request.getParameter("colore") : "" %>" />
+                    <input type="text" id="filterColore" name="colore" class="filter-input" placeholder="Es. Nero, Oro..." value="<%= paramColore%>" />
                 </div>
-
-                
                 
                 <div class="filter-field">
                     <label class="filter-label" for="filterPrezzoMin">Prezzo Minimo (€)</label>
-                    <input type="number" id="filterPrezzoMin" name="prezzoMin" class="filter-input" placeholder="Es. 50" min="0" step="10" value="<%= request.getParameter("prezzoMin") != null ? request.getParameter("prezzoMin") : "" %>" />
+                    <input type="number" id="filterPrezzoMin" name="prezzoMin" class="filter-input" placeholder="Es. 50" min="0" step="10" value="<%= paramPrezzoMin%>" />
                 </div>
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterPrezzoMax">Prezzo Massimo (€)</label>
-                    <input type="number" id="filterPrezzoMax" name="prezzoMax" class="filter-input" placeholder="Es. 150" min="0" step="10" value="<%= request.getParameter("prezzoMax") != null ? request.getParameter("prezzoMax") : "" %>" />
+                    <input type="number" id="filterPrezzoMax" name="prezzoMax" class="filter-input" placeholder="Es. 150" min="0" step="10" value="<%= paramPrezzoMax%>" />
                 </div>
+                
+				<div class="filters-actions">
+		            <button type="button" id="btnResetFiltri" class="btn-reset" style="width: 100%; cursor: pointer;">
+				        Azzera Filtri
+				    </button>
+		        </div>
+                
             </div>
             
         </form>

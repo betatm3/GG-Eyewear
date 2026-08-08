@@ -314,7 +314,7 @@ h1 {
   padding-top: 16px;
 }
 
-.btn-filter {
+.btn-reset {
   background: var(--ink);
   border: none;
   color: var(--paper);
@@ -327,28 +327,8 @@ h1 {
   transition: all 0.3s ease;
 }
 
-.btn-filter:hover {
+.btn-reset:hover {
   background: var(--amber);
   color: var(--ink);
   transform: translateY(-1px);
 }
-
-.btn-reset {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  color: rgba(43, 43, 43, 0.7);
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  text-align: center;
-}
-
-.btn-reset:hover {
-  background: var(--paper-soft);
-  color: var(--ink);
-}
-

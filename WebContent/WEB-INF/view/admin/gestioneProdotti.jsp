@@ -233,7 +233,7 @@
                         </div>
                         <div class="form-group">
                             <label for="prezzo">Prezzo (€)</label>
-                            <input type="number" id="prezzo" name="prezzo" step="0.01" value="<%= versioneInModifica.getPrezzo() %>" />
+                            <input type="number" id="prezzo" name="prezzo" step="0.1" value="<%= versioneInModifica.getPrezzo() %>" />
                         </div>
                         <div class="form-group">
                             <label for="tipologia">Tipologia</label>
@@ -415,7 +415,7 @@
                         </div>
                         <div class="form-group">
                             <label for="prezzo">Prezzo (€)</label>
-                            <input type="number" id="prezzo" name="prezzo" step="0.01" placeholder="Es. 129.90" />
+                            <input type="number" id="prezzo" name="prezzo" step="0.1" placeholder="Es. 129.90" />
                         </div>
                         <div class="form-group">
                             <label for="tipologia">Tipologia</label>

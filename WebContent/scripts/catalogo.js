@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const filterForm = document.getElementById("filtri");
     const catalogContainer = document.getElementById("catalogoContainer"); // Il div che contiene i prodotti
-
+	const btnReset = document.getElementById("btnResetFiltri"); // pulsante di reset
+	
     if (!filterForm || !catalogoContainer) {
         console.error("Form 'filtri' o 'catalogoContainer' non trovati nel DOM.");
         return;
@@ -10,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Selezioniamo tutti gli input e select dentro il form 'catalogo'
     const filterInputs = filterForm.querySelectorAll("input, select");
 
-    function applyFilters() {
+    function applyFilters() {  //per applicare filtri
         const formData = new FormData(filterForm);
         const searchParams = new URLSearchParams(formData).toString();
 
@@ -38,9 +39,26 @@ document.addEventListener("DOMContentLoaded", () => {
         input.addEventListener("input", applyFilters);
         input.addEventListener("change", applyFilters);
     });
+	
+	if (btnReset) {
+	    btnReset.addEventListener("click", () => {
+
+	        filterForm.reset();
+
+	        // Svuota esplicitamente tutti i campi input text/number e resetta i select
+	        filterInputs.forEach(input => {
+	            // Mantiene eventuali campi hidden fondamentali (outlet o tipo) se presenti
+	            if (input.type !== "hidden") {
+	               if (input.tagName === "SELECT") {
+	                    input.selectedIndex = 0;
+	                } else {
+	                    input.value = "";
+	                }
+	            }
+	        });
+        	applyFilters();
+	    });
+	}
+	
 });
-
-
-
-
 
