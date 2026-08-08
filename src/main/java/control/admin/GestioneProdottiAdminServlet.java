@@ -88,21 +88,24 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore durante l'operazione sul database: " + e.getMessage());
+            request.setAttribute("errore", "Errore durante l'operazione sul database: " + e.getMessage());
+            doGet(request, response);
         }
     }
 
     // --- METODI PRIVATI DI SUPPORTO ---
 
-    private void rimuoviOcchialeLogico(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+    private void rimuoviOcchialeLogico(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
         int idOcchiale = Integer.parseInt(request.getParameter("id"));
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         
         if (occhialeDAO.doDeleteLogica(idOcchiale)) {
-            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti?msg=ProdottoDisattivato");
+        	request.setAttribute("msgSuccesso", "Prodotto disattivato con successo.");
         } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Impossibile disattivare il prodotto: ID non trovato.");
+        	request.setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
         }
+        // Ricarica la vista
+        doGet(request, response);
     }
 
     private void aggiungiNuovoProdotto(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -122,7 +125,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
         
         int generatedId = occhialeDAO.doSave(nuovoOcchiale);
-        //INSERIRE CONTROLLO SU ID SE IL DOSAVE HA AVUTO SUCCESSO?
+        if (generatedId <= 0) {
+        	request.setAttribute("errore", "Errore durante la creazione dell'occhiale nel database.");
+            doGet(request, response);
+            return; 
+        }
         // Salvataggio dell'immagine caricata
         try {
             String pathImg = salvaImmagine(request, generatedId);
@@ -192,7 +199,8 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
         }
         
-        response.sendRedirect(request.getContextPath() + "/admin/dashboard?msg=ProdottoInserito");
+        request.setAttribute("msgSuccesso", "Nuovo prodotto inserito con successo!");
+        doGet(request, response);
     }
 
     private void modificaCaratteristiche(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -287,10 +295,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             versioneDAO.disattivaVersione(versioneVecchia);
         }
 
-        response.sendRedirect(request.getContextPath() + "/admin/dashboard?msg=ProdottoModificato");
+        request.setAttribute("msgSuccesso", "Caratteristiche del prodotto modificate con successo!");
+        doGet(request, response);
     }
 
-    private void gestisciVariantiColore(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+    private void gestisciVariantiColore(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
 
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
@@ -325,11 +334,13 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     break;
                     
                 default:
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sotto-azione colore non riconosciuta.");
+                	request.setAttribute("errore", "Sub-action colore non riconosciuta.");
+                    doGet(request, response);
                     return;
             }
         }
-         response.sendRedirect(request.getContextPath() + "/admin/dashboard?msg=ColoriAggiornati");
+        request.setAttribute("msgSuccesso", "Varianti colore aggiornate con successo!");
+        doGet(request, response);
     }
 
     private String salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {

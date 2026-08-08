@@ -393,19 +393,6 @@ h1 {
     }
 }
 
-.errore-banner {
-  background: rgba(200, 106, 85, 0.1);
-  border: 1px solid rgba(200, 106, 85, 0.2);
-  color: var(--rust);
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 /* Bottone Dashboard Admin per Utenti Amministratori */
 .btn-admin-dashboard {
   display: inline-flex;

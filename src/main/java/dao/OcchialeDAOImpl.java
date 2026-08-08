@@ -77,12 +77,14 @@ public class OcchialeDAOImpl implements OcchialeDAO {
                     preparedStatement.setInt(3, occhiale.getId());
 
                     result = preparedStatement.executeUpdate();
-
-                    eliminaImmagini(occhiale.getId(), connection);
-                    salvaImmagini(occhiale.getImmagini(), occhiale.getId(), connection);
-
-                    connection.commit(); // Conferma transazione
+                    // Se fallisce, si SALTA direttamente al catch(SQLException e)
                 }
+                // eseguito SOLO SE l'update è andato a buon fine
+                eliminaImmagini(occhiale.getId(), connection);
+                salvaImmagini(occhiale.getImmagini(), occhiale.getId(), connection);
+
+                connection.commit(); // Conferma transazione
+               
             } catch (SQLException e) {
                 connection.rollback(); // Annulla tutto in caso di errore
                 throw e;

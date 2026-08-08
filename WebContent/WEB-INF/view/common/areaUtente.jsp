@@ -44,7 +44,7 @@
             String errore = (String) request.getAttribute("errore");
             if (errore != null) {
         %>
-            <div class="error-banner" style="border-radius: 8px; font-weight: 600; margin-bottom: 20px; text-align: center;">
+            <div class="error-banner" style="text-align: center;">
                 <span>⚠️</span> <%= errore %>
             </div>
         <% 
@@ -52,9 +52,9 @@
             String msgSuccesso = (String) request.getAttribute("msgSuccesso");
             if (msgSuccesso != null) {
 	        %>
-	        <div class="successo-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgb(16, 185, 129); color: rgb(16, 185, 129); padding: 12px 16px; border-radius: 8px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+	        <div class="success-banner" >
 			    <div></div>
-			    <div style="display: flex; align-items: center; gap: 8px;">
+			    <div class="success-banner-content">
 			        <span>✓</span>
 			        <span><%= msgSuccesso %></span>
 			    </div>

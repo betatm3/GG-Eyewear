@@ -22,6 +22,7 @@
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
+
 <%
    
     DataSource ds = null;
@@ -80,10 +81,39 @@
     <div>
         <h1>Gestione Catalogo Prodotti</h1>
         <div class="subtitle">Visualizza, aggiungi o modifica i modelli e regola le scorte di magazzino</div>
+        
+        <%-- Controllo presenza parametri di errore o successo --%>
+		<%
+		    String errore = (String) request.getAttribute("errore");
+		    String msgSuccesso = (String) request.getAttribute("msgSuccesso");
+		%>
+		
+		<%-- BANNER DI ERRORE --%>
+		<% if (errore != null && !errore.trim().isEmpty()) { %>
+		    <div class="error-banner" style=" justify-content: space-between;">
+		        <div></div>
+		        <div class="banner-content">
+		            <span>⚠️</span>
+		            <span><%= errore %></span>
+		        </div>
+		        <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';">✕</button>
+		    </div>
+		<% } %>
+		
+		<%-- BANNER DI SUCCESSO --%>
+		<% if (msgSuccesso != null && !msgSuccesso.trim().isEmpty()) { %>
+		    <div class="success-banner">
+		        <div></div>
+		        <div class="banner-content">
+		            <span>✓</span>
+		            <span><%= msgSuccesso %></span>
+		        </div>
+		        <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';" style=" color: rgb(16, 185, 129);">✕</button>
+		    </div>
+		<% } %>
     </div>
 
     <div class="main-layout">
-        
         
         <div class="card">
             <div class="card-title">
