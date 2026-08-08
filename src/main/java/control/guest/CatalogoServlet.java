@@ -184,7 +184,7 @@ public class CatalogoServlet extends HttpServlet {
         boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
 
         if (isAjax) {
-            // Rinvii solo il file con le sole schedine dei prodotti (es. componenti/grigliaProdotti.jsp)
+            // Rinvio file con le sole schede dei prodotti
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp");
         	dispatcher.forward(request, response);
         } else {

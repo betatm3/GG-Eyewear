@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const filterForm = document.getElementById("filtri");
+    const filterForm = document.getElementById("filtriCatalogo");
     const catalogContainer = document.getElementById("catalogoContainer"); // Il div che contiene i prodotti
 	const btnReset = document.getElementById("btnResetFiltri"); // pulsante di reset
 	
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Selezioniamo tutti gli input e select dentro il form 'catalogo'
+    // Selezioniamo tutti gli input e select 
     const filterInputs = filterForm.querySelectorAll("input, select");
 
     function applyFilters() {  //per applicare filtri

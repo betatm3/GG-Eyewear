@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
+
 import model.Ordine;
 import model.Utente;
 import model.Stato;
@@ -136,7 +137,7 @@ public class OrdineDAOImpl implements OrdineDAO {
     }
     
     @Override
-    public Collection<Ordine> doRetrieveByFiltri(Stato stato, String metodoPagamento, Double prezzoMin, Double prezzoMax, LocalDateTime dataInizio, LocalDateTime dataFine) throws SQLException {
+    public Collection<Ordine> doRetrieveByFiltri(Stato stato, String metodoPagamento, Double prezzoMin, Double prezzoMax, LocalDateTime dataInizio, LocalDateTime dataFine, String emailUtente) throws SQLException {
         Collection<Ordine> ordini = new ArrayList<>();
         
         StringBuilder sbQuery = new StringBuilder("SELECT * FROM " + TABLE_NAME + " WHERE 1=1");
@@ -158,6 +159,9 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
         if (dataFine != null) {
             sbQuery.append(" AND data_ordine <= ?");
+        }
+        if (emailUtente != null) {
+            sbQuery.append(" AND utente_email = ?");
         }
 
         try (Connection connection = ds.getConnection();
@@ -184,6 +188,9 @@ public class OrdineDAOImpl implements OrdineDAO {
             if (dataFine != null) {
                 preparedStatement.setTimestamp(parameterIndex++, java.sql.Timestamp.valueOf(dataFine));
             }
+            if (emailUtente != null) {
+            	preparedStatement.setString(parameterIndex++, emailUtente.trim());
+            }
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -206,7 +213,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         StringBuilder sbCodici = new StringBuilder();
         for (int i = 0; i < codiciVersioni.size(); i++) {
             sbCodici.append("?");
-            if (i < codiciVersioni.size() - 1) sbCodici.append(",");
+            if (i < codiciVersioni.size() - 1) sbCodici.append(","); // per mettere una virgola, separando i vari valori (l'ultimo non la mette)
         }
 
         StringBuilder sbIdOcchiali = new StringBuilder();
@@ -243,6 +250,40 @@ public class OrdineDAOImpl implements OrdineDAO {
                ordini.add(ordine);
            }
             
+        }
+        
+        return ordini;
+    }
+    
+    public Collection<Ordine> doRetrieveByProdotti(Collection<Integer> idOcchiali) throws SQLException {
+        Collection<Ordine> ordini = new ArrayList<>();
+        
+        if (idOcchiali == null || idOcchiali.isEmpty()) {
+            return ordini;
+        }
+
+        StringBuilder sbIdOcchiali = new StringBuilder();
+        for (int i = 0; i < idOcchiali.size(); i++) {
+            sbIdOcchiali.append("?");
+            if (i < idOcchiali.size() - 1) sbIdOcchiali.append(",");
+        }
+
+        String query = "SELECT DISTINCT o.* FROM ordine o " +
+                       "JOIN prodotto_acquistato pa ON o.id = pa.ordine_id " +
+                       "WHERE pa.occhiale_id IN (" + sbIdOcchiali.toString() + ")";
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            int parameterIndex = 1;
+            for (Integer id : idOcchiali) {
+                preparedStatement.setInt(parameterIndex++, id);
+            }
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                ordini.add(leggiDBOrdine(rs));
+            }
         }
         
         return ordini;

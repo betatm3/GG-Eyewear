@@ -336,7 +336,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     
     @Override
     public Collection<VersioneOcchiale> doRetrieveByMarca(String marcaScelta) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE marca = ?";
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE marca = ? AND corrente = TRUE ";
         Collection<VersioneOcchiale> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();

@@ -20,9 +20,11 @@ public interface OrdineDAO {
 
 	Collection<Ordine> doRetrieveByStato(Stato stato) throws SQLException;
 	
-    Collection<Ordine> doRetrieveByFiltri(Stato stato, String metodoPagamento, Double prezzoMin, Double prezzoMax, LocalDateTime dataInizio, LocalDateTime dataFine) throws SQLException;
+    Collection<Ordine> doRetrieveByFiltri(Stato stato, String metodoPagamento, Double prezzoMin, Double prezzoMax, LocalDateTime dataInizio, LocalDateTime dataFine, String emailUtente) throws SQLException;
 
-	Collection<Ordine> doRetrieveByProdotti(Collection<Integer> codiciVersioni, Collection<Integer> idOcchiali) throws SQLException;
+    Collection<Ordine> doRetrieveByProdotti(Collection<Integer> idOcchiali) throws SQLException;
+	
+    Collection<Ordine> doRetrieveByProdotti(Collection<Integer> codiciVersioni, Collection<Integer> idOcchiali) throws SQLException;
 	
 	Collection<Ordine> doRetrieveAll(String order) throws SQLException;
 	

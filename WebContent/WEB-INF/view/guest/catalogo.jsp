@@ -46,7 +46,7 @@
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
             Filtra Catalogo
         </div>
-        <form id = filtri>
+        <form id = "filtriCatalogo">
             <% if (isOutlet) { %>
                 <input type="hidden" name="outlet" value="true" />
             <% } %>

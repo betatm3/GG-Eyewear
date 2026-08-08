@@ -49,7 +49,7 @@
 
     
     <%
-    String paramGenere = request.getParameter("genere") != null ? request.getParameter("genere") : "";
+    String paramTipo = request.getParameter("tipologia") != null ? request.getParameter("tipologia") : "";
     String paramMarca = request.getParameter("marca") != null ? request.getParameter("marca") : "";
     String paramStato = request.getParameter("stato") != null ? request.getParameter("stato") : "";
     String paramMetodo = request.getParameter("metodoPagamento") != null ? request.getParameter("metodoPagamento") : "";
@@ -59,18 +59,18 @@
     String paramDataFine = request.getParameter("dataFine") != null ? request.getParameter("dataFine") : "";
     String paramEmailUtente = request.getParameter("emailUtente") != null ? request.getParameter("emailUtente") : "";
 %>
-    <form action="${pageContext.request.contextPath}/admin/GestioneOrdini" method="GET" class="filters-section">
+    <form id="filtriOrdine" class="filters-section">
         <div class="filters-title">
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
             Filtra gli Ordini
         </div>
         <div class="filters-grid">
             <div class="filter-field">
-                <label class="filter-label">Genere Occhiale</label>
-                <select name="genere" class="filter-input">
+                <label class="filter-label">Tipologia Occhiale</label>
+                <select name="tipologia" class="filter-input">
                     <option value="">Tutti</option>
-                    <option value="DA_SOLE" <%= "DA_SOLE".equals(paramGenere) ? "selected" : "" %>>Sole</option>
-                    <option value="DA_VISTA" <%= "DA_VISTA".equals(paramGenere) ? "selected" : "" %>>Vista</option>
+                    <option value="DA_SOLE" <%= "DA_SOLE".equals(paramTipo) ? "selected" : "" %>>Sole</option>
+                    <option value="DA_VISTA" <%= "DA_VISTA".equals(paramTipo) ? "selected" : "" %>>Vista</option>
                 </select>
             </div>
             <div class="filter-field">
@@ -93,7 +93,12 @@
             </div>
             <div class="filter-field">
                 <label class="filter-label">Metodo Pagamento</label>
-                <input type="text" name="metodoPagamento" value="<%= paramMetodo %>" placeholder="es. Carta di Credito" class="filter-input" />
+                <select name="metodoPagamento" class="filter-input">
+                    <option value="">Tutti</option>
+                    <option value="Carta di Credito">Carta di Credito / Debito</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Contrassegno">Contrassegno (Pagamento alla consegna)</option>
+                </select>
             </div>
             <div class="filter-field">
                 <label class="filter-label">Prezzo Min (€)</label>
@@ -115,82 +120,26 @@
                 <label class="filter-label">Email Utente</label>
                 <input type="email" name="emailUtente" value="<%= paramEmailUtente %>" placeholder="mario.rossi@email.it" class="filter-input" />
             </div>
-        </div>
-        <div class="filters-actions">
-            <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="btn-reset">Azzera filtri</a>
-            <button type="submit" class="btn-filter">Filtra</button>
+            
+            <div class="filters-actions">
+		        <button type="button" id="btnResetFiltriOrdini" class="btn-reset" style="width: 100%; cursor: pointer;">
+				    Azzera Filtri
+				</button>
+		    </div>
         </div>
     </form>
+    <div id="ordiniContainer">
+    	<jsp:include page="/WEB-INF/view/admin/tabellaOrdini.jsp" /> 
+	</div>
 
-    <div class="orders-list">
-        <% 
-            Collection<Ordine> ordini = (Collection<Ordine>) request.getAttribute("listaOrdini");
-            if (ordini != null && !ordini.isEmpty()) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                for (Ordine ordine : ordini) {
-                    String dataStr = ordine.getDataOrdine() != null ? ordine.getDataOrdine().format(formatter) : "N/D";
-                    String utenteEmail = (ordine.getUtente() != null && ordine.getUtente().getEmail() != null) ? ordine.getUtente().getEmail() : "Ospite";
-        %>
-                    <div class="order-card">
-                        <div class="order-row">
-                            
-                            <div class="order-info">
-                                <div class="order-id">Ordine #<%= ordine.getId() %></div>
-                                <div class="order-customer">Cliente: <span><%= utenteEmail %></span></div>
-                            </div>
-
-                            
-                            <div class="order-meta">
-                                <div class="meta-item">
-                                    <div class="meta-label">Data</div>
-                                    <div class="meta-value"><%= dataStr %></div>
-                                </div>
-                                <div class="meta-item">
-                                    <div class="meta-label">Totale</div>
-                                    <div class="meta-value price">€ <%= String.format("%.2f", ordine.getTotale()) %></div>
-                                </div>
-                                <div class="meta-item">
-                                    <div class="meta-label">Pagamento</div>
-                                    <div class="meta-value"><%= ordine.getMetodoPagamento() %></div>
-                                </div>
-                            </div>
-
-                           
-                            <% if (ordine.getStato() == Stato.CONSEGNATO) { %>
-                                <div class="status-form" style="border-color: rgba(52, 211, 153, 0.2); background: rgba(52, 211, 153, 0.03);">
-                                    <span style="color: #10B981; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; padding: 4px 12px; text-transform: uppercase;">Consegnato</span>
-                                </div>
-                            <% } else { %>
-                                <form action="${pageContext.request.contextPath}/admin/ModificaStato" method="POST" class="status-form">
-                                    <input type="hidden" name="idOrdine" value="<%= ordine.getId() %>" />
-                                    <select name="nuovoStato" class="status-select">
-                                        <% 
-                                            for (Stato s : Stato.values()) {
-                                                String selected = (ordine.getStato() == s) ? "selected" : "";
-                                                String disabled = (ordine.getStato() != null && s.ordinal() < ordine.getStato().ordinal()) ? "disabled" : "";
-                                        %>
-                                                <option value="<%= s.name() %>" <%= selected %> <%= disabled %>><%= s.name().replace("_", " ") %></option>
-                                        <% 
-                                            } 
-                                        %>
-                                    </select>
-                                    <button type="submit" class="status-btn">Aggiorna</button>
-                                </form>
-                            <% } %>
-                        </div>
-                    </div>
-        <% 
-                }
-            } else {
-        %>
-                <div class="empty-orders">
-                    Nessun ordine presente o corrispondente ai filtri impostati.
-                </div>
-        <% 
-            }
-        %>
-    </div>
+    
 </div>
+
 <%@ include file="../partials/footer.jsp" %>
+
+<script>
+    const contextPath = "<%= request.getContextPath() %>";
+</script>
+<script src="<%= request.getContextPath() %>/scripts/gestioneOrdini.js"></script>
 </body>
 </html>

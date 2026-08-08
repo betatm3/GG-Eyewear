@@ -15,8 +15,10 @@ import javax.sql.DataSource;
 
 import model.Ordine;
 import model.Stato;
+import model.Occhiale;
+import model.Tipologia;
 import model.VersioneOcchiale;
-import model.Genere;
+import dao.OcchialeDAOImpl;
 import dao.OrdineDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
 
@@ -31,10 +33,11 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
             throws ServletException, IOException {
         
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
+        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
         try {        
-            String genereStr = request.getParameter("genere");
+            String tipoStr = request.getParameter("tipologia");
             String marca = request.getParameter("marca");
             String prezzoMinStr = request.getParameter("prezzoMin");
             String prezzoMaxStr = request.getParameter("prezzoMax");
@@ -42,6 +45,14 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
             String dataInizioStr = request.getParameter("dataInizio");
             String dataFineStr = request.getParameter("dataFine");
             String metodoPagamento = request.getParameter("metodoPagamento");
+            String emailUtente = request.getParameter("emailUtente");
+            
+            Tipologia tipo = (tipoStr != null && !tipoStr.trim().isEmpty()) ? Tipologia.valueOf(tipoStr.toUpperCase().trim()) : null;
+            if (marca != null && marca.trim().isEmpty()) marca = null;
+            if (marca != null && marca.trim().isEmpty()) marca = null;
+            if (statoStr != null && statoStr.trim().isEmpty()) statoStr = null;
+            if (metodoPagamento != null && metodoPagamento.trim().isEmpty()) metodoPagamento = null;
+            if (emailUtente != null && emailUtente.trim().isEmpty()) emailUtente = null;
             
             Stato stato = (statoStr != null && !statoStr.trim().isEmpty()) ? Stato.valueOf(statoStr.toUpperCase().trim()) : null;
             Double prezzoMin = (prezzoMinStr != null && !prezzoMinStr.trim().isEmpty()) ? Double.parseDouble(prezzoMinStr) : null;
@@ -51,7 +62,7 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
             java.time.LocalDateTime dataFine = null;
             
             if (dataInizioStr != null && !dataInizioStr.trim().isEmpty()) 
-                // Se il form usa <input type="date"> (es. "2026-07-15"), aggiungiamo l'orario di inizio giornata
+                // Se il form usa <input type="date">, aggiungiamo l'orario di inizio giornata
                 dataInizio = java.time.LocalDate.parse(dataInizioStr).atStartOfDay();
      
             if (dataFineStr != null && !dataFineStr.trim().isEmpty()) 
@@ -60,15 +71,11 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
             
 
             // Prima ricerca: Filtro per attributi di ordine
-            Collection<Ordine> ordiniFiltrati = ordineDAO.doRetrieveByFiltri(stato, metodoPagamento, prezzoMin, prezzoMax, dataInizio, dataFine);
+            Collection<Ordine> ordiniFiltrati = ordineDAO.doRetrieveByFiltri(stato, metodoPagamento, prezzoMin, prezzoMax, dataInizio, dataFine, emailUtente);
       
             // Seconda ricerca: Filtri legati alle caratteristiche dell'OCCHIALE
-            Genere genere = (genereStr != null && !genereStr.trim().isEmpty()) ? Genere.valueOf(genereStr.toUpperCase().trim()) : null;
-            boolean haFiltriOcchiale = (genere != null) || (marca != null && !marca.trim().isEmpty());
-
-            if (haFiltriOcchiale) {
-                Collection<VersioneOcchiale> versioniFiltrate = versioneDAO.doRetrieveByFiltri(
-                        genere,null, null, null, marca, null, null, null, null);
+            if (marca!=null) {
+                Collection<VersioneOcchiale> versioniFiltrate = versioneDAO.doRetrieveByMarca(marca);
 
                 if (versioniFiltrate != null && !versioniFiltrate.isEmpty()) {
                     Collection<Integer> codiciVersioni = new ArrayList<>();
@@ -76,25 +83,48 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
                         
                     for (VersioneOcchiale v : versioniFiltrate) {
                         codiciVersioni.add(v.getCodice());
-                        if (v.getOcchiale() != null) {
-                            idOcchiali.add(v.getOcchiale().getId());
-                        }
+                        idOcchiali.add(v.getOcchiale().getId());
                     }
                     
-                    Collection<Ordine> ordiniPerOcchiale = ordineDAO.doRetrieveByProdotti(codiciVersioni, idOcchiali);
+                    Collection<Ordine> ordiniPerMarca = ordineDAO.doRetrieveByProdotti(codiciVersioni, idOcchiali);
                     
                     // Intersezione matematica sicura tra i filtri dell'ordine e i filtri dell'occhiale
-                    ordiniFiltrati.retainAll(ordiniPerOcchiale);
+                    ordiniFiltrati.retainAll(ordiniPerMarca);
                     
                 } else { 
                     // Se i filtri dell'occhiale sono attivi ma non producono risultati, il risultato finale deve essere vuoto
                     ordiniFiltrati.clear(); 
                 }
             }
+            
+            if (tipo!=null) {
+            	Collection<Occhiale> occhialiFiltrati = occhialeDAO.doRetrieveByTipologia(tipo);
+            	if (occhialiFiltrati != null && !occhialiFiltrati.isEmpty()) {
+                    Collection<Integer> idOcchiali = new ArrayList<>();
+                    for (Occhiale o : occhialiFiltrati) {
+                        idOcchiali.add(o.getId());
+                    }
                     
+                    Collection<Ordine> ordiniPerOcchiale = ordineDAO.doRetrieveByProdotti(idOcchiali);
+                    ordiniFiltrati.retainAll(ordiniPerOcchiale);
+                } else {
+                    ordiniFiltrati.clear();
+                }
+            }
+            
             request.setAttribute("listaOrdini", ordiniFiltrati);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneOrdini.jsp");
-            dispatcher.forward(request, response);
+
+            // --- GESTIONE RISPOSTA DINAMICA ---
+            boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+
+            if (isAjax) {
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/tabellaOrdini.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                // Caricamento standard della pagina dell'admin
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneOrdini.jsp");
+                dispatcher.forward(request, response);
+            }
 
         } catch (SQLException | NumberFormatException | java.time.format.DateTimeParseException e) {
             e.printStackTrace();
