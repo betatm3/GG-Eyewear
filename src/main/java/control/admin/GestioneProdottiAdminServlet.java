@@ -45,18 +45,10 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
-
-        try {
-            if (action != null && action.equalsIgnoreCase("delete")) {
-                rimuoviOcchialeLogico(request, response);
-                return;
-            }
-            
+        try {           
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneProdotti.jsp");
             dispatcher.forward(request, response);
-            
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore nel caricamento dei dati.");
         }
@@ -81,6 +73,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     break;
                 case "updatecolori":
                     gestisciVariantiColore(request, response);
+                    break;
+                case "delete":
+                    rimuoviOcchialeLogico(request, response);
                     break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Azione non riconosciuta.");
@@ -317,29 +312,34 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         if (subAction != null) {
             switch (subAction.toLowerCase()) {
                 
-                case "addcolor":
-                	int quantita = Integer.parseInt(request.getParameter("quantita"));
-                    d.setQuantita(quantita);
-                    disponibileDAO.doSave(d);
-                    break;
-                    
-                case "removecolor":
-                	disponibileDAO.doDelete(idOcchiale, codiceColore);
-                    break;
-                    
-                case "updatequantity":
-                    int nuovaQuantita = Integer.parseInt(request.getParameter("quantita"));
-                    d.setQuantita(nuovaQuantita);
-                    disponibileDAO.doUpdate(d);
-                    break;
+	            case "addcolor":
+	                int quantita = Integer.parseInt(request.getParameter("quantita"));
+	                d.setQuantita(quantita);
+	                disponibileDAO.doSave(d);
+	                request.setAttribute("msgSuccesso", "Nuova variante colore aggiunta con successo!");
+	                break;
+	                
+	            case "removecolor":
+	                boolean eliminato = disponibileDAO.doDelete(idOcchiale, codiceColore);
+	                if (eliminato) {
+	                    request.setAttribute("msgSuccesso", "Variante colore rimossa con successo!");
+	                } else {
+	                    request.setAttribute("errore", "Impossibile rimuovere la variante colore: elemento non trovato.");
+	                }
+	                break;
+	                
+	            case "updatequantity":
+	                int nuovaQuantita = Integer.parseInt(request.getParameter("quantita"));
+	                d.setQuantita(nuovaQuantita);
+	                disponibileDAO.doUpdate(d);
+	                request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
+	                break;
                     
                 default:
                 	request.setAttribute("errore", "Sub-action colore non riconosciuta.");
-                    doGet(request, response);
                     return;
             }
         }
-        request.setAttribute("msgSuccesso", "Varianti colore aggiornate con successo!");
         doGet(request, response);
     }
 

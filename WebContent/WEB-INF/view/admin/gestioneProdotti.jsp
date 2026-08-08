@@ -177,9 +177,17 @@
                                             <div class="actions-group">
                                                 <a href="GestioneProdotti?editId=<%= occ.getId() %>&editCodice=<%= v.getCodice() %>" class="btn-action edit" title="Modifica caratteristiche">✏️ Modifica</a>
                                                 <a href="GestioneProdotti?manageColorsId=<%= occ.getId() %>" class="btn-action color" title="Gestisci quantità colori">🎨 Colori</a>
-                                                <% if (attivo) { %>
-                                                    <a href="GestioneProdotti?action=delete&id=<%= occ.getId() %>" class="btn-action delete" onclick="return confirm('Sicuro di voler disattivare questo prodotto dal catalogo pubblico?');" title="Disattiva prodotto">❌</a>
-                                                <% } %>
+                                                <%-- Operazione di scrittura/modifica: trasformata in form POST --%>
+											    <% if (attivo) { %>
+											        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
+											            <input type="hidden" name="action" value="delete" />
+											            <input type="hidden" name="id" value="<%= occ.getId() %>" />
+											            
+											            <button type="submit" class="btn-action delete" onclick="return confirm('Sicuro di voler disattivare questo prodotto dal catalogo pubblico?');" title="Disattiva prodotto">
+											                ❌
+											            </button>
+											        </form>
+											    <% } %>
                                             </div>
                                         </td>
                                     </tr>
@@ -209,7 +217,8 @@
                     <span>✏️</span> Modifica Caratteristiche
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecaratteristiche" method="POST" enctype="multipart/form-data" class="product-form">
+                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" enctype="multipart/form-data" class="product-form">
+    				<input type="hidden" name="action" value="updatecaratteristiche" />
                     <input type="hidden" name="idOcchiale" value="<%= versioneInModifica.getOcchiale().getId() %>" />
                     <input type="hidden" name="codiceVersione" value="<%= versioneInModifica.getCodice() %>" />
                     
@@ -311,21 +320,30 @@
                                     
                                     <div class="color-update-form">
                                         
-                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=updatequantity" method="POST" style="display: flex; gap: 6px;">
-                                            <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
-                                            <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
-                                            <div class="input-group-wrapper" style="display: flex; flex-direction: column;">
-                                            	<input type="number" name="quantita" value="<%= disp.getQuantita() %>"  />
-                                            </div>
-                                            <button type="submit" class="btn-mini save">Aggiorna</button>
-                                        </form>
+                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display: flex; gap: 6px;">
+										    <input type="hidden" name="action" value="updatecolori" />
+										    <input type="hidden" name="subAction" value="updatequantity" />
+										    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
+										    <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
+										    
+										    <div class="input-group-wrapper" style="display: flex; flex-direction: column;">
+										        <input type="number" name="quantita" value="<%= disp.getQuantita() %>" />
+										    </div>
+										    <button type="submit" class="btn-mini save">Aggiorna</button>
+										</form>
 
                                         
-                                        <a href="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=removecolor&idOcchiale=<%= occhialeColori.getId() %>&codiceColore=<%= disp.getColore().getCodice() %>" 
-                                           class="btn-mini delete" 
-                                           onclick="return confirm('Sicuro di voler rimuovere questa variante colore? Verrà azzerato il magazzino per questa opzione.');">
-                                            Rimuovi
-                                        </a>
+                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
+										    <input type="hidden" name="action" value="updatecolori">
+										    <input type="hidden" name="subAction" value="removecolor">
+										    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>">
+										    <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>">
+										    
+										    <button type="submit" class="btn-mini delete" 
+										            onclick="return confirm('Sicuro di voler rimuovere questa variante colore? Verrà azzerato il magazzino per questa opzione.');">
+										        Rimuovi
+										    </button>
+										</form>
                                     </div>
                                 </div>
                     <%
@@ -344,8 +362,10 @@
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
                     <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px; color: #ffffff;">Associa Nuova Variante Colore</div>
                     
-                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=updatecolori&subAction=addcolor" method="POST">
-                        <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
+                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST">
+					    <input type="hidden" name="action" value="updatecolori" />
+					    <input type="hidden" name="subAction" value="addcolor" />
+					    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
                         
                         <div class="form-grid">
                             <div class="form-group">
@@ -381,7 +401,9 @@
                     <span>➕</span> Aggiungi Nuovo Occhiale
                 </div>
                 
-                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti?action=add" method="POST" enctype="multipart/form-data" class="product-form">
+                <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" enctype="multipart/form-data" class="product-form">
+    				<input type="hidden" name="action" value="add" />
+    				
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="marca">Marca</label>
