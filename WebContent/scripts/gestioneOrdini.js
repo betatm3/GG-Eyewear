@@ -81,12 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	    if (minInput) showFieldError(minInput, null);
 	    if (maxInput) showFieldError(maxInput, null);
 		
-        if (valMin !== null && valMin < 0) {
-	        showFieldError(minInput, "Il prezzo min non può essere negativo.");
+        if (valMin !== null && valMin <= 0) {
+	        showFieldError(minInput, "Il valore deve essere positivo.");
 	        isValid = false;
 	    }
-        if (valMax !== null && valMax < 0) {
-			showFieldError(maxInput, "Il prezzo max non può essere negativo.");
+        if (valMax !== null && valMax <= 0) {
+			showFieldError(maxInput, "Il valore deve essere positivo.");
 	        isValid = false;
 	    }
 		

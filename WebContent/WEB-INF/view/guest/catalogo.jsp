@@ -72,7 +72,7 @@
                 
                 <div class="filter-field">
                     <label class="filter-label" for="filterGenere">Genere</label>
-                    <select id="filterGenere" name="genere" class="filter-input">
+                    <select id="filterGenere" name="genere">
                         <option value="">Tutti</option>
                         <option value="Uomo" <%= "Uomo".equalsIgnoreCase(paramGenere) ? "selected" : "" %>>Uomo</option>
                         <option value="Donna" <%= "Donna".equalsIgnoreCase(paramGenere) ? "selected" : "" %>>Donna</option>
@@ -82,7 +82,7 @@
                 
                 <div class="filter-field">
                     <label class="filter-label" for="filterMontatura">Montatura</label>
-                    <select id="filterMontatura" name="montatura" class="filter-input">
+                    <select id="filterMontatura" name="montatura" >
                         <option value="">Tutti</option>
                         <option value="Spessa" <%= "Spessa".equalsIgnoreCase(paramMontatura) ? "selected" : "" %>>Spessa</option>
                         <option value="Mezza" <%= "Mezza".equalsIgnoreCase(paramMontatura) ? "selected" : "" %>>Mezza</option>
@@ -92,7 +92,7 @@
 
 				<div class="filter-field">
                     <label class="filter-label" for="filterTaglia">Taglia</label>
-					<select id="filterTaglia" name="taglia" class="filter-input">
+					<select id="filterTaglia" name="taglia">
                         <option value="">Tutti</option>
                         <option value="L" <%= "L".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>L ( > 55 mm)</option>
                         <option value="M" <%= "M".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>M ( 51 - 54 mm)</option>
