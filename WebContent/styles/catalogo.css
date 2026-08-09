@@ -312,6 +312,7 @@ h1 {
   align-items: center;
   border-top: 1px solid var(--line);
   padding-top: 16px;
+  align-self: flex-start;
 }
 
 .btn-reset {

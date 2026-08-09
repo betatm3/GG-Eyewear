@@ -12,11 +12,130 @@ document.addEventListener("DOMContentLoaded", () => {
     // Seleziona tutti i campi di input, select, date ed email 
     const filterInputs = filterForm.querySelectorAll("input, select");
 
-    /**
-     * Funzione principale che raccoglie i dati del form, costruisce la Query String
-     * ed esegue la richiesta AJAX (fetch) verso la Servlet di Gestione Ordini.
-     */
+	const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	// Permette lettere (anche accentate), numeri, spazi, trattini, e-commerciale, punti e apostrofi
+	const regexMarca = /^[a-zA-Z0-9À-ÿ\s'&\.-]{2,}$/;
+	
+	function showFieldError(input, message) {
+	    let parent = input.parentElement;
+	    let errorSpan = parent.querySelector(".error-msg");
+
+        if (message) {
+            if (!errorSpan) {
+                errorSpan = document.createElement("small");
+                errorSpan.className = "error-msg";
+                errorSpan.style.color = "#C86A55";
+                errorSpan.style.fontSize = "11px";
+                errorSpan.style.marginTop = "4px";
+                errorSpan.style.display = "block";
+                errorSpan.style.fontWeight = "500";
+                parent.appendChild(errorSpan);
+            }
+            errorSpan.textContent = message;
+            input.style.borderColor = "#C86A55";
+        } else {
+            if (errorSpan) {
+                errorSpan.remove();
+            }
+            input.style.borderColor = "#E2DDD5";
+        }
+    }
+		
+    function validateMarca() {
+        const input = filterForm.querySelector("input[name='marca']");
+        if (!input) return true;
+        const val = input.value.trim();
+		if (val) {
+		    if (val.length < 2) {
+		        showFieldError(input, "La marca deve contenere almeno 2 caratteri.");
+		        return false;
+		    }
+		    if (!regexMarca.test(val)) {
+		        showFieldError(input, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
+		        return false;
+		    }
+		}
+        showFieldError(input, null);
+        return true;
+    }
+
+	function validateEmail() {
+	    const input = filterForm.querySelector("input[name='emailUtente']");
+	    if (!input) return true;
+	    const val = input.value.trim();
+	    if (val && !regexEmail.test(val)) {
+	        showFieldError(input, "Inserisci un'email valida (es. mario@email.it)");
+	        return false;
+	    }
+		showFieldError(input, null);
+	    return true;
+	}
+
+	function validatePrezzi() {
+	    const minInput = filterForm.querySelector("input[name='prezzoMin']");
+	    const maxInput = filterForm.querySelector("input[name='prezzoMax']");
+	    let isValid = true;
+	    const valMin = minInput && minInput.value !== "" ? parseFloat(minInput.value) : null;
+	    const valMax = maxInput && maxInput.value !== "" ? parseFloat(maxInput.value) : null;
+        // Reset errori sui prezzi
+	    if (minInput) showFieldError(minInput, null);
+	    if (maxInput) showFieldError(maxInput, null);
+		
+        if (valMin !== null && valMin < 0) {
+	        showFieldError(minInput, "Il prezzo min non può essere negativo.");
+	        isValid = false;
+	    }
+        if (valMax !== null && valMax < 0) {
+			showFieldError(maxInput, "Il prezzo max non può essere negativo.");
+	        isValid = false;
+	    }
+		
+	    if (isValid && valMin !== null && valMax !== null && valMin > valMax) {
+			showFieldError(maxInput, "Il min non può superare il max.");
+			showFieldError(minInput, "Il min non può superare il max.");
+	        isValid = false;
+	    }
+		    return isValid;
+	}
+
+	function validateDate() {
+        const inizioInput = filterForm.querySelector("input[name='dataInizio']");
+        const fineInput = filterForm.querySelector("input[name='dataFine']");
+        let isValid = true;
+
+		const valInizio = inizioInput ? inizioInput.value : "";
+		const valFine = fineInput ? fineInput.value : "";
+
+        if (inizioInput) showFieldError(inizioInput, null);
+        if (fineInput) showFieldError(fineInput, null);
+
+        if (valInizio && valFine) {
+            const dInizio = new Date(valInizio);
+            const dFine = new Date(valFine);
+	        if (dInizio > dFine) {
+		        showFieldError(inizioInput, "Data inizio successiva a data fine.");
+		        isValid = false;
+		    }
+	    }
+
+	    return isValid;
+	}
+
+		 
+    function validateForm() {
+        const v1 = validateMarca();
+        const v2 = validateEmail();
+        const v3 = validatePrezzi();
+        const v4 = validateDate();
+
+        return v1 && v2 && v3 && v4;
+    }
+		
+    // Invia la richiesta AJAX se i dati nel form sono validi
     function applyFilters() {
+		
+		if (!validateForm()) {	return; }
+				
         // Serializza tutti i campi visibili e nascosti del form in un oggetto FormData
         const formData = new FormData(filterForm);
         // Converte i dati del form nel formato query string per la richiesta GET (es. ?genere=DA_SOLE&stato=SPEDITO)
@@ -45,9 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Associazione degli Event Listener ai campi di input
     filterInputs.forEach(input => {
-		// 'input' per i campi di testo, 'change' per i select/dropdown
-        input.addEventListener("input", applyFilters);
-        input.addEventListener("change", applyFilters);
+		// 'change' fa partire i filtri solo dopo aver finito di scrivere (o quando si cambia una select)
+		    input.addEventListener("change", applyFilters);
+		    
+		// 'blur' esegue solo la validazione grafica dell'errore quando si esce dal campo
+		input.addEventListener("blur", () => validateForm());
     });
 
     // reset dei Filtri
@@ -65,6 +186,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         input.value = ""; 
                     }
                 }
+				// Rimuove messaggi d'errore residui
+				showFieldError(input, null);
             });
             applyFilters();
         });
