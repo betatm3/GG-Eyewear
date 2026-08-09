@@ -290,7 +290,10 @@
                         <% } %>
                         <div class="form-group full-width">
                             <label for="immagine">Nuova Immagine (Lascia vuoto per non cambiare)</label>
-                            <input type="file" id="edit_immagine" name="immagine" accept="image/*" />
+                            <div class="file-input-wrapper">
+						        <input type="file" id="edit_immagine" name="immagine" accept="image/*" />
+						        <button type="button" id="btnRemoveModifyImg" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						    </div>
                         </div>
                     </div>
                     
@@ -467,7 +470,10 @@
                         </div>
                         <div class="form-group full-width">
                             <label for="immagine">Immagine Prodotto</label>
-                            <input type="file" id="immagine" name="immagine" accept="image/*" />
+                            <div class="file-input-wrapper">
+						        <input type="file" id="immagine" name="immagine" accept="image/*" />
+						        <button type="button" id="btnRemoveNewImg" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						    </div>
                         </div>
                     </div>
 

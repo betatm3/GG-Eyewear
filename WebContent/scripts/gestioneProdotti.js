@@ -19,6 +19,30 @@ document.addEventListener("DOMContentLoaded", function () {
     // Varianti Colore (Presenti solo nel form di Aggiunta)
     const coloreSelects = document.querySelectorAll("select[name='codiceColore']");
     const quantitaInputs = document.querySelectorAll("input[name='quantitaColore']");
+	
+	const btnRemoveNewImg = document.getElementById("btnRemoveNewImg");
+	const btnRemoveModifyImg = document.getElementById("btnRemoveModifyImg");
+	
+
+	if (immagineNuovaInput && btnRemove) {
+	    // Quando selezioni un file, fa apparire la X
+	    immagineNuovaInput.addEventListener("change", () => {
+	        if (immagineNuovaInput.files && immagineNuovaInput.files.length > 0) {
+	            btnRemove.style.display = "inline-block";
+	        } else {
+	            btnRemove.style.display = "none";
+	        }
+	    });
+
+	    // Cliccando sulla X svuota l'input e nasconde la X
+	    btnRemove.addEventListener("click", () => {
+	        immagineNuovaInput.value = "";
+	        btnRemove.style.display = "none";
+	        
+	        // Notifica eventuali validazioni
+	        immagineNuovaInput.dispatchEvent(new Event("change"));
+	    });
+	}
 
     // Permette lettere, numeri, spazi, trattini, & e punti (minimo 2 caratteri)
     const regexTestoCampi = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
