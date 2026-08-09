@@ -447,7 +447,6 @@
                         </div>
                         <div class="form-group">
                             <label for="forma">Forma Lenti</label>
-                            <input type="text" id="forma" name="forma" placeholder="Es. Goccia / Tonda" />
                             <select id="forma" name="forma">
                                 <% for (Forma f : Forma.values()) { %>
                                     <option value="<%= f.name() %>"><%= f.getDisplayName() %></option>

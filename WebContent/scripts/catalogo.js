@@ -30,12 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 	
 	// --- REGEX E LOGICA DI VALIDAZIONE ---
-	    
-	// Permette lettere, numeri, spazi, trattini, &, . e '
-	const regexMarca = /^[a-zA-Z0-9À-ÿ\s'&\.-]{2,}$/;
 	// Permette lettere, numeri, spazi, trattini, . e ' (NO slash /)
-	const regexTestoFiltri = /^[a-zA-Z0-9À-ÿ\s'\.-]{2,}$/;
-
+	const regexTestoFiltri = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
+	
     function showFieldError(input, message) {
         let parent = input.parentElement;
         let errorSpan = parent.querySelector(".error-msg");
@@ -69,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showFieldError(input, "La marca deve contenere almeno 2 caratteri.");
                 return false;
             }
-            if (!regexMarca.test(val)) {
+            if (!regexTestoFiltri.test(val)) {
                 showFieldError(input, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
                 return false;
             }
@@ -88,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
             if (!regexTestoFiltri.test(val)) {
-                showFieldError(input, "Caratteri non validi");
+                showFieldError(input, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
                 return false;
             }
         }
@@ -106,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return false;
             }
             if (!regexTestoFiltri.test(val)) {
-                showFieldError(input, "Caratteri non validi");
+                showFieldError(input, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
                 return false;
             }
         }

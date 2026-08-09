@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	// Permette lettere (anche accentate), numeri, spazi, trattini, e-commerciale, punti e apostrofi
-	const regexMarca = /^[a-zA-Z0-9À-ÿ\s'&\.-]{2,}$/;
-	
-	function showFieldError(input, message) {
+	const regexMarca = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
+
+		function showFieldError(input, message) {
 	    let parent = input.parentElement;
 	    let errorSpan = parent.querySelector(".error-msg");
 

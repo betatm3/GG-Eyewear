@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const coloreSelects = document.querySelectorAll("select[name='codiceColore']");
     const quantitaInputs = document.querySelectorAll("input[name='quantitaColore']");
 
+    // Permette lettere, numeri, spazi, trattini, & e punti (minimo 2 caratteri)
+    const regexTestoCampi = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
+		
     // Funzione helper per mostrare/rimuovere i messaggi d'errore
     function showFieldError(input, message) {
         if (!input) return;
@@ -51,8 +54,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validateMarca() {
         if (!marcaInput) return true;
-        if (!marcaInput.value.trim()) {
+		const val = marcaInput.value.trim();
+
+        if (!val) {
             showFieldError(marcaInput, "La marca è obbligatoria.");
+            return false;
+        }
+        if (val.length < 2) {
+            showFieldError(marcaInput, "La marca deve contenere almeno 2 caratteri.");
+            return false;
+        }
+        if (!regexTestoCampi.test(val)) {
+            showFieldError(marcaInput, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
             return false;
         }
         showFieldError(marcaInput, null);
@@ -61,8 +74,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function validateModello() {
         if (!modelloInput) return true;
-        if (!modelloInput.value.trim()) {
+		const val = modelloInput.value.trim();
+
+        if (!val) {
             showFieldError(modelloInput, "Il modello è obbligatorio.");
+            return false;
+        }
+        if (val.length < 2) {
+            showFieldError(modelloInput, "Il modello deve contenere almeno 2 caratteri.");
+            return false;
+        }
+        if (!regexTestoCampi.test(val)) {
+            showFieldError(modelloInput, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
             return false;
         }
         showFieldError(modelloInput, null);
@@ -82,8 +105,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
    function validateMateriale() {
         if (!materialeInput) return true;
-        if (!materialeInput.value.trim()) {
+		const val = materialeInput.value.trim();
+
+        if (!val) {
             showFieldError(materialeInput, "Il materiale è obbligatorio.");
+            return false;
+        }
+        if (val.length < 2) {
+            showFieldError(materialeInput, "Il materiale deve contenere almeno 2 caratteri.");
+            return false;
+        }
+        if (!regexTestoCampi.test(val)) {
+            showFieldError(materialeInput, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
             return false;
         }
         showFieldError(materialeInput, null);
@@ -93,8 +126,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // Immagine OBBLIGATORIA (Form Nuovo Prodotto)
     function validateImmagineNuova() {
         if (!immagineNuovaInput) return true;
-        if (immagineNuovaInput.files.length === 0) {
-            showFieldError(immagineNuovaInput, "L'immagine del prodotto è obbligatoria.");
+		const file = immagineNuovaInput.files[0];
+
+       if (!file) {
+           showFieldError(immagineNuovaInput, "L'immagine è obbligatoria per un nuovo prodotto.");
+           return false;
+        }
+
+        const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!validTypes.includes(file.type)) {
+            showFieldError(immagineNuovaInput, "Formato file non valido (ammessi JPG, PNG, WEBP, GIF).");
             return false;
         }
         showFieldError(immagineNuovaInput, null);
@@ -104,49 +145,67 @@ document.addEventListener("DOMContentLoaded", function () {
     // Immagine OPZIONALE (Form Modifica Prodotto)
     function validateImmagineModifica() {
         if (!immagineModificaInput) return true;
-        // Non essendo obbligatoria in modifica, rimuoviamo sempre eventuali errori
+		const file = immagineModificaInput.files[0];
+
+        // Se vuota va bene (mantiene l'immagine esistente)
+        if (!file) {
+            showFieldError(immagineModificaInput, null);
+            return true;
+        }
+        const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!validTypes.includes(file.type)) {
+            showFieldError(immagineModificaInput, "Formato file non valido (ammessi JPG, PNG, WEBP, GIF).");
+            return false;
+        }
         showFieldError(immagineModificaInput, null);
         return true;
     }
 
     // Validazione Colori (Primo colore e quantità obbligatori, i successivi opzionali)
-    function validateColori() {
-        if (coloreSelects.length === 0) return true; // Non siamo nel form di aggiunta
+	function validateColori() {
+        if (coloreSelects.length === 0) return true;
+        let almenoUnColoreValido = false;
+        let isCoerente = true;
 
-        let isValid = true;
+        coloreSelects.forEach((select, index) => {
+       		const qtyInput = quantitaInputs[index];
+       		const codColore = select.value.trim();
+       		const qtaStr = qtyInput ? qtyInput.value.trim() : "";
+       		const qtaNum = parseInt(qtaStr, 10);
 
-        // 1° Colore (Obbligatorio)
-        const primoColore = coloreSelects[0];
-        const primaQta = quantitaInputs[0];
+       		// Se entrambi sono compilati
+	   		if (codColore !== "" && qtaStr !== "") {
+	       		if (isNaN(qtaNum) || qtaNum < 0) {
+		       		showFieldError(qtyInput, "La quantità non può essere negativa.");
+	           		isCoerente = false;
+	       		} else {
+	           		showFieldError(qtyInput, null);
+               		showFieldError(select, null);
+               		almenoUnColoreValido = true;
+           		}
+       		} 
+       		// Se uno è compilato e l'altro no
+       		else if (codColore !== "" && qtaStr === "") {
+	   			showFieldError(qtyInput, "Inserisci la quantità per questo colore.");
+				showFieldError(select, null);
+	        	isCoerente = false;
+      		} else if (codColore === "" && qtaStr !== "") {
+	            showFieldError(select, "Seleziona il colore corrispondente.");
+	            showFieldError(qtyInput, null);
+	            isCoerente = false;
+	        } else {
+	            // Entrambi vuoti
+	            showFieldError(select, null);
+	            if (qtyInput) showFieldError(qtyInput, null);
+	        }
+	    });
 
-        if (!primoColore.value) {
-            showFieldError(primoColore, "Devi selezionare almeno il primo colore.");
-            isValid = false;
-        } else {
-            showFieldError(primoColore, null);
+        // Controlla se è stato impostato almeno un colore con la sua quantità
+        if (!almenoUnColoreValido && isCoerente) {
+            showFieldError(coloreSelects[0], "Seleziona almeno un colore con la relativa quantità.");
+            return false;
         }
-
-        if (!primaQta.value.trim() || parseInt(primaQta.value) < 0) {
-            showFieldError(primaQta, "Inserisci la quantità per il primo colore.");
-            isValid = false;
-        } else {
-            showFieldError(primaQta, null);
-        }
-
-        // 2° e 3° Colore (Opzionali, ma se selezioni il colore la quantità diventa obbligatoria)
-        for (let i = 1; i < coloreSelects.length; i++) {
-            const select = coloreSelects[i];
-            const qta = quantitaInputs[i];
-
-            if (select.value && (!qta.value.trim() || parseInt(qta.value) < 0)) {
-                showFieldError(qta, "Inserisci la quantità per questo colore.");
-                isValid = false;
-            } else {
-                showFieldError(qta, null);
-            }
-        }
-
-        return isValid;
+        return isCoerente && almenoUnColoreValido;
     }
 
     // --- AGGANCIO EVENTI INPUT & BLUR ---
@@ -162,7 +221,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fields.forEach(item => {
         if (item.el) {
-            item.el.addEventListener("input", item.fn);
             item.el.addEventListener("blur", item.fn);
             item.el.addEventListener("change", item.fn);
         }
@@ -170,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     coloreSelects.forEach(select => select.addEventListener("change", validateColori));
     quantitaInputs.forEach(input => {
-        input.addEventListener("input", validateColori);
+        input.addEventListener("change", validateColori);
         input.addEventListener("blur", validateColori);
     });
 
@@ -188,7 +246,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Se anche una sola validazione fallisce, blocchiamo il submit
         if (!(vMarca && vModello && vPrezzo && vMateriale && vImgNuova && vImgModifica && vColori)) {
             event.preventDefault();
-            event.stopPropagation();
         }
     });
 });
