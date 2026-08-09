@@ -3,6 +3,7 @@ import java.util.Collection;
 import model.VersioneOcchiale;
 import model.Genere;
 import model.Taglia;
+import model.Forma;
 import model.Montatura;
 import java.sql.SQLException;
 
@@ -26,7 +27,7 @@ public interface VersioneOcchialeDAO {
 
     Collection<VersioneOcchiale> doRetrieveByMontatura(Montatura montatura) throws SQLException;
 
-    Collection<VersioneOcchiale> doRetrieveByForma(String forma) throws SQLException;
+    Collection<VersioneOcchiale> doRetrieveByForma(Forma forma) throws SQLException;
 
     Collection<VersioneOcchiale> doRetrieveByMateriale(String materiale) throws SQLException;
 
@@ -42,7 +43,7 @@ public interface VersioneOcchialeDAO {
     
     Collection<VersioneOcchiale> doRetrieveByModello(String modelloScelto) throws SQLException;
     
-    Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, String forma, String marca, String colore, Taglia taglia, Double prezzoMin, Double prezzoMax) throws SQLException;
+    Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, Forma forma, String marca, String colore, Taglia taglia, Double prezzoMin, Double prezzoMax) throws SQLException;
     
     VersioneOcchiale doRetrieveCorrenteByOcchiale(int idOcchiale) throws SQLException;
 

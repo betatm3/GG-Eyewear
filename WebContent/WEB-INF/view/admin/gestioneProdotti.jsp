@@ -261,7 +261,11 @@
                         </div>
                         <div class="form-group">
                             <label for="forma">Forma Lenti</label>
-                            <input type="text" id="forma" name="forma" value="<%= versioneInModifica.getForma() %>" />
+                            <select id="forma" name="forma">
+                                <% for (Forma f : Forma.values()) { %>
+                                    <option value="<%= f.name() %>" <%= versioneInModifica.getForma() == f ? "selected" : "" %>><%= f.getDisplayName() %></option>
+                                <% } %>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="taglia">Taglia</label>
@@ -444,6 +448,11 @@
                         <div class="form-group">
                             <label for="forma">Forma Lenti</label>
                             <input type="text" id="forma" name="forma" placeholder="Es. Goccia / Tonda" />
+                            <select id="forma" name="forma">
+                                <% for (Forma f : Forma.values()) { %>
+                                    <option value="<%= f.name() %>"><%= f.getDisplayName() %></option>
+                                <% } %>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="taglia">Taglia</label>

@@ -14,6 +14,7 @@ import model.Montatura;
 import model.Occhiale;
 import model.Tipologia;
 import model.Taglia;
+import model.Forma;
 
 public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
 
@@ -39,7 +40,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             preparedStatement.setString(3, versione.getGenere() != null ? versione.getGenere().name() : null);
             preparedStatement.setString(4, versione.getTaglia() != null ? versione.getTaglia().name() : null);
             preparedStatement.setString(5, versione.getMontatura() != null ? versione.getMontatura().name() : null);
-            preparedStatement.setString(6, versione.getForma());
+            preparedStatement.setString(6, versione.getForma() != null ? versione.getForma().name() : null);
             preparedStatement.setString(7, versione.getMateriale());
             preparedStatement.setDouble(8, versione.getPrezzo());
             preparedStatement.setBoolean(9, versione.isCorrente());
@@ -73,7 +74,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             preparedStatement.setString(3, versione.getGenere() != null ? versione.getGenere().name() : null);
             preparedStatement.setString(4, versione.getTaglia() != null ? versione.getTaglia().name() : null);
             preparedStatement.setString(5, versione.getMontatura()!= null ? versione.getMontatura().name() : null);
-            preparedStatement.setString(6, versione.getForma());
+            preparedStatement.setString(6, versione.getForma() != null ? versione.getForma().name() : null);
             preparedStatement.setString(7, versione.getMateriale());
             preparedStatement.setDouble(8, versione.getPrezzo());
             preparedStatement.setBoolean(9, versione.isCorrente());
@@ -220,14 +221,14 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
 
     @Override
-    public Collection<VersioneOcchiale> doRetrieveByForma(String formaScelta) throws SQLException {
+    public Collection<VersioneOcchiale> doRetrieveByForma(Forma formaScelta) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE forma = ?";
         Collection<VersioneOcchiale> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
-            preparedStatement.setString(1, formaScelta);
+            preparedStatement.setString(1, formaScelta != null ? formaScelta.name() : null);
 
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
@@ -373,7 +374,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
     }
     
     @Override
-    public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, String forma, String marca, String colore, Taglia taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
+    public Collection<VersioneOcchiale> doRetrieveByFiltri(Genere genere, Montatura montatura, String materiale, Forma forma, String marca, String colore, Taglia taglia, Double prezzoMin, Double prezzoMax) throws SQLException {
         Collection<VersioneOcchiale> lista = new ArrayList<>();
         
         StringBuilder sql = new StringBuilder(
@@ -399,8 +400,8 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         if (materiale != null && !materiale.trim().isEmpty()) {
             sql.append(" AND LOWER(v.materiale) = LOWER(?)");
         }
-        if (forma != null && !forma.trim().isEmpty()) {
-            sql.append(" AND LOWER(v.forma) = LOWER(?)");
+        if (forma != null) {
+            sql.append(" AND v.forma = ?");
         }
         if (marca != null && !marca.trim().isEmpty()) {
             sql.append(" AND LOWER(v.marca) = LOWER(?)");
@@ -431,8 +432,8 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             if (materiale != null && !materiale.trim().isEmpty()) {
                 ps.setString(index++, materiale);
             }
-            if (forma != null && !forma.trim().isEmpty()) {
-                ps.setString(index++, forma);
+            if (forma != null) {
+                ps.setString(index++, forma.name());
             }
             if (marca != null && !marca.trim().isEmpty()) {
                 ps.setString(index++, marca);
@@ -461,7 +462,6 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
                 // (USANDOLA, ATTIVEREI QUERY AGGIUNTIVE INUTILI PER RECUPERARE L'OCCHIALE)
                 // Settiamo tutti gli attributi di VersioneOcchiale
                 versione.setCodice(rs.getInt("codice"));
-                versione.setForma(rs.getString("forma"));
                 versione.setMateriale(rs.getString("materiale"));
                 versione.setPrezzo(rs.getDouble("prezzo"));
                 versione.setCorrente(rs.getBoolean("corrente"));
@@ -481,6 +481,11 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
                 String tagliaStr = rs.getString("taglia");
                 if(tagliaStr != null) {
                     versione.setTaglia(Taglia.valueOf(tagliaStr));
+                }
+                
+                String formaStr = rs.getString("forma");
+                if(formaStr != null) {
+                    versione.setForma(Forma.valueOf(formaStr));
                 }
 
                 // Mappiamo l'oggetto Occhiale
@@ -530,7 +535,6 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         v.setCodice(rs.getInt("codice"));
         v.setMarca(rs.getString("marca"));
         v.setModello(rs.getString("modello"));
-        v.setForma(rs.getString("forma"));
         v.setMateriale(rs.getString("materiale"));
         v.setPrezzo(rs.getDouble("prezzo"));
         v.setCorrente(rs.getBoolean("corrente"));
@@ -548,6 +552,11 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
         String montaturaStr = rs.getString("montatura");
         if (montaturaStr != null) {
             v.setMontatura(Montatura.valueOf(montaturaStr));
+        }
+        
+        String formaStr = rs.getString("forma");
+        if(formaStr != null) {
+            v.setForma(Forma.valueOf(formaStr));
         }
         
         OcchialeDAOImpl occDAO = new OcchialeDAOImpl(ds);

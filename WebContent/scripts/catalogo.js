@@ -11,6 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Selezioniamo tutti gli input e select 
     const filterInputs = filterForm.querySelectorAll("input, select");
 
+	const formaSelect = new TomSelect("#filterForma", {
+	    create: false,               // Impedisce all'utente di aggiungere nuove opzioni
+	    maxOptions: null,            // Mostra tutte le opzioni nello scroll
+	    dropdownParent: "body",      // Evita problemi di sovrapposizione nei layout
+	    onChange: function(value) {
+	        // Fa partire la funzione di filtro AJAX quando l'utente sceglie un'opzione
+	        applyFilters();
+	    }
+	});
+		
     function applyFilters() {  //per applicare filtri
         const formData = new FormData(filterForm);
         const searchParams = new URLSearchParams(formData).toString();
@@ -56,6 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
 	                }
 	            }
 	        });
+			
+			// --- RESET SPECIFICO PER TOM SELECT ---
+		 	if (formaSelect) {
+				formaSelect.clear(); 
+			}
+					
         	applyFilters();
 	    });
 	}

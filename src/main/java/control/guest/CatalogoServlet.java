@@ -20,6 +20,7 @@ import dao.DisponibileDAOImpl;
 import dao.RecensioneDAOImpl;
 
 import model.Disponibile;
+import model.Forma;
 import model.Occhiale;
 import model.VersioneOcchiale;
 import model.Tipologia;
@@ -47,9 +48,10 @@ public class CatalogoServlet extends HttpServlet {
         String genereStr = request.getParameter("genere");
         String montaturaStr = request.getParameter("montatura");
         String tagliaStr = request.getParameter("taglia");
+        String formaStr = request.getParameter("forma");
+
         
         String materiale = request.getParameter("materiale");
-        String forma = request.getParameter("forma");
         String marca = request.getParameter("marca");
         String colore = request.getParameter("colore");
         
@@ -58,7 +60,6 @@ public class CatalogoServlet extends HttpServlet {
 
         // Sanificazione delle stringhe: se vuote o composte solo da spazi, diventano null
         if (materiale != null && materiale.trim().isEmpty()) materiale = null;
-        if (forma != null && forma.trim().isEmpty()) forma = null;
         if (marca != null && marca.trim().isEmpty()) marca = null;
         if (colore != null && colore.trim().isEmpty()) colore = null;
 
@@ -86,6 +87,15 @@ public class CatalogoServlet extends HttpServlet {
             	taglia = Taglia.valueOf(tagliaStr.toUpperCase().trim());
             } catch (IllegalArgumentException e) {
             	taglia = null;
+            }
+        }
+        
+        Forma forma = null;
+        if (formaStr != null && !formaStr.trim().isEmpty()) {
+            try {
+            	forma = Forma.valueOf(formaStr.toUpperCase().trim());
+            } catch (IllegalArgumentException e) {
+                genere = null;
             }
         }
         

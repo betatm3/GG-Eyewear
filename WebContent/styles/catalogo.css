@@ -333,3 +333,8 @@ h1 {
   color: var(--ink);
   transform: translateY(-1px);
 }
+.ts-control {
+    background-color: var(--paper-soft) !important; /* Colore dello sfondo del tuo form */
+    border: 1px solid var(--line);
+  	border-radius: 10px;  
+}

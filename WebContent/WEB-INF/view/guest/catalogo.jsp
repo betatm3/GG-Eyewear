@@ -5,6 +5,7 @@
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
 <%@ page import="model.VersioneOcchiale" %>
+<%@ page import="model.Forma" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -16,9 +17,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css?v=2">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/catalogo.css?v=2">
+    
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
@@ -102,7 +107,17 @@
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterForma">Forma</label>
-                    <input type="text" id="filterForma" name="forma" class="filter-input" placeholder="Es. Rotonda, Aviator..." value="<%= paramForma%>" />
+                	<select id="filterForma" name="forma" ">
+				        <option value="" <%= (paramForma == null || paramForma.isEmpty()) ? "selected" : "" %>>Tutte</option>
+				        <%
+				            for (Forma f : Forma.values()) {
+				                String selected = f.name().equals(paramForma) ? "selected" : "";
+				        %>
+				                <option value="<%= f.name() %>" <%= selected %>><%= f.getDisplayName() %></option>
+				        <%
+				            }
+				        %>
+				    </select>
                 </div>
 
                 <div class="filter-field">

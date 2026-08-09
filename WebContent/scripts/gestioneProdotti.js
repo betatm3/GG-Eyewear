@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const marcaInput = document.getElementById("marca");
     const modelloInput = document.getElementById("modello");
     const prezzoInput = document.getElementById("prezzo");
-    const formaInput = document.getElementById("forma");
     const materialeInput = document.getElementById("materiale");
 
     // Immagini distinte per form di aggiunta e form di modifica
@@ -81,17 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
-    function validateForma() {
-        if (!formaInput) return true;
-        if (!formaInput.value.trim()) {
-            showFieldError(formaInput, "La forma delle lenti è obbligatoria.");
-            return false;
-        }
-        showFieldError(formaInput, null);
-        return true;
-    }
-
-    function validateMateriale() {
+   function validateMateriale() {
         if (!materialeInput) return true;
         if (!materialeInput.value.trim()) {
             showFieldError(materialeInput, "Il materiale è obbligatorio.");
@@ -166,7 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
         { el: marcaInput, fn: validateMarca },
         { el: modelloInput, fn: validateModello },
         { el: prezzoInput, fn: validatePrezzo },
-        { el: formaInput, fn: validateForma },
         { el: materialeInput, fn: validateMateriale },
         { el: immagineNuovaInput, fn: validateImmagineNuova },
         { el: immagineModificaInput, fn: validateImmagineModifica }
@@ -192,14 +180,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const vMarca = validateMarca();
         const vModello = validateModello();
         const vPrezzo = validatePrezzo();
-        const vForma = validateForma();
         const vMateriale = validateMateriale();
         const vImgNuova = validateImmagineNuova();
         const vImgModifica = validateImmagineModifica();
         const vColori = validateColori();
 
         // Se anche una sola validazione fallisce, blocchiamo il submit
-        if (!(vMarca && vModello && vPrezzo && vForma && vMateriale && vImgNuova && vImgModifica && vColori)) {
+        if (!(vMarca && vModello && vPrezzo && vMateriale && vImgNuova && vImgModifica && vColori)) {
             event.preventDefault();
             event.stopPropagation();
         }
