@@ -228,6 +228,9 @@ h1 {
 
 .full-width {
   grid-column: 1 / -1;
+  border: 1px dashed var(--grey);
+  border-radius: 12px;
+  padding: 15px;
 }
 
 .form-group {
@@ -278,6 +281,7 @@ select option {
     padding: 12px 12px;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 .file-input-wrapper input[type="file"] {

@@ -100,7 +100,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         } else {
         	request.setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
         }
-        // Ricarica la vista
         doGet(request, response);
     }
 
@@ -128,10 +127,12 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
         // Salvataggio dell'immagine caricata
         try {
-            String pathImg = salvaImmagine(request, generatedId);
+        	//MODIFICARE SALVAIMMAGINI PER SALVARE ENTRAMBE LE IMMAGINI E NON SOLO UNA
+        	//VEDI COMMENTA IN MODIFICA OCCHIALIE (GIU')
+            String pathImg = salvaImmagine(request, generatedId); //salva su pc
             if (pathImg != null) {
                 nuovoOcchiale.addImmagine(pathImg);
-                occhialeDAO.doUpdate(nuovoOcchiale);
+                occhialeDAO.doUpdate(nuovoOcchiale);  // salva nel db
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +230,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 occhialeModificato.setAttivo(Boolean.parseBoolean(attivoStr));
             }
 
-            try {
+            try { //PERCHE' FARE DUE VOLTE SALVA IMMAGINE???
                 String pathImg = salvaImmagine(request, idOcchiale);
                 if (pathImg != null) {
                     // Eliminazione vecchio file immagine se presente fisicamente in images/occhiali
@@ -255,7 +256,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
                     ArrayList<String> nuoveImmagini = new ArrayList<>();
                     nuoveImmagini.add(pathImg);
-                    occhialeModificato.setImmagini(nuoveImmagini);
+                    occhialeModificato.setImmagini(nuoveImmagini); 
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -13,37 +13,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const materialeInput = document.getElementById("materiale");
 
     // Immagini distinte per form di aggiunta e form di modifica
-    const immagineNuovaInput = document.getElementById("immagine");         // Form Aggiungi (Obbligatoria)
-    const immagineModificaInput = document.getElementById("edit_immagine"); // Form Modifica (Opzionale)
+    const newImg1Input = document.getElementById("immagine1");         // Form Aggiungi (Obbligatoria)
+	const newImg2Input = document.getElementById("immagine2");         // Form Aggiungi (Obbligatoria)
+	const modifyImg1Input = document.getElementById("edit_immagine1"); 
+	const modifyImg2Input = document.getElementById("edit_immagine2"); 
 
     // Varianti Colore (Presenti solo nel form di Aggiunta)
     const coloreSelects = document.querySelectorAll("select[name='codiceColore']");
     const quantitaInputs = document.querySelectorAll("input[name='quantitaColore']");
 	
-	const btnRemoveNewImg = document.getElementById("btnRemoveNewImg");
-	const btnRemoveModifyImg = document.getElementById("btnRemoveModifyImg");
-	
-
-	if (immagineNuovaInput && btnRemove) {
-	    // Quando selezioni un file, fa apparire la X
-	    immagineNuovaInput.addEventListener("change", () => {
-	        if (immagineNuovaInput.files && immagineNuovaInput.files.length > 0) {
-	            btnRemove.style.display = "inline-block";
-	        } else {
-	            btnRemove.style.display = "none";
-	        }
-	    });
-
-	    // Cliccando sulla X svuota l'input e nasconde la X
-	    btnRemove.addEventListener("click", () => {
-	        immagineNuovaInput.value = "";
-	        btnRemove.style.display = "none";
-	        
-	        // Notifica eventuali validazioni
-	        immagineNuovaInput.dispatchEvent(new Event("change"));
-	    });
-	}
-
     // Permette lettere, numeri, spazi, trattini, & e punti (minimo 2 caratteri)
     const regexTestoCampi = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
 		
@@ -73,6 +51,32 @@ document.addEventListener("DOMContentLoaded", function () {
             input.style.borderColor = "#E2DDD5";
         }
     }
+	
+	// --- PULSANTI DI RIMOZIONE PER TUTTI I FILE ---
+	    const fileWrappers = document.querySelectorAll(".file-input-wrapper");
+	    fileWrappers.forEach(wrapper => {
+	        const fileInput = wrapper.querySelector("input[type='file']");
+	        const removeBtn = wrapper.querySelector(".btn-remove-simple");
+
+	        if (fileInput && removeBtn) {
+	            fileInput.addEventListener("change", () => {
+	                if (fileInput.files && fileInput.files.length > 0) {
+	                    removeBtn.style.display = "inline-block";
+	                } else {
+	                    removeBtn.style.display = "none";
+	                }
+	            });
+				
+				// Cliccando sulla X svuota l'input e nasconde la X
+	            removeBtn.addEventListener("click", () => {
+	                fileInput.value = "";
+	                removeBtn.style.display = "none";
+
+					// Notifica eventuali validazioni
+	                fileInput.dispatchEvent(new Event("change"));
+	            });
+	        }
+	    });
 
     // --- FUNZIONI DI VALIDAZIONE ---
 
@@ -149,40 +153,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Immagine OBBLIGATORIA (Form Nuovo Prodotto)
     function validateImmagineNuova() {
-        if (!immagineNuovaInput) return true;
-		const file = immagineNuovaInput.files[0];
-
-       if (!file) {
-           showFieldError(immagineNuovaInput, "L'immagine è obbligatoria per un nuovo prodotto.");
-           return false;
+        if (!newImg1Input || !newImg2Input) return true;
+		
+		const file1 = newImg1Input.files[0];
+		const file2 = newImg2Input.files[0];
+		const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+		let isValid = true;
+		
+		if (!file1) {
+            showFieldError(newImg1Input, "La prima immagine è obbligatoria.");
+            isValid = false;
+        } else if (!validTypes.includes(file1.type)) {
+            showFieldError(newImg1Input, "Formato non valido (ammessi JPG, PNG, WEBP, GIF).");
+            isValid = false;
+        } else {
+            showFieldError(newImg1Input, null);
         }
-
-        const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-        if (!validTypes.includes(file.type)) {
-            showFieldError(immagineNuovaInput, "Formato file non valido (ammessi JPG, PNG, WEBP, GIF).");
-            return false;
+		
+		if (!file2) {
+            showFieldError(newImg2Input, "La seconda immagine è obbligatoria.");
+            isValid = false;
+        } else if (!validTypes.includes(file2.type)) {
+            showFieldError(newImg2Input, "Formato non valido (ammessi JPG, PNG, WEBP, GIF).");
+            retisValid = false;
+        } else {
+            showFieldError(newImg2Input, null);
         }
-        showFieldError(immagineNuovaInput, null);
-        return true;
+				
+        return isValid;
     }
 
     // Immagine OPZIONALE (Form Modifica Prodotto)
     function validateImmagineModifica() {
-        if (!immagineModificaInput) return true;
-		const file = immagineModificaInput.files[0];
+        if (!modifyImg1Input|| !modifyImg2Input) return true;
+		
+		const file1 = modifyImg1Input.files[0];
+		const file2 = modifyImg2Input.files[0];
+		const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
-        // Se vuota va bene (mantiene l'immagine esistente)
-        if (!file) {
-            showFieldError(immagineModificaInput, null);
+		// Entrambe vuote
+        if (!file1 && !file2) {
+            showFieldError(modifyImg1Input, null);
+            showFieldError(modifyImg2Input, null);
             return true;
         }
-        const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-        if (!validTypes.includes(file.type)) {
-            showFieldError(immagineModificaInput, "Formato file non valido (ammessi JPG, PNG, WEBP, GIF).");
-            return false;
+		
+		let isValid = true;
+		// Se l'utente ha iniziato a cambiare le immagini, deve fornirle entrambe
+        if (!file1) {
+            showFieldError(modifyImg1Input, "Seleziona anche la prima immagine.");
+            isValid = false;
+        } else if (!validTypes.includes(file1.type)) {
+            showFieldError(modifyImg1Input, "Formato non valido (ammessi JPG, PNG, WEBP, GIF).");
+            isValid = false;
+        } else {
+            showFieldError(modifyImg1Input, null);
         }
-        showFieldError(immagineModificaInput, null);
-        return true;
+		
+		if (!file2) {
+            showFieldError(modifyImg2Input, "Seleziona anche la seconda immagine.");
+            isValid = false;
+        } else if (!validTypes.includes(file2.type)) {
+            showFieldError(modifyImg2Input, "Formato non valido (ammessi JPG, PNG, WEBP, GIF).");
+            isValid = false;
+        } else {
+            showFieldError(modifyImg2Input, null);
+        }
+
+		return isValid;
     }
 
     // Validazione Colori (Primo colore e quantità obbligatori, i successivi opzionali)
@@ -239,8 +277,10 @@ document.addEventListener("DOMContentLoaded", function () {
         { el: modelloInput, fn: validateModello },
         { el: prezzoInput, fn: validatePrezzo },
         { el: materialeInput, fn: validateMateriale },
-        { el: immagineNuovaInput, fn: validateImmagineNuova },
-        { el: immagineModificaInput, fn: validateImmagineModifica }
+		{ el: newImg1Input, fn: validateImmagineNuova },
+        { el: newImg2Input, fn: validateImmagineNuova },
+        { el: modifyImg1Input, fn: validateImmagineModifica },
+        { el: modifyImg2Input, fn: validateImmagineModifica }
     ];
 
     fields.forEach(item => {

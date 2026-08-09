@@ -289,10 +289,14 @@
                             </div>
                         <% } %>
                         <div class="form-group full-width">
-                            <label for="immagine">Nuova Immagine (Lascia vuoto per non cambiare)</label>
+                            <label for="edit_immagine1">Nuove Immagini (Lascia vuoto per non cambiare)</label>
                             <div class="file-input-wrapper">
-						        <input type="file" id="edit_immagine" name="immagine" accept="image/*" />
-						        <button type="button" id="btnRemoveModifyImg" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						        <input type="file" id="edit_immagine1" name="immagine1" accept="image/*" />
+						        <button type="button" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						    </div>
+						    <div class="file-input-wrapper">
+						        <input type="file" id="edit_immagine2" name="immagine2" accept="image/*" />
+						        <button type="button" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
 						    </div>
                         </div>
                     </div>
@@ -469,10 +473,14 @@
                             <input type="text" id="materiale" name="materiale" placeholder="Es. Metallo dorato" />
                         </div>
                         <div class="form-group full-width">
-                            <label for="immagine">Immagine Prodotto</label>
+                            <label for="immagine1">Immagini Prodotto</label>
                             <div class="file-input-wrapper">
-						        <input type="file" id="immagine" name="immagine" accept="image/*" />
-						        <button type="button" id="btnRemoveNewImg" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						        <input type="file" id="immagine1" name="immagine1" accept="image/*" />
+						        <button type="button" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
+						    </div>
+						    <div class="file-input-wrapper">
+						        <input type="file" id="immagine2" name="immagine2" accept="image/*" />
+						        <button type="button" class="btn-remove-simple" title="Rimuovi file" style="display: none;">✕</button>
 						    </div>
                         </div>
                     </div>
