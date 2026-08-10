@@ -3,6 +3,8 @@ package control.guest;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -73,7 +75,7 @@ public class LoginServlet extends HttpServlet {
             // 3. Chiediamo al DAO di verificare le credenziali
             Utente utente = utenteDAO.doRetrieveByKey(email);
 
-            if (utente != null) {
+            if (utente != null && utente.getPassword() != null && BCrypt.checkpw(password, utente.getPassword())) {
                 // AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
                 HttpSession session = request.getSession(true);
                 

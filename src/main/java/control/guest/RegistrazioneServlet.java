@@ -3,6 +3,8 @@ package control.guest;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -93,7 +95,12 @@ public class RegistrazioneServlet extends HttpServlet {
             nuovoUtente.setIndirizzo(indirizzo.trim());
             nuovoUtente.setDataNascita(dataNascita);
             nuovoUtente.setTelefono(telefono.replaceAll("\\s+", ""));
-            nuovoUtente.setPassword(password); 
+            
+            // --- HASHING PASSWORD CON BCRYPT ---
+            // BCrypt.gensalt() genera un salt casuale ad ogni chiamata.
+            // BCrypt.hashpw unisce la password al salt e restituisce una stringa di 60 caratteri.
+            String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+            nuovoUtente.setPassword(passwordHash); 
             
             boolean isCreato = utenteDAO.doSave(nuovoUtente);
 
@@ -117,5 +124,5 @@ public class RegistrazioneServlet extends HttpServlet {
         // Se qualcosa è andato storto, ricarichiamo la pagina di registrazione mostrando l'errore
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
     	dispatcher.forward(request, response);
-    	}
+    }
 }

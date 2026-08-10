@@ -193,6 +193,9 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!confPass) {
                 showFieldError(confermaPasswordInput, "Conferma la nuova password.");
                 isValid = false;
+			} else if (!regexPassword.test(confPass)) {
+				showFieldError(confermaPasswordInput, "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio.");
+			    return false;
             } else if (newPass !== confPass) {
                 showFieldError(confermaPasswordInput, "Le password non coincidono.");
                 isValid = false;
@@ -233,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     [oldPasswordInput, newPasswordInput, confermaPasswordInput].forEach(input => {
         if (input) {
-            input.addEventListener("input", validatePasswords);
+            input.addEventListener("change", validatePasswords);
             input.addEventListener("blur", validatePasswords);
         }
     });

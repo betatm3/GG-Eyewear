@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 	const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-	    //msg: "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
+	//msg: "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
 	
     
     function showFieldError(input, message) {
@@ -116,6 +116,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!conf) {
             showFieldError(confermaPasswordInput, "La conferma della password è obbligatoria.");
             return false;
+		} else if (!regexPassword.test(conf)) {
+	        showFieldError(confermaPasswordInput, "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio.");
+	        return false;
         } else if (pass !== conf) {
             showFieldError(confermaPasswordInput, "Le password non coincidono.");
             return false;

@@ -2,6 +2,7 @@ package control.common;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import javax.sql.DataSource;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import dao.OrdineDAOImpl;
 import dao.ProdottoAcquistatoDAOImpl;
@@ -37,8 +40,7 @@ public class AreaUtenteServlet extends HttpServlet {
     private DataSource ds;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        
+            throws ServletException, IOException {    	
         HttpSession session = request.getSession(false);
         Utente utente = null;
         if (session != null) {
@@ -140,6 +142,7 @@ public class AreaUtenteServlet extends HttpServlet {
                 
                 String oldPassword = request.getParameter("old_password");
                 String nuovaPassword = request.getParameter("new_password");
+                String confermaPassword = request.getParameter("conferma_password");
 
                 // --- 1. CONTROLLO DI OBBLIGATORIETÀ LATO SERVER ---
                 if (nuovoNome == null || nuovoNome.trim().isEmpty() ||
@@ -156,18 +159,29 @@ public class AreaUtenteServlet extends HttpServlet {
 
                 // --- 2. CONTROLLO GESTIONE PASSWORD (OPZIONALE) ---
                 if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
-                    // Se vuole cambiare password, verifichiamo che la vecchia password coincida
-                    if (oldPassword == null || !oldPassword.equals(utenteSessione.getPassword())) {
+                	// A) Verifichiamo che la vecchia password sia stata inserita e che corrisponda all'hash nel DB/sessione
+                    if (oldPassword == null || oldPassword.trim().isEmpty() || 
+                        utenteSessione.getPassword() == null || 
+                        !BCrypt.checkpw(oldPassword, utenteSessione.getPassword())) {
+                        
                         request.setAttribute("msgErrore", "La password inserita non è corretta.");
                         doGet(request, response);
                         return; 
                     }
-                    utenteSessione.setPassword(nuovaPassword.trim());
+                    
+                    // B) Verifichiamo che la nuova password e la conferma coincidano
+                    if (confermaPassword == null || !nuovaPassword.equals(confermaPassword)) {
+                        request.setAttribute("msgErrore", "La nuova password e la conferma non coincidono.");
+                        doGet(request, response);
+                        return;
+                    }
+                    String passwordHash = BCrypt.hashpw(nuovaPassword.trim(), BCrypt.gensalt());
+                    utenteSessione.setPassword(passwordHash);
                 }
 
                 utenteSessione.setNome(nuovoNome.trim());
                 utenteSessione.setCognome(nuovoCognome.trim());
-                utenteSessione.setEmail(nuovaEmail.trim());
+                utenteSessione.setEmail(nuovaEmail.trim().toLowerCase());
                 utenteSessione.setTelefono(nuovoTelefono.trim());
                 utenteSessione.setIndirizzo(nuovoIndirizzo.trim());
                 

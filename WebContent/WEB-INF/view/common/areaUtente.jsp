@@ -279,8 +279,8 @@
 					</div>
 					
 					<div class="form-group">
-				        <label for="old_password">Vecchia Password</label>
-				        <input type="password" id="old_password" name="old_password"/>
+				        <label for="old_password">Vecchia Password (Lascia vuoto per non cambiarla)</label>
+				        <input type="password" id="old_password" name="old_password" placeholder="Inserisci la vecchia password"/>
 				    </div>
 				    
 				    <div class="form-group">
