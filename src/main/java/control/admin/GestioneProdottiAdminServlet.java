@@ -30,6 +30,7 @@ import model.Tipologia;
 import model.VersioneOcchiale;
 import dao.OcchialeDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
+import dao.ColoreDAOImpl;
 import dao.DisponibileDAOImpl;
 
 @WebServlet("/admin/GestioneProdotti")
@@ -307,31 +308,80 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
     private void gestisciVariantiColore(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
-
-        int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
+        ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
+        
+        String idStr = request.getParameter("idOcchiale");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            request.setAttribute("errore", "ID Occhiale non fornito.");
+            doGet(request, response);
+            return;
+        }
+        int idOcchiale = Integer.parseInt(idStr);
         String subAction = request.getParameter("subAction"); 
-        String codiceColore = request.getParameter("codiceColore");
-        Colore c = new Colore();
-        Occhiale o = new Occhiale(); 
-        c.setCodice(codiceColore);
-        o.setId(idOcchiale);
-                    
-        Disponibile d = new Disponibile ();
-        d.setColore(c);
-        d.setOcchiale(o);
         
         if (subAction != null) {
             switch (subAction.toLowerCase()) {
                 
 	            case "addcolor":
-	                int quantita = Integer.parseInt(request.getParameter("quantita"));
-	                d.setQuantita(quantita);
-	                disponibileDAO.doSave(d);
-	                request.setAttribute("msgSuccesso", "Nuova variante colore aggiunta con successo!");
+	            	String codiceColore = request.getParameter("codiceColore");
+	                String qtaCatalogStr = request.getParameter("quantita");
+
+	                String newNomeColore = request.getParameter("newNomeColore");
+	                String newHexColore = request.getParameter("newHexColore");
+	                String newQtaStr = request.getParameter("newQtaColore");
+	            	
+	                // --- Colore da Catalogo ---
+	                if (codiceColore != null && !codiceColore.trim().isEmpty() && qtaCatalogStr != null && !qtaCatalogStr.trim().isEmpty()) {
+	                    int qta = Integer.parseInt(qtaCatalogStr.trim());
+	                    
+	                    Occhiale o = new Occhiale();
+	                    o.setId(idOcchiale);
+	                    Colore c = new Colore();
+	                    c.setCodice(codiceColore);
+
+	                    Disponibile d = new Disponibile();
+	                    d.setOcchiale(o);
+	                    d.setColore(c);
+	                    d.setQuantita(qta);
+
+	                    disponibileDAO.doSave(d);
+	                    request.setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+	                } 
+	                // --- Creazione Nuovo Colore ---
+	                else if (newNomeColore != null && !newNomeColore.trim().isEmpty() && newQtaStr != null && !newQtaStr.trim().isEmpty()) {
+	                    int newQta = Integer.parseInt(newQtaStr.trim());
+	                    
+	                    String codiceGenerato = generaCodiceColore(newNomeColore.trim());
+	                    Colore nuovoColore = new Colore();
+	                    nuovoColore.setNome(newNomeColore.trim());
+	                    nuovoColore.setHex(newHexColore != null ? newHexColore.trim() : "#000000");
+	                    nuovoColore.setCodice(codiceGenerato);
+	                    coloreDAO.doSave(nuovoColore);
+
+	                    Occhiale o = new Occhiale();
+	                    o.setId(idOcchiale);
+
+	                    Disponibile d = new Disponibile();
+	                    d.setOcchiale(o);
+	                    d.setColore(nuovoColore);
+	                    d.setQuantita(newQta);
+
+	                    boolean salvato = disponibileDAO.doSave(d);
+	                    if (salvato) {
+	                        request.setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+	                    } else {
+	                        request.setAttribute("errore", "Impossibile associare la variante dal catalogo.");
+	                    }
+	                    request.setAttribute("msgSuccesso", "Nuovo colore inserito a catalogo ed associato con successo!");
+	                } 
+	                else {
+	                    request.setAttribute("errore", "Compilare un'opzione valida per aggiungere la variante colore.");
+	                }
 	                break;
 	                
 	            case "removecolor":
-	                boolean eliminato = disponibileDAO.doDelete(idOcchiale, codiceColore);
+	            	String codColoreRemove = request.getParameter("codiceColore");
+	                boolean eliminato = disponibileDAO.doDelete(idOcchiale, codColoreRemove);
 	                if (eliminato) {
 	                    request.setAttribute("msgSuccesso", "Variante colore rimossa con successo!");
 	                } else {
@@ -340,10 +390,24 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 	                break;
 	                
 	            case "updatequantity":
+	            	String codColoreUpdate = request.getParameter("codiceColore");
 	                int nuovaQuantita = Integer.parseInt(request.getParameter("quantita"));
+	                Occhiale o = new Occhiale();
+	                o.setId(idOcchiale);
+	                Colore c = new Colore();
+	                c.setCodice(codColoreUpdate);
+
+	                Disponibile d = new Disponibile();
+	                d.setOcchiale(o);
+	                d.setColore(c);
 	                d.setQuantita(nuovaQuantita);
-	                disponibileDAO.doUpdate(d);
-	                request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
+	                
+	                boolean aggiornato = disponibileDAO.doUpdate(d);
+	                if (aggiornato) {
+	                    request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
+	                } else {
+	                    request.setAttribute("errore", "Impossibile aggiornare la quantità: variante non trovata.");
+	                }
 	                break;
                     
                 default:
@@ -400,6 +464,39 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         	}
         }
         return !listaImg.isEmpty() ? listaImg : null;
+    }
+    
+    private String generaCodiceColore(String nomeColore) {
+        if (nomeColore == null || nomeColore.trim().isEmpty()) {
+            nomeColore = "COLORE";
+        }
+
+        String pulito = nomeColore.trim().toUpperCase()
+                .replaceAll("[ÀÁÂÃÄÅ]", "A")
+                .replaceAll("[ÈÉÊË]", "E")
+                .replaceAll("[ÌÍÎÏ]", "I")
+                .replaceAll("[ÒÓÔÕÖ]", "O")
+                .replaceAll("[ÙÚÛÜ]", "U")
+                .replaceAll("[^A-Z0-9]", "_")  // sostituisce spazi e caratteri non alfanumerici con '_'
+                .replaceAll("_+", "_");         // rimuove underscore doppi/multipli
+
+        // Rimuove eventuali underscore a inizio/fine stringa
+        pulito = pulito.replaceAll("^_+|_+$", "");
+
+        // Tronca il nome se troppo lungo (es. max 12 caratteri per la parte del nome)
+        if (pulito.length() > 12) {
+            pulito = pulito.substring(0, 12);
+        }
+
+        // Genera un suffisso casuale di 3 caratteri alfanumerici univoci per evitare duplicati
+        String caratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder suffisso = new StringBuilder(3);
+        java.util.Random rnd = new java.util.Random();
+        for (int i = 0; i < 3; i++) {
+            suffisso.append(caratteri.charAt(rnd.nextInt(caratteri.length())));
+        }
+
+        return "C_" + pulito + "_" + suffisso.toString();
     }
     
 }

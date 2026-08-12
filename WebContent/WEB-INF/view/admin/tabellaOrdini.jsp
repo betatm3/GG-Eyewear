@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/comune.css">
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/gestioneOrdiniAdmin.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/styles/gestioneOrdini.css">
 </head>
 <body>
 	<div class="orders-list">

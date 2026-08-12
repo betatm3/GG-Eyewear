@@ -19,11 +19,17 @@ document.addEventListener("DOMContentLoaded", function () {
 	const modifyImg2Input = document.getElementById("edit_immagine2"); 
 
     // Varianti Colore (Presenti solo nel form di Aggiunta)
+	
     const coloreSelects = document.querySelectorAll("select[name='codiceColore']");
     const quantitaInputs = document.querySelectorAll("input[name='quantitaColore']");
+	const nuovoNomeColore = document.getElementById("nuovoNomeColore");
+	const nuovoHexColore = document.getElementById("nuovoHexColore");
+	const nuovaQtaColore = document.getElementById("nuovaQtaColore");
+	const colorVariantsContainer = document.getElementById("colorVariantsContainer");
 	
     // Permette lettere, numeri, spazi, trattini, & e punti (minimo 2 caratteri)
     const regexTestoCampi = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
+	const regexHexColor = /^#[0-9A-Fa-f]{6}$/;
 		
     // Funzione helper per mostrare/rimuovere i messaggi d'errore
     function showFieldError(input, message) {
@@ -51,6 +57,33 @@ document.addEventListener("DOMContentLoaded", function () {
             input.style.borderColor = "#E2DDD5";
         }
     }
+	
+	// Helper per  messaggi d'errore su box varianti colori
+	function showContainerError(container, message) {
+	    if (!container) return;
+	    
+	    let errorSpan = container.querySelector(".container-error-msg");
+
+	    if (message) {
+	        if (!errorSpan) {
+	            errorSpan = document.createElement("small");
+	            errorSpan.className = "container-error-msg";
+	            errorSpan.style.color = "#C86A55";
+	            errorSpan.style.fontSize = "12px";
+	            errorSpan.style.marginTop = "4px";
+	            errorSpan.style.display = "block";
+	            errorSpan.style.fontWeight = "500";
+	            container.appendChild(errorSpan); // Lo posiziona in fondo al box colori
+	        }
+	        errorSpan.textContent = message;
+	        container.style.borderColor = "#C86A55";
+	    } else {
+	        if (errorSpan) {
+	            errorSpan.remove();
+	        }
+	        container.style.borderColor = "#E2DDD5";
+	    }
+	}
 	
 	// --- PULSANTI DI RIMOZIONE PER TUTTI I FILE ---
 	    const fileWrappers = document.querySelectorAll(".file-input-wrapper");
@@ -151,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
-    // Immagine OBBLIGATORIA (Form Nuovo Prodotto)
+    // Immagine OBBLIGATORIA
     function validateImmagineNuova() {
         if (!newImg1Input || !newImg2Input) return true;
 		
@@ -175,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
             isValid = false;
         } else if (!validTypes.includes(file2.type)) {
             showFieldError(newImg2Input, "Formato non valido (ammessi JPG, PNG, WEBP, GIF).");
-            retisValid = false;
+            isValid = false;
         } else {
             showFieldError(newImg2Input, null);
         }
@@ -183,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return isValid;
     }
 
-    // Immagine OPZIONALE (Form Modifica Prodotto)
+    // Immagine OPZIONALE
     function validateImmagineModifica() {
         if (!modifyImg1Input|| !modifyImg2Input) return true;
 		
@@ -223,52 +256,117 @@ document.addEventListener("DOMContentLoaded", function () {
 		return isValid;
     }
 
-    // Validazione Colori (Primo colore e quantità obbligatori, i successivi opzionali)
 	function validateColori() {
-        if (coloreSelects.length === 0) return true;
-        let almenoUnColoreValido = false;
-        let isCoerente = true;
+	    let almenoUnColoreValido = false;
+	    let isCoerente = true;
 
-        coloreSelects.forEach((select, index) => {
-       		const qtyInput = quantitaInputs[index];
-       		const codColore = select.value.trim();
-       		const qtaStr = qtyInput ? qtyInput.value.trim() : "";
-       		const qtaNum = parseInt(qtaStr, 10);
+	    // 1. COLORI DA CATALOGO
+	    coloreSelects.forEach((select, index) => {
+	        const qtyInput = quantitaInputs[index];
+	        const codColore = select.value.trim();
+	        const qtaStr = qtyInput ? qtyInput.value.trim() : "";
+	        const qtaNum = parseInt(qtaStr, 10);
 
-       		// Se entrambi sono compilati
-	   		if (codColore !== "" && qtaStr !== "") {
-	       		if (isNaN(qtaNum) || qtaNum < 0) {
-		       		showFieldError(qtyInput, "La quantità non può essere negativa.");
-	           		isCoerente = false;
-	       		} else {
-	           		showFieldError(qtyInput, null);
-               		showFieldError(select, null);
-               		almenoUnColoreValido = true;
-           		}
-       		} 
-       		// Se uno è compilato e l'altro no
-       		else if (codColore !== "" && qtaStr === "") {
-	   			showFieldError(qtyInput, "Inserisci la quantità per questo colore.");
-				showFieldError(select, null);
-	        	isCoerente = false;
-      		} else if (codColore === "" && qtaStr !== "") {
+	        // Select e Quantità compilati
+	        if (codColore !== "" && qtaStr !== "") {
+	            if (isNaN(qtaNum) || qtaNum <= 0) {
+	                showFieldError(qtyInput, "Inserisci un valore positivo");
+	                isCoerente = false;
+	            } else {
+	                showFieldError(qtyInput, null);
+	                showFieldError(select, null);
+	                almenoUnColoreValido = true; // Variante da catalogo valida!
+	            }
+	        } 
+	        // manca la quantità
+	        else if (codColore !== "" && qtaStr === "") {
+	            showFieldError(qtyInput, "Inserisci la quantità per questo colore.");
+	            showFieldError(select, null);
+	            isCoerente = false;
+	        } 
+	        // manca il colore
+	        else if (codColore === "" && qtaStr !== "") {
 	            showFieldError(select, "Seleziona il colore corrispondente.");
 	            showFieldError(qtyInput, null);
 	            isCoerente = false;
-	        } else {
-	            // Entrambi vuoti
+	        } 
+	        // entrambi campi vuoti (opzione non usata)
+	        else {
 	            showFieldError(select, null);
 	            if (qtyInput) showFieldError(qtyInput, null);
 	        }
 	    });
 
-        // Controlla se è stato impostato almeno un colore con la sua quantità
-        if (!almenoUnColoreValido && isCoerente) {
-            showFieldError(coloreSelects[0], "Seleziona almeno un colore con la relativa quantità.");
-            return false;
-        }
-        return isCoerente && almenoUnColoreValido;
-    }
+	    // 2. NUOVO COLORE
+	    if (nuovoNomeColore && nuovaQtaColore) {
+	        const nomeVal = nuovoNomeColore.value.trim();
+	        const qtaNuovoStr = nuovaQtaColore.value.trim();
+	        const qtaNuovoNum = parseInt(qtaNuovoStr, 10);
+			const hexVal = nuovoHexColore ? nuovoHexColore.value.trim() : "";
+			
+	        // se i campi sono stati compilati
+	        if (nomeVal !== "" || qtaNuovoStr !== "") {
+	            let nuovoColoreValido = true;
+
+	            if (nomeVal === "") {
+	                showFieldError(nuovoNomeColore, "Inserisci il nome del nuovo colore.");
+	                nuovoColoreValido = false;
+	                isCoerente = false;
+	            }
+				else if (nomeVal.length < 2) {
+					showFieldError(nuovoNomeColore, "Il nome deve contenere almeno 2 caratteri.");
+					nuovoColoreValido = false;
+				    isCoerente = false;
+				}
+		        else if (!regexTestoCampi.test(nomeVal)) {
+		            showFieldError(nuovoNomeColore, "Caratteri non validi (ammessi: lettere, numeri, -, &, .)");
+					nuovoColoreValido = false;
+					isCoerente = false;
+		        }
+			 	else {
+	                showFieldError(nuovoNomeColore, null);
+	            }
+				
+				if (!regexHexColor.test(hexVal)) {
+				    showFieldError(nuovoHexColore, "Formato colore non valido (es. #FF0000).");
+				    nuovoColoreValido = false;
+				    isCoerente = false;
+				} else {
+				    showFieldError(nuovoHexColore, null);
+				}
+				
+	            if (qtaNuovoStr === "") {
+	                showFieldError(nuovaQtaColore, "Inserisci la quantità per il nuovo colore.");
+	                nuovoColoreValido = false;
+	                isCoerente = false;
+	            } else if (isNaN(qtaNuovoNum) || qtaNuovoNum <= 0) {
+	                showFieldError(nuovaQtaColore, "Inserisci un valore positivo");
+	                nuovoColoreValido = false;
+	                isCoerente = false;
+	            } else {
+	                showFieldError(nuovaQtaColore, null);
+	            }
+
+	            if (nuovoColoreValido) {
+	                almenoUnColoreValido = true; 
+	            }
+	        } else {
+	            // Nessun dato inserito per il nuovo colore -> Rimuoviamo gli errori
+	            showFieldError(nuovoNomeColore, null);
+	            showFieldError(nuovaQtaColore, null);
+	        }
+	    }
+
+	    // Campi coerenti, ma nessun colore completato
+		if (!almenoUnColoreValido && isCoerente) {
+		        showContainerError(colorVariantsContainer, "Seleziona dal catalogo o crea almeno un colore con la relativa quantità.");
+		        return false;
+		    } else {
+		        showContainerError(colorVariantsContainer, null);
+		    }
+
+	    return isCoerente && almenoUnColoreValido;
+	}
 
     // --- AGGANCIO EVENTI INPUT & BLUR ---
 
@@ -280,7 +378,10 @@ document.addEventListener("DOMContentLoaded", function () {
 		{ el: newImg1Input, fn: validateImmagineNuova },
         { el: newImg2Input, fn: validateImmagineNuova },
         { el: modifyImg1Input, fn: validateImmagineModifica },
-        { el: modifyImg2Input, fn: validateImmagineModifica }
+        { el: modifyImg2Input, fn: validateImmagineModifica },
+		{ el: nuovoNomeColore, fn: validateColori },
+		{ el: nuovoHexColore, fn: validateColori },
+		{ el: nuovaQtaColore, fn: validateColori }
     ];
 
     fields.forEach(item => {

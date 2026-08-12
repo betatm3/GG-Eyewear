@@ -312,7 +312,7 @@
                 </div>
                 
                 <div style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-secondary);">
-                    Stai gestendo le varianti di colore del prodotto: <strong style="color: #ffffff;">ID <%= occhialeColori.getId() %></strong>
+                    Stai gestendo le varianti di colore del prodotto: <strong>ID <%= occhialeColori.getId() %></strong>
                 </div>
 
                 
@@ -331,13 +331,13 @@
                                     
                                     <div class="color-update-form">
                                         
-                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display: flex; gap: 6px;">
+                                        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display: flex; gap: 6px; align-items: flex-start;">
 										    <input type="hidden" name="action" value="updatecolori" />
 										    <input type="hidden" name="subAction" value="updatequantity" />
 										    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
 										    <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
 										    
-										    <div class="input-group-wrapper" style="display: flex; flex-direction: column;">
+										    <div class="input-group-wrapper">
 										        <input type="number" name="quantita" value="<%= disp.getQuantita() %>" />
 										    </div>
 										    <button type="submit" class="btn-mini save">Aggiorna</button>
@@ -368,42 +368,54 @@
                         }
                     %>
                 </div>
-
                
                 <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
-                    <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px; color: #ffffff;">Associa Nuova Variante Colore</div>
-                    
-                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST">
-					    <input type="hidden" name="action" value="updatecolori" />
-					    <input type="hidden" name="subAction" value="addcolor" />
-					    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
-                        
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="nuovo_colore">Colore</label>
-                                <select id="nuovo_colore" name="codiceColore">
-                                    <option value="">Seleziona Colore...</option>
-                                    <%
-                                        if (tuttiColori != null) {
-                                            for (Colore col : tuttiColori) {
-                                    %>
-                                                <option value="<%= col.getCodice() %>"><%= col.getNome() %> (<%= col.getCodice() %>)</option>
-                                    <%
-                                            }
-                                        }
-                                    %>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="nuova_quantita">Quantità Iniziale</label>
-                                <input type="number" id="nuova_quantita" name="quantita" value="10" />
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn-submit">Associa Colore</button>
-                        <a href="<%= request.getContextPath() %>/admin/GestioneProdotti" class="btn-cancel">Chiudi Pannello Colori</a>
-                    </form>
+                    <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px;">Associa Nuova Variante Colore</div>
+                    <div class="color-variants-container">
+	                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST">
+						    <input type="hidden" name="action" value="updatecolori" />
+						    <input type="hidden" name="subAction" value="addcolor" />
+						    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
+	                        
+	                        <div class="form-grid">
+	                            <div class="form-group">
+	                                <label for="nuovo_colore">Colore</label>
+	                                <select id="nuovo_colore" name="codiceColore">
+	                                    <option value="">Seleziona Colore...</option>
+	                                    <%
+	                                        if (tuttiColori != null) {
+	                                            for (Colore col : tuttiColori) {
+	                                    %>
+	                                                <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
+	                                    <%
+	                                            }
+	                                        }
+	                                    %>
+	                                </select>
+	                            </div>
+	                            
+	                            <div class="form-group">
+	                                <label for="nuova_quantita">Quantità Iniziale</label>
+	                                <input type="number" id="nuova_quantita" name="quantita" placeholder="10" />
+	                            </div>
+	                        </div>
+	                        <label for="newNomeColore" style="margin-top: 14px;">(Aggiungi una nuova variante al catalogo)</label>
+	                        <div class="color-row">
+		                        <div class="field-wrapper">
+			                        <input type="text" id="newNomeColore" name="newNomeColore" placeholder="Es. Tartarugato classico" />
+		                        </div>
+	                        	<div class="field-wrapper">
+	                        		<input type="color" id="nuovoHexColore" name="newHexColore" value="#000000" style="width: 80px; height: 40px;"/> 
+								</div>
+								<div class="field-wrapper">
+	                            	<input type="number" id= "newQtaColore" name="newQtaColore" placeholder="10" style="width: 80px; height: 40px;"/>
+	                        	</div>
+	                        </div>
+	                        	                        
+	                        <button type="submit" class="btn-submit">Associa Colore</button>
+	                        <a href="<%= request.getContextPath() %>/admin/GestioneProdotti" class="btn-cancel">Chiudi Pannello Colori</a>
+	                    </form>
+                    </div>
                 </div>
 
             <% } else { %>
@@ -486,37 +498,48 @@
                     </div>
 
                     
-                    <div class="color-variants-container">
-                        <label>Inserisci Fino a 3 Varianti Colore Iniziali</label>
-                        
+                    <div class="color-variants-container" id ="colorVariantsContainer">
+                        <label style="font-size: 14px;">Inserisci Fino a 3 Varianti Colore Iniziali</label>
+                        <label style="margin-top: 14px;">(Seleziona 2 varianti colori dal catalogo)</label>
                         <div class="color-row">
-                            <select name="codiceColore">
-                                <option value="">Scegli primo colore...</option>
-                                <% if (tuttiColori != null) { for (Colore col : tuttiColori) { %>
-                                    <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
-                                <% } } %>
-                            </select>
-                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
+                        	<div class="field-wrapper">
+	                            <select name="codiceColore">
+	                                <option value="">Scegli primo colore...</option>
+	                                <% if (tuttiColori != null) { for (Colore col : tuttiColori) { %>
+	                                    <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
+	                                <% } } %>
+	                            </select>
+                            </div>
+                            <div class="field-wrapper">
+                            	<input type="number" name="quantitaColore" placeholder="10" />
+                            </div>
                         </div>
 
                         <div class="color-row">
-                            <select name="codiceColore">
-                                <option value="">Scegli secondo colore...</option>
-                                <% if (tuttiColori != null) { for (Colore col : tuttiColori) { %>
-                                    <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
-                                <% } } %>
-                            </select>
-                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
+	                        <div class="field-wrapper">
+	                            <select name="codiceColore">
+	                                <option value="">Scegli secondo colore...</option>
+	                                <% if (tuttiColori != null) { for (Colore col : tuttiColori) { %>
+	                                    <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
+	                                <% } } %>
+	                            </select>
+                            </div>
+                            <div class="field-wrapper">
+                            	<input type="number" name="quantitaColore" placeholder="10" />
+                            </div>
                         </div>
-
+						
+						<label for="nuovoNomeColore" style="margin-top: 14px;">(Aggiungi un nuovo colore al catalogo)</label>
                         <div class="color-row">
-                            <select name="codiceColore">
-                                <option value="">Scegli terzo colore...</option>
-                                <% if (tuttiColori != null) { for (Colore col : tuttiColori) { %>
-                                    <option value="<%= col.getCodice() %>"><%= col.getNome() %></option>
-                                <% } } %>
-                            </select>
-                            <input type="number" name="quantitaColore" placeholder="Qta scorta" />
+	                        <div class="field-wrapper">
+		                        <input type="text" id="nuovoNomeColore" name="nuovoNomeColore" placeholder="Es. Tartarugato classico" />
+	                        </div>
+                        	<div class="field-wrapper">
+                        		<input type="color" id="nuovoHexColore" name="nuovoHexColore" value="#000000" style="width: 80px; height: 40px;"/> 
+							</div>
+							<div class="field-wrapper">
+                            	<input type="number" id= "nuovaQtaColore" name="nuovaQtaColore" placeholder="10" style="width: 80px; height: 40px;"/>
+                        	</div>
                         </div>
                     </div>
                     
