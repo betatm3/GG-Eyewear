@@ -150,20 +150,21 @@ document.addEventListener("DOMContentLoaded", () => {
 		if (!validateForm()) {
 			return;
 		}
-				
+		
+		//impacchetto tutto il form in una stringa di Query Parameters (es. tipo=sole&prezzoMax=100).		
         const formData = new FormData(filterForm);
         const searchParams = new URLSearchParams(formData).toString();
 
         fetch(contextPath + "/catalogo?" + searchParams, {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
+            headers: {   "X-Requested-With": "XMLHttpRequest"   } 
+			//Permette alla Servlet di capire se la richiesta arriva da una chiamata fetch fatta in background da JavaScript
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error("Errore nella risposta della Servlet: " + response.status);
             }
             return response.text();
+			//leggo HTML che ha restituito la Servlet e lo sovrascrivo nel contenitore del catalogo. Niente ricaricamento di pagina, aggiornamento istantaneo
         })
         .then(html => {
             catalogContainer.innerHTML = html;

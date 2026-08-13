@@ -116,7 +116,7 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
 
             // --- GESTIONE RISPOSTA DINAMICA ---
             boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-
+           
             if (isAjax) {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/tabellaOrdini.jsp");
                 dispatcher.forward(request, response);

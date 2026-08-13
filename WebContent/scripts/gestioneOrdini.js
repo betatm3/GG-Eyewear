@@ -157,6 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(html => {
             // Aggiorna  solo la porzione di pagina contenente la tabella degli ordini
+			/*
+				La Servlet inoltra il controllo al dispatcher di tabellaOrdini.jsp, il server compila quel pezzo di HTML
+				con i dati aggiornati presi dagli attributi della request e lo invia come testo puro. Il JS prende quell'HTML
+				e aggiorna ordiniContainer.innerHTML con zero impatto visivo sul resto dell'interfaccia
+			*/
             ordiniContainer.innerHTML = html;
         })
         .catch(error => console.error("Errore durante il filtraggio degli ordini:", error));

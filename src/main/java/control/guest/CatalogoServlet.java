@@ -192,7 +192,10 @@ public class CatalogoServlet extends HttpServlet {
         }
         
         boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-
+        /*
+			true: Interroghi il DB e inoltri la richiesta (forward) solo a un frammento JSP (grigliaProdotto.jsp) che restituisce SOLO l'HTML dei prodotti.
+			false: l'utente ha aperto la pagina inserendo l'URL a mano, quindi fai il forward alla JSP completa (catalogo.jsp) con tutto il layout della pagina.
+         */
         if (isAjax) {
             // Rinvio file con le sole schede dei prodotti
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp");

@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import model.ProdottoAcquistato; // Sostituisci con il package corretto del tuo Bean
+import model.ProdottoAcquistato;
 import dao.VersioneOcchialeDAOImpl;
 import dao.OcchialeDAOImpl;
 import dao.ColoreDAOImpl;
@@ -98,14 +98,19 @@ public class CarrelloServlet extends HttpServlet {
                 }
             }
             
-            response.setContentType("application/json");
+            response.setContentType("application/json");  
+            //Informa il browser sul tipo di contenuto che gli sta per arrivare nell'header HTTP: un oggetto JSON. In questo modo, JavaScript (con l'API fetch) capirà come interpretarlo correttamente.
             response.setCharacterEncoding("UTF-8");
-            
+            //Imposta codifica dei caratteri della risposta in UTF-8.
             String json = String.format(
                 java.util.Locale.US,
                 "{\"status\":\"success\", \"totaleCarrello\":%.2f, \"quantita\":%d, \"subtotale\":%.2f, \"carrelloVuoto\":%b}",
                 totale, quantitaAggiornata, subtotaleAggiornato, carrello.isEmpty()
             );
+            /* Costruisce dinamicamente la stringa formattata secondo la sintassi standard del JSON. 
+             * Usojava.util.Locale.US perché in italiano (e in Europa) i numeri decimali si scrivono con la virgola (12,50), mentre nello standard JSON i decimali VOGLIONO il punto (12.50).
+             * Forzando la Locale US, il placeholder %.2f impiegherà sempre il punto per separare i decimali. Usando la virgola, il codice JavaScript restituirebbe un errore di sintassi (JSON.parse error)
+             */
             response.getWriter().write(json);
             return;
         }

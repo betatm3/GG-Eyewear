@@ -3,8 +3,6 @@ package dao;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import model.Occhiale;
-import model.Ordine;
 import model.ProdottoAcquistato;
 
 

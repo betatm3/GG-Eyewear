@@ -45,7 +45,7 @@
                             for (ProdottoAcquistato item : carrello) {
                                 int idOcchiale = item.getOcchiale().getId();
                                 int codiceVersione = item.getVersioneOcchiale().getCodice();
-                                int codiceColore = item.getColore().getIdColore();
+                                String codiceColore = item.getColore().getCodice();
                                 String nomeColore = item.getColore().getNome() != null ? item.getColore().getNome() : "Colore";
                                 String marca = item.getVersioneOcchiale().getMarca() != null ? item.getVersioneOcchiale().getMarca() : "Brand";
                                 String modello = item.getVersioneOcchiale().getModello() != null ? item.getVersioneOcchiale().getModello() : "Modello";

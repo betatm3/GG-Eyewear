@@ -28,9 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function gestisciModificaQuantita(link) {
+	/*	Crea l'oggetto URL a partire dal link (l'elemento <a>) su cui l'utente ha cliccato
+		Trasformando il link in un oggetto URL, JavaScript  permette di leggere e modificare facilmente l'indirizzo web
+	*/
         const urlObj = new URL(link.href, window.location.origin);
-        urlObj.searchParams.set("ajax", "true");
-
+        urlObj.searchParams.set("ajax", "true");  //aggiunge in coda la coppia chiave-valore ajax=true.
+		
+		//recupero i parametri dall'url
         const id = urlObj.searchParams.get("idOcchiale");
         const cod = urlObj.searchParams.get("codiceVersioneOcchiale");
         const col = urlObj.searchParams.get("coloreScelto");
