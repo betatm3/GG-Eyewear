@@ -5,6 +5,8 @@
 <%@ page import="java.util.Base64" %>
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
+<%@ page import="model.Colore" %>
+<%@ page import="dao.ColoreDAOImpl" %>
 <%@ page import="model.VersioneOcchiale" %>
 <%@ page import="model.Recensione" %>
 <%@ page import="model.Utente" %>
@@ -163,41 +165,42 @@
                     <input type="hidden" name="action" value="aggiungi" />
                     <input type="hidden" name="idOcchiale" value="<%= occhiale.getId() %>" />
                     <input type="hidden" name="codiceVersioneOcchiale" value="<%= versione != null ? versione.getCodice() : 0 %>" />
-
-                    <div class="color-selection-header">
-                        <% 
-                            String primoNomeColore = "Nero";
-                            if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
-                                Disponibile d1 = occhiale.getDisponibilita().iterator().next();
-                                if (d1.getColore() != null && d1.getColore().getNome() != null) {
-                                    primoNomeColore = d1.getColore().getNome();
-                                }
+					
+					<% 
+                    	String primoNomeColore = "Nessuna disponibilità";
+                        if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
+                            Disponibile d1 = occhiale.getDisponibilita().iterator().next();
+                            if (d1.getColore() != null && d1.getColore().getNome() != null) {
+                                primoNomeColore = d1.getColore().getNome();
                             }
-                        %>
+                        }
+                    %>
+                    <div class="color-selection-header">
                         <span class="field-title">Seleziona il colore: <strong id="selectedColorName"><%= primoNomeColore %></strong></span>
-                        <span class="stock-badge in-stock">in magazzino</span>
+                        <% 
+                        	if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
+                        %>
+  							<span class="stock-badge in-stock">in magazzino</span>
+                        <%
+                        	}
+                    	%>
                     </div>
 
                     <div class="color-swatches-container">
                         <% 
                             if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
                                 boolean first = true;
-                                boolean hasInStock = false;
                                 for (Disponibile disp : occhiale.getDisponibilita()) {
-                                    String codiceColore = disp.getColore().getCodice();
-                                    String nomeColore = disp.getColore().getNome() != null ? disp.getColore().getNome() : codiceColore;
+                                	Colore c = disp.getColore();
+                                	if(c == null)	continue;
+                                	
+                                    String codiceColore = c.getCodice();
+                                    String nomeColore = c.getNome() != null ? c.getNome() : codiceColore;
                                     boolean inStock = disp.getQuantita() > 0;
-                                    if (inStock) hasInStock = true;
                                     
+                                    String hexColor = (c.getHex() != null && !c.getHex().isBlank()) ? c.getHex() : "#111111";
+                                    System.out.println("\nCodice hex: "+c.getHex() + c.getNome() + c.getCodice() + c.getIdColore());
                                     String cNameLower = nomeColore.toLowerCase();
-                                    String hexColor = "#111111"; // default nero
-                                    if (cNameLower.contains("marrone") || cNameLower.contains("tartarugato")) hexColor = "#5A3825";
-                                    else if (cNameLower.contains("rosso") || cNameLower.contains("bordeaux")) hexColor = "#6B0F24";
-                                    else if (cNameLower.contains("verde")) hexColor = "#3E6B48";
-                                    else if (cNameLower.contains("oro") || cNameLower.contains("gold")) hexColor = "#D4AF37";
-                                    else if (cNameLower.contains("argento") || cNameLower.contains("silver")) hexColor = "#C0C0C0";
-                                    else if (cNameLower.contains("blu")) hexColor = "#1E3A8A";
-                                    else if (cNameLower.contains("rosa")) hexColor = "#E8A598";
                         %>
                                     <label class="swatch-label <%= inStock ? "" : "disabled" %>">
                                         <input type="radio" name="coloreScelto" value="<%= codiceColore %>" 
@@ -211,14 +214,9 @@
                                 }
                             } else { 
                         %>
-                                <label class="swatch-label">
-                                    <input type="radio" name="coloreScelto" value="C1" checked />
-                                    <span class="swatch-circle-btn" style="background-color: #111111;" title="Nero"></span>
-                                </label>
-                                <label class="swatch-label">
-                                    <input type="radio" name="coloreScelto" value="C2" />
-                                    <span class="swatch-circle-btn" style="background-color: #5A3825;" title="Tartarugato"></span>
-                                </label>
+                        <span style="font-size: 13px; color: #888; display: block; margin-top: 8px;">
+							Nessun colore disponibile per questo modello.
+						</span>
                         <% 
                             } 
                         %>

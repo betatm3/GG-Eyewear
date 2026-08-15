@@ -69,7 +69,7 @@ public class OcchialeServlet extends HttpServlet {
                 if (listaDisponibilita != null) {
                     for (Disponibile disp : listaDisponibilita) {
                         if (disp.getColore() != null && disp.getColore().getCodice() != null) {
-                            Colore coloreCompleto = coloreDAO.doRetrieveByKey(disp.getColore().getIdColore());
+                            Colore coloreCompleto = coloreDAO.doRetrieveByCodice(disp.getColore().getCodice());
                             if (coloreCompleto != null) {
                                 disp.setColore(coloreCompleto);
                             }

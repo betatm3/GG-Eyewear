@@ -3,8 +3,6 @@ package control.common;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,6 +17,7 @@ import dao.ProdottoAcquistatoDAOImpl;
 import dao.DisponibileDAOImpl;
 
 import model.Ordine;
+import model.Carrello;
 import model.ProdottoAcquistato;
 import model.Utente;
 import model.Stato;
@@ -41,8 +40,7 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        @SuppressWarnings("unchecked")
-		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
+		Carrello carrello = (Carrello) session.getAttribute("carrello");
 
         if (carrello == null || carrello.isEmpty()) {
             request.setAttribute("errore", "Il tuo carrello è attualmente vuoto.");
@@ -63,8 +61,7 @@ public class CheckoutServlet extends HttpServlet {
 
         Utente utenteLoggato = (Utente) session.getAttribute("utenteLoggato");
 
-        @SuppressWarnings("unchecked")
-		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
+		Carrello carrello = (Carrello) session.getAttribute("carrello");
         if (carrello == null || carrello.isEmpty()) {
             request.setAttribute("errore", "Il carrello è vuoto. Impossibile procedere.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
@@ -97,7 +94,7 @@ public class CheckoutServlet extends HttpServlet {
 
         try {
             // Validazione preliminare delle disponibilità di magazzino
-            for (ProdottoAcquistato item : carrello) {
+            for (ProdottoAcquistato item : carrello.getProdotti()) {
                 Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice());
                 if (disp == null || disp.getQuantita() < item.getQuantita()) {
                     String nomeColore = item.getColore().getNome() != null ? item.getColore().getNome() : item.getColore().getCodice();
@@ -109,10 +106,7 @@ public class CheckoutServlet extends HttpServlet {
                 }
             }
 
-            double totale = 0.0;
-            for (ProdottoAcquistato item : carrello) {
-                totale += item.getVersioneOcchiale().getPrezzo() * item.getQuantita();
-            }
+            double totale = carrello.getTotale();
 
             // Generazione e salvataggio dell'ordine
             int idOrdine = new java.util.Random().nextInt(900000) + 100000; // ID univoco a 6 cifre
@@ -132,7 +126,7 @@ public class CheckoutServlet extends HttpServlet {
 
             ordineDAO.doSave(ordine);
 
-            for (ProdottoAcquistato item : carrello) {
+            for (ProdottoAcquistato item : carrello.getProdotti()) {
                 // Genera codice riga
                 int numeroRiga = new java.util.Random().nextInt(900000) + 100000;
                 
@@ -150,7 +144,7 @@ public class CheckoutServlet extends HttpServlet {
             }
 
             // Svuota il carrello dalla sessione
-            session.removeAttribute("carrello");
+            carrello.svuota();
 
             request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo.");
             

@@ -20,15 +20,6 @@
 <body>
 
 <%
-  int cartCount = 0;
-  HttpSession sess = request.getSession(false);
-  if (sess != null) {
-      Collection<?> carrello = (Collection<?>) sess.getAttribute("carrello");
-      if (carrello != null) {
-          cartCount = carrello.size();
-      }
-  }
-  
   Collection<Occhiale> soleList = (Collection<Occhiale>) request.getAttribute("sole");
   Collection<Occhiale> vistaList = (Collection<Occhiale>) request.getAttribute("vista");
   Map<Integer, Double> medieVoti = (Map<Integer, Double>) request.getAttribute("medieVoti");

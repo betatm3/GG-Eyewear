@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.Collection" %>
+<%@ page import="model.Carrello" %>
 <%
   int cartCountHeader = 0;
   HttpSession sessionHeader = request.getSession(false);
   if (sessionHeader != null) {
-      Collection<?> carrelloHeader = (Collection<?>) sessionHeader.getAttribute("carrello");
-      if (carrelloHeader != null) {
-          cartCountHeader = carrelloHeader.size();
+      Carrello carrelloHeader = (Carrello) sessionHeader.getAttribute("carrello");
+      if (carrelloHeader != null && !carrelloHeader.isEmpty()) {
+          cartCountHeader = carrelloHeader.getProdotti().size();
       }
   }
 %>

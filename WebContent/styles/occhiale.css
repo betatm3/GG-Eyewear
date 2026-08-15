@@ -338,9 +338,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ==========================================================================
-   Sezione Recensioni Prodotto
-   ========================================================================== */
+ /* --- Sezione Recensioni Prodotto --- */
 .reviews-section-box {
   margin-top: 50px;
   border-top: 2px dashed var(--line);

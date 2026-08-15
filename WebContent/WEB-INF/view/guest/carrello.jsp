@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Base64" %>
+<%@ page import="model.Carrello" %>
 <%@ page import="model.ProdottoAcquistato" %>
 <!DOCTYPE html>
 <html lang="it">
@@ -22,12 +23,12 @@
     <div class="container">
         <h1>Il tuo Carrello</h1>
         <% 
-            ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
+        	Carrello carrello = (Carrello) session.getAttribute("carrello");
+        	ArrayList<ProdottoAcquistato> listaProdotti = (carrello != null) ? carrello.getProdotti() : null;
         %>
         <div id="activeCartContent" style="<%= (carrello != null && !carrello.isEmpty()) ? "" : "display: none;" %>">
         <% 
             if (carrello != null && !carrello.isEmpty()) {
-                double totaleCarrello = 0.0;
         %>
                 <table class="cart-table" id="cartTable">
                     <thead>
@@ -42,7 +43,7 @@
                     </thead>
                     <tbody>
                         <% 
-                            for (ProdottoAcquistato item : carrello) {
+                            for (ProdottoAcquistato item : listaProdotti) {
                                 int idOcchiale = item.getOcchiale().getId();
                                 int codiceVersione = item.getVersioneOcchiale().getCodice();
                                 String codiceColore = item.getColore().getCodice();
@@ -51,7 +52,6 @@
                                 String modello = item.getVersioneOcchiale().getModello() != null ? item.getVersioneOcchiale().getModello() : "Modello";
                                 double prezzoUnitario = item.getVersioneOcchiale().getPrezzo();
                                 double subtotale = prezzoUnitario * item.getQuantita();
-                                totaleCarrello += subtotale;
                         %>
                                 <tr class="cart-row" data-id="<%= idOcchiale %>" data-codice="<%= codiceVersione %>" data-colore="<%= codiceColore %>">
                                     
@@ -115,7 +115,7 @@
                 <div class="cart-summary">
                     <div class="summary-row">
                         <div class="summary-label">Totale Carrello</div>
-                        <div class="summary-total" id="cartTotal">€ <%= String.format("%.2f", totaleCarrello) %></div>
+                        <div class="summary-total" id="cartTotal">€ <%= String.format("%.2f", carrello.getTotale()) %></div>
                     </div>
                     
                     <div class="action-buttons">

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="java.util.List" %>
 <%@ page import="java.util.Base64" %>
+<%@ page import="model.Carrello" %>
 <%@ page import="model.ProdottoAcquistato" %>
 <%@ page import="model.Utente" %>
 <!DOCTYPE html>
@@ -144,10 +144,11 @@
                     </div>
 
                     <% 
-                        List<ProdottoAcquistato> carrello = (List<ProdottoAcquistato>) session.getAttribute("carrello");
+                        Carrello carrello = (Carrello) session.getAttribute("carrello");
                         double totaleOrdine = 0.0;
                         if (carrello != null && !carrello.isEmpty()) {
-                            for (ProdottoAcquistato item : carrello) {
+                        	totaleOrdine = carrello.getTotale();
+                            for (ProdottoAcquistato item : carrello.getProdotti()) {
                                 String marca = item.getVersioneOcchiale().getMarca() != null ? item.getVersioneOcchiale().getMarca() : "Brand";
                                 String modello = item.getVersioneOcchiale().getModello() != null ? item.getVersioneOcchiale().getModello() : "Modello";
                                 String colore = item.getColore().getNome() != null ? item.getColore().getNome() : item.getColore().getCodice();

@@ -2,7 +2,6 @@ package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -14,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import model.Carrello;
 import model.ProdottoAcquistato;
 import dao.VersioneOcchialeDAOImpl;
 import dao.OcchialeDAOImpl;
@@ -31,10 +31,9 @@ public class CarrelloServlet extends HttpServlet {
         
         HttpSession session = request.getSession(true);
         
-        @SuppressWarnings("unchecked")//per togliere warning gialli che dava a carrello
-		ArrayList<ProdottoAcquistato> carrello = (ArrayList<ProdottoAcquistato>) session.getAttribute("carrello");
+		Carrello carrello = (Carrello) session.getAttribute("carrello");
         if (carrello == null) {
-            carrello = new ArrayList<>();
+            carrello = new Carrello();
             session.setAttribute("carrello", carrello);
         }
         
@@ -58,7 +57,7 @@ public class CarrelloServlet extends HttpServlet {
                     break;
                     
                 case "svuota":
-                    carrello.clear();
+                    carrello.svuota();
                     break;
                     
                 case "visualizza":
@@ -73,43 +72,40 @@ public class CarrelloServlet extends HttpServlet {
         // Supporto AJAX
         boolean isAjax = "true".equalsIgnoreCase(request.getParameter("ajax"));
         if (isAjax) {
-            double totale = 0.0;
+            double totale = carrello.getTotale();
             int quantitaAggiornata = 0;
             double subtotaleAggiornato = 0.0;
-            for (ProdottoAcquistato p : carrello) {
-                double sub = p.getVersioneOcchiale().getPrezzo() * p.getQuantita();
-                totale += sub;
                 
-                if (action.equalsIgnoreCase("modificaQuantita") || action.equalsIgnoreCase("aggiungi")) {
-                    try {
-                        int id = Integer.parseInt(request.getParameter("idOcchiale"));
-                        int cod = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
-                        String col = request.getParameter("coloreScelto");
+            if (action.equalsIgnoreCase("modificaQuantita") || action.equalsIgnoreCase("aggiungi")) {
+                try {
+                    int id = Integer.parseInt(request.getParameter("idOcchiale"));
+                    int cod = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
+                    String col = request.getParameter("coloreScelto");
                         
+                    for(ProdottoAcquistato p: carrello.getProdotti()) {
                         if (p.getVersioneOcchiale().getOcchiale().getId() == id && 
                             p.getVersioneOcchiale().getCodice() == cod && 
                             p.getColore().getCodice().equalsIgnoreCase(col)) {
                             quantitaAggiornata = p.getQuantita();
-                            subtotaleAggiornato = sub;
+                            subtotaleAggiornato = p.getVersioneOcchiale().getPrezzo()*p.getQuantita();
                         }
-                    } catch (NumberFormatException e) {
-                        // ignore
                     }
+                } catch (NumberFormatException e) {
+                    // ignore
                 }
-            }
+            }            
             
             response.setContentType("application/json");  
             //Informa il browser sul tipo di contenuto che gli sta per arrivare nell'header HTTP: un oggetto JSON. In questo modo, JavaScript (con l'API fetch) capirà come interpretarlo correttamente.
-            response.setCharacterEncoding("UTF-8");
-            //Imposta codifica dei caratteri della risposta in UTF-8.
+            response.setCharacterEncoding("UTF-8"); //codifica dei caratteri della risposta in UTF-8.
             String json = String.format(
                 java.util.Locale.US,
                 "{\"status\":\"success\", \"totaleCarrello\":%.2f, \"quantita\":%d, \"subtotale\":%.2f, \"carrelloVuoto\":%b}",
                 totale, quantitaAggiornata, subtotaleAggiornato, carrello.isEmpty()
             );
             /* Costruisce dinamicamente la stringa formattata secondo la sintassi standard del JSON. 
-             * Usojava.util.Locale.US perché in italiano (e in Europa) i numeri decimali si scrivono con la virgola (12,50), mentre nello standard JSON i decimali VOGLIONO il punto (12.50).
-             * Forzando la Locale US, il placeholder %.2f impiegherà sempre il punto per separare i decimali. Usando la virgola, il codice JavaScript restituirebbe un errore di sintassi (JSON.parse error)
+             * Usojava.util.Locale.US perché in italiano (e in Europa) i numeri decimali si scrivono con la virgola (12,50), mentre lo standard JSON VUOLE il punto (12.50).
+             * Forzando la Locale US, il placeholder %.2f impiegherà il punto per separare i decimali. Usando la virgola, il codice JavaScript restituirebbe un errore di sintassi (JSON.parse error)
              */
             response.getWriter().write(json);
             return;
@@ -126,82 +122,46 @@ public class CarrelloServlet extends HttpServlet {
 
     // --- METODI PRIVATI DI SUPPORTO ---
 
-    private void aggiungiProdotto(HttpServletRequest request, ArrayList<ProdottoAcquistato> carrello) throws NumberFormatException {
+    private void aggiungiProdotto(HttpServletRequest request, Carrello carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
         int codiceVersioneOcchiale = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
         String coloreScelto = request.getParameter("coloreScelto");
         
-        // Controlliamo se lo STESSO identico prodotto (stessa versione e colore) è già nel carrello
-        ProdottoAcquistato giaEsistente = null;
-        for (ProdottoAcquistato p : carrello) {
-            if (p.getVersioneOcchiale().getOcchiale().getId() == idOcchiale && 
-                p.getVersioneOcchiale().getCodice() == codiceVersioneOcchiale && 
-                p.getColore().getCodice().equals(coloreScelto)) {
-            	
-                giaEsistente = p;
-                giaEsistente.setQuantita(giaEsistente.getQuantita() + 1);
-                break;
-            }
-        }
+        ProdottoAcquistato nuovo = new ProdottoAcquistato();
+        nuovo.setNumero(0); // Campo ignorato, verrà valorizzato nel Checkout
         
-        if (giaEsistente == null) {
-            // Se è un prodotto nuovo, creiamo l'oggetto
-            ProdottoAcquistato nuovo = new ProdottoAcquistato();
-            nuovo.setNumero(0); // Campo ignorato, verrà valorizzato nel Checkout
-            OcchialeDAOImpl o = new OcchialeDAOImpl(ds);
-            VersioneOcchialeDAOImpl ver = new VersioneOcchialeDAOImpl(ds);
-            ColoreDAOImpl c = new ColoreDAOImpl(ds);
+        OcchialeDAOImpl o = new OcchialeDAOImpl(ds);
+        VersioneOcchialeDAOImpl ver = new VersioneOcchialeDAOImpl(ds);
+        ColoreDAOImpl c = new ColoreDAOImpl(ds);
             
-            try {
-				nuovo.setOcchiale(o.doRetrieveByKey(idOcchiale));
-				nuovo.setVersioneOcchiale(ver.doRetrieveByKey(codiceVersioneOcchiale, idOcchiale));
-				nuovo.setColore(c.doRetrieveByCodice(coloreScelto));
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+        try {
+			nuovo.setOcchiale(o.doRetrieveByKey(idOcchiale));
+			nuovo.setVersioneOcchiale(ver.doRetrieveByKey(codiceVersioneOcchiale, idOcchiale));
+			nuovo.setColore(c.doRetrieveByCodice(coloreScelto));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
             
-            nuovo.setQuantita(1);
+        nuovo.setQuantita(1);
             
-            carrello.add(nuovo);
-        }
+        carrello.addProdotto(nuovo);
+        
     }
 
-    private void rimuoviProdotto(HttpServletRequest request, ArrayList<ProdottoAcquistato> carrello) throws NumberFormatException {
+    private void rimuoviProdotto(HttpServletRequest request, Carrello carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
         int codiceVersioneOcchiale = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
         String coloreScelto = request.getParameter("coloreScelto");
         
-        for (int i = 0; i < carrello.size(); i++) {
-            ProdottoAcquistato p = carrello.get(i);
-            if (p.getVersioneOcchiale().getOcchiale().getId() == idOcchiale && 
-                p.getVersioneOcchiale().getCodice() == codiceVersioneOcchiale && 
-                p.getColore().getCodice().equalsIgnoreCase(coloreScelto)) {
-                
-                carrello.remove(i); 
-                break;
-            }
-        }
+        carrello.rimuoviProdotto(idOcchiale, codiceVersioneOcchiale, coloreScelto);
     }
 
-    private void modificaQuantita(HttpServletRequest request, ArrayList<ProdottoAcquistato> carrello) throws NumberFormatException {
+    private void modificaQuantita(HttpServletRequest request, Carrello carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
         int codiceVersioneOcchiale = Integer.parseInt(request.getParameter("codiceVersioneOcchiale"));
         String coloreScelto = request.getParameter("coloreScelto");
         int nuovaQuantita = Integer.parseInt(request.getParameter("quantita"));
         
-        for (int i = 0; i < carrello.size(); i++) {
-            ProdottoAcquistato p = carrello.get(i);
-            if (p.getVersioneOcchiale().getOcchiale().getId() == idOcchiale && 
-                p.getVersioneOcchiale().getCodice() == codiceVersioneOcchiale && 
-                p.getColore().getCodice().equalsIgnoreCase(coloreScelto)) {
-                
-                if (nuovaQuantita > 0) {
-                    p.setQuantita(nuovaQuantita);
-                } else {
-                    carrello.remove(i);
-                }
-                break;
-            }
-        }
+        carrello.modificaQuantita(idOcchiale, codiceVersioneOcchiale, coloreScelto, nuovaQuantita);
     }
 }
