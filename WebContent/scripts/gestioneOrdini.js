@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Recupero degli elementi principali del DOM necessari per il filtraggio
     const filterForm = document.getElementById("filtriOrdine");
-    const ordiniContainer = document.getElementById("ordiniContainer"); // Div contenente la tabella degli ordini
-    const btnReset = document.getElementById("btnResetFiltriOrdini");  
+    const ordiniContainer = document.getElementById("ordiniContainer"); 
+	const btnReset = document.getElementById("btnResetFiltriOrdini");  
 
     if (!filterForm || !ordiniContainer) {
         console.error("Form 'formFiltriOrdini' o contenitore 'ordiniContainer' non trovati nel DOM.");
@@ -121,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	    return isValid;
 	}
 
-		 
     function validateForm() {
         const v1 = validateMarca();
         const v2 = validateEmail();
@@ -156,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.text(); // Legge la risposta HTML restituita dalla Servlet
         })
         .then(html => {
-            // Aggiorna  solo la porzione di pagina contenente la tabella degli ordini
+            // Aggiorna solo la tabella degli ordini
 			/*
 				La Servlet inoltra il controllo al dispatcher di tabellaOrdini.jsp, il server compila quel pezzo di HTML
 				con i dati aggiornati presi dagli attributi della request e lo invia come testo puro. Il JS prende quell'HTML
@@ -169,10 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Associazione degli Event Listener ai campi di input
     filterInputs.forEach(input => {
-		// 'change' fa partire i filtri solo dopo aver finito di scrivere (o quando si cambia una select)
-		    input.addEventListener("change", applyFilters);
-		    
-		// 'blur' esegue solo la validazione grafica dell'errore quando si esce dal campo
+		input.addEventListener("change", applyFilters);
 		input.addEventListener("blur", () => validateForm());
     });
 
@@ -181,9 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
         btnReset.addEventListener("click", () => {
             filterForm.reset();
 
-            // Svuota esplicitamente tutti i campi (testo, date, numeri, select)
+            // Svuota tutti i campi
             filterInputs.forEach(input => {
-                // Preserva eventuali input hidden di configurazione o sicurezza
+                // Preserva input hidden di configurazione o sicurezza
                 if (input.type !== "hidden") {
                     if (input.tagName === "SELECT") {
                         input.selectedIndex = 0; 
@@ -197,4 +193,23 @@ document.addEventListener("DOMContentLoaded", () => {
             applyFilters();
         });
     }
+	
+	// per espandere/comprimere i dettagli dell'ordine
+	ordiniContainer.addEventListener("click", (event) => {
+		const orderRow = event.target.closest(".order-row");
+	    if (!orderRow) return;
+
+	    // Impedisce l'espansione/compressione se si clicca su controlli interattivi
+	    if (event.target.closest(".status-form") || 
+	    	event.target.tagName === "SELECT" || 
+	        event.target.tagName === "BUTTON" || 
+	        event.target.tagName === "INPUT") {
+	        return;
+	    }
+
+	    const orderCard = orderRow.closest(".order-card");
+	    if (orderCard) {
+	    	orderCard.classList.toggle("expanded");
+	    }
+	});
 });

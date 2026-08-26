@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,9 +20,15 @@ import model.Stato;
 import model.Occhiale;
 import model.Tipologia;
 import model.VersioneOcchiale;
+import model.Utente;
+import model.ProdottoAcquistato;
+import model.Colore;
 import dao.OcchialeDAOImpl;
 import dao.OrdineDAOImpl;
 import dao.VersioneOcchialeDAOImpl;
+import dao.UtenteDAOImpl;
+import dao.ProdottoAcquistatoDAOImpl;
+import dao.ColoreDAOImpl;
 
 @WebServlet("/admin/GestioneOrdini")
 public class GestioneOrdiniAdminServlet extends HttpServlet {
@@ -112,8 +120,54 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
                 }
             }
             
+            // Recupero dettagli aggiuntivi (Utente e Prodotti acquistati)
+            UtenteDAOImpl utenteDAO = new UtenteDAOImpl(ds);
+            ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
+            ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
+            
+            Map<Integer, Collection<ProdottoAcquistato>> prodottiOrdineMap = new HashMap<>();
+            
+            if (ordiniFiltrati != null) {
+                for (Ordine ordine : ordiniFiltrati) {
+                    // dettagli dell'utente
+                    if (ordine.getUtente() != null && ordine.getUtente().getEmail() != null) {
+                        Utente u = utenteDAO.doRetrieveByKey(ordine.getUtente().getEmail());
+                        if (u != null) {
+                            ordine.setUtente(u);
+                        }
+                    }
+                    
+                    // Carica i prodotti acquistati per questo ordine
+                    Collection<ProdottoAcquistato> prodotti = prodottoAcquistatoDAO.doRetrieveByOrdine(ordine.getId());
+                    if (prodotti != null) {
+                        for (ProdottoAcquistato prod : prodotti) {
+                            if (prod.getOcchiale() != null) {
+                                Occhiale occCompleto = occhialeDAO.doRetrieveByKey(prod.getOcchiale().getId());
+                                if (occCompleto != null) {
+                                    prod.setOcchiale(occCompleto);
+                                }
+                                if (prod.getVersioneOcchiale() != null) {
+                                    VersioneOcchiale verCompleta = versioneDAO.doRetrieveByKey(prod.getVersioneOcchiale().getCodice(), occCompleto.getId());
+                                    if (verCompleta != null) {
+                                        prod.setVersioneOcchiale(verCompleta);
+                                    }
+                                }
+                            }
+                            if (prod.getColore() != null && prod.getColore().getCodice() != null) {
+                                Colore colCompleto = coloreDAO.doRetrieveByCodice(prod.getColore().getCodice());
+                                if (colCompleto != null) {
+                                    prod.setColore(colCompleto);
+                                }
+                            }
+                        }
+                    }
+                    prodottiOrdineMap.put(ordine.getId(), prodotti);
+                }
+            }
+            
             request.setAttribute("listaOrdini", ordiniFiltrati);
-
+            request.setAttribute("prodottiOrdineMap", prodottiOrdineMap);
+            
             // --- GESTIONE RISPOSTA DINAMICA ---
             boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
            
