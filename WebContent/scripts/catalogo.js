@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event listener per gli input di testo / numero
     filterInputs.forEach(input => {
         if (input.tagName !== "SELECT") {
-            input.addEventListener("input", applyFilters);
+            input.addEventListener("blur", applyFilters);
             input.addEventListener("change", applyFilters);
         }
     });
