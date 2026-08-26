@@ -154,7 +154,7 @@
                                 String colore = item.getColore().getNome() != null ? item.getColore().getNome() : item.getColore().getCodice();
                                 double prezzo = item.getVersioneOcchiale().getPrezzo();
                                 double subtotale = prezzo * item.getQuantita();
-                                totaleOrdine += subtotale;
+                                
                     %>
                                 <div class="cart-item">
                                     <div class="item-img-container">

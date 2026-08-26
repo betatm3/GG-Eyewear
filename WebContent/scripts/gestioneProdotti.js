@@ -257,6 +257,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 	function validateColori() {
+		// Se non siamo nel form di aggiunta (ovvero se i controlli colore non esistono nella pagina), salta la validazione
+		if (coloreSelects.length === 0 && !nuovoNomeColore) {
+		    return true;
+		}
+			
 	    let almenoUnColoreValido = false;
 	    let isCoerente = true;
 

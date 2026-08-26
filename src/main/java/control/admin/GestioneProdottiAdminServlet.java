@@ -234,7 +234,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             try {
             	ArrayList<String> nuoveImmagini = salvaImmagine(request, idOcchiale);
             	if (nuoveImmagini != null && !nuoveImmagini.isEmpty()) {	
-            		// Eliminazione vecchio file immagine se presente fisicamente in images/occhiali
+            		// Eliminazione vecchio file immagine se presente fisicamente in uploads/occhiali
 	                ArrayList<String> vecchieImmagini = occhialeModificato.getImmagini();
 	                
 	                if (vecchieImmagini != null && !vecchieImmagini.isEmpty()) {
@@ -243,14 +243,14 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		                        String oldFileName = Paths.get(oldPath).getFileName().toString();
 		                    	
 		                        // 1. Percorso temporaneo di Tomcat
-		                        String uploadDir1 = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
+		                        String uploadDir1 = getServletContext().getRealPath(File.separator + "uploads" + File.separator + "occhiali");
 		                        File oldFileTomcat = new File(uploadDir1, oldFileName);
 		                        if (oldFileTomcat.exists()) {
 		                            oldFileTomcat.delete();
 		                        }
 		
 		                        // 2. Percorso sorgente locale del progetto
-		                        String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\Progetto_tsw\\WebContent\\images\\occhiali";
+		                        String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
 		                        File oldFileLocale = new File(uploadDir2, oldFileName);
 		                        if (oldFileLocale.exists()) {
 		                            oldFileLocale.delete();
@@ -274,7 +274,14 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
             String prezzoStr = request.getParameter("prezzo");
             if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
-                versioneModificata.setPrezzo(Double.parseDouble(prezzoStr));
+                try {
+                    double prezzoParsed = Double.parseDouble(prezzoStr.trim().replace(",", "."));
+                    versioneModificata.setPrezzo(prezzoParsed);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errore", "Formato prezzo non valido. Usa valori numerici es. 120.50");
+                    doGet(request, response);
+                    return;
+                }
             }
 
             String genereStr = request.getParameter("genere");
@@ -420,9 +427,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
     private ArrayList<String> salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {
     	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/TuoProgetto/images/occhiali).        
-    	String uploadDir1 = getServletContext().getRealPath(File.separator + "images" + File.separator + "occhiali");
+    	String uploadDir1 = getServletContext().getRealPath(File.separator + "uploads" + File.separator + "occhiali");
     	//per memorizzarla in locale
-    	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\Progetto_tsw\\WebContent\\images\\occhiali";
+    	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
     	
     	File folder1 = new File(uploadDir1);
         if (!folder1.exists()) folder1.mkdirs();
@@ -460,7 +467,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 	            // Copia nella cartella di esecuzione Tomcat
 	            Files.copy(pathLocale, pathTomcat, StandardCopyOption.REPLACE_EXISTING);
 	            
-	            listaImg.add("images/occhiali/" + nomeFile);
+	            listaImg.add("uploads/occhiali/" + nomeFile);
         	}
         }
         return !listaImg.isEmpty() ? listaImg : null;
