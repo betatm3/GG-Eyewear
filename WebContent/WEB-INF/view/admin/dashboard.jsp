@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - GG Eyewear</title>
     
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -42,7 +41,6 @@
 
     
     <div class="actions-grid">
-        <!-- Azione: Gestione Prodotti -->
         <a href="${pageContext.request.contextPath}/admin/GestioneProdotti" class="action-card">
             <div class="action-icon">
                 <img src="${pageContext.request.contextPath}/images/icons8-product-24.png" alt="Gestione Prodotti" style="width: 28px; height: 28px; object-fit: contain;" />
@@ -51,7 +49,6 @@
             <div class="action-desc">Inserisci nuovi occhiali, modifica le informazioni commerciali, i prezzi e gestisci le varianti di colore a magazzino.</div>
         </a>
 
-      
         <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="action-card">
             <div class="action-icon">
                 <img src="${pageContext.request.contextPath}/images/icons8-order-24.png" alt="Gestione Ordini" style="width: 28px; height: 28px; object-fit: contain;" />
@@ -60,13 +57,12 @@
             <div class="action-desc">Visualizza gli ordini effettuati dai clienti, applica filtri avanzati e aggiorna lo stato degli ordini in tempo reale.</div>
         </a>
 
-        
-        <a href="${pageContext.request.contextPath}/home" class="action-card">
+        <a href="${pageContext.request.contextPath}/admin/GestioneUtenti" class="action-card">
             <div class="action-icon">
-                <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna al Negozio" style="width: 28px; height: 28px; object-fit: contain;" />
+                <img src="${pageContext.request.contextPath}/images/user.png" alt="Gestione Utenti" style="width: 28px; height: 28px; object-fit: contain;" />
             </div>
-            <div class="action-title">Torna al Negozio</div>
-            <div class="action-desc">Esci dall'area di amministrazione e torna alla home page pubblica dell'e-commerce per verificare i cambiamenti.</div>
+            <div class="action-title">Gestione Utenti</div>
+            <div class="action-desc">Visualizza tutti gli utenti registrati, promuovili ad amministratori oppure attiva/disattiva i loro account in tempo reale.</div>
         </a>
     </div>
 </div>

@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 import javax.sql.DataSource;
@@ -48,6 +49,18 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+    	
+    	HttpSession session = request.getSession(false);
+        if (session != null) {
+            if (session.getAttribute("msgSuccesso") != null) {
+                request.setAttribute("msgSuccesso", session.getAttribute("msgSuccesso"));
+                session.removeAttribute("msgSuccesso");
+            }
+            if (session.getAttribute("errore") != null) {
+                request.setAttribute("errore", session.getAttribute("errore"));
+                session.removeAttribute("errore");
+            }
+        }
 
         try {           
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneProdotti.jsp");
@@ -99,11 +112,11 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
         
         if (occhialeDAO.doDeleteLogica(idOcchiale)) {
-        	request.setAttribute("msgSuccesso", "Prodotto disattivato con successo.");
+            request.getSession().setAttribute("msgSuccesso", "Prodotto disattivato con successo.");
         } else {
-        	request.setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
+            request.getSession().setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
         }
-        doGet(request, response);
+        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
     private void aggiungiNuovoProdotto(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -201,8 +214,8 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
         }
         
-        request.setAttribute("msgSuccesso", "Nuovo prodotto inserito con successo!");
-        doGet(request, response);
+        request.getSession().setAttribute("msgSuccesso", "Nuovo prodotto inserito con successo!");
+        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
     private void modificaCaratteristiche(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -309,8 +322,8 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             versioneDAO.disattivaVersione(versioneVecchia);
         }
 
-        request.setAttribute("msgSuccesso", "Caratteristiche del prodotto modificate con successo!");
-        doGet(request, response);
+        request.getSession().setAttribute("msgSuccesso", "Caratteristiche del prodotto modificate con successo!");
+        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
     private void gestisciVariantiColore(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -422,7 +435,14 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     return;
             }
         }
-        doGet(request, response);
+        if (request.getAttribute("msgSuccesso") != null) {
+            request.getSession().setAttribute("msgSuccesso", request.getAttribute("msgSuccesso"));
+        }
+        if (request.getAttribute("errore") != null) {
+            request.getSession().setAttribute("errore", request.getAttribute("errore"));
+        }
+
+        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
     private ArrayList<String> salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {

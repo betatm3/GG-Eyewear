@@ -14,6 +14,10 @@ public interface UtenteDAO {
     
     boolean doDelete(String email) throws SQLException;
     
+    boolean doDeleteLogica(String email) throws SQLException;
+
+    boolean doToggleAttivo(String email, boolean status) throws SQLException;
+    
     Utente doRetrieveByKey(String email) throws SQLException;
     
     Collection<Utente> doRetrieveByRuolo(Ruolo ruoloScelto) throws SQLException;

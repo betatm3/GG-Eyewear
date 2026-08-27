@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Utente implements Cloneable{
 	private String email;
 	private String password;
+	private boolean attivo;
 	private String nome;
 	private String cognome;
 	private LocalDate dataNascita;
@@ -17,6 +18,7 @@ public class Utente implements Cloneable{
 			String telefono, Ruolo ruolo) {
 		this.email = email;
 		this.password = password;
+		this.attivo = true;
 		this.nome = nome;
 		this.cognome = cognome;
 		this.dataNascita = dataNascita;
@@ -42,6 +44,14 @@ public class Utente implements Cloneable{
 		this.password = password;
 	}
 	
+	public boolean isAttivo() {
+		return attivo;
+	}
+
+	public void setAttivo(boolean attivo) {
+		this.attivo = attivo;
+	}
+
 	public String getNome() {
 		return nome;
 	}
@@ -101,7 +111,7 @@ public class Utente implements Cloneable{
 	public String toString() {
 		return getClass().getName()+" [email=" + email + ", password=" + password + ", nome=" + nome + ", cognome=" + cognome
 				+ ", dataNascita=" + dataNascita + ", indirizzo=" + indirizzo + ", telefono=" + telefono + ", ruolo="
-				+ ruolo + "]";
+				+ ruolo + ", attivo=" + attivo + "]";
 	}
 	
 }

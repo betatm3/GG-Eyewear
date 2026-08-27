@@ -72,14 +72,21 @@ public class LoginServlet extends HttpServlet {
         UtenteDAOImpl utenteDAO = new UtenteDAOImpl(ds);
 
         try {
-            // 3. Chiediamo al DAO di verificare le credenziali
+            // verificare credenziali
             Utente utente = utenteDAO.doRetrieveByKey(email);
 
             if (utente != null && utente.getPassword() != null && BCrypt.checkpw(password, utente.getPassword())) {
-                // AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
+            	if (!utente.isAttivo()) {
+                    request.setAttribute("errore", "Il tuo account è stato disattivato.");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp");
+                    dispatcher.forward(request, response);
+                    return;
+                }
+            	
+            	// AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
                 HttpSession session = request.getSession(true);
                 
-                // Salviamo l'intero oggetto utente nella sessione
+                // Salvo l'oggetto utente in sessione
                 session.setAttribute("utenteLoggato", utente);
                 session.setAttribute("utente", utente);
 
@@ -99,7 +106,7 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errore", "Si è verificato un errore tecnico. Riprova più tardi.");
         }
 
-        // Login fallito (credenziali errate o SQLException), rimandiamo al form di login 
+        // Login fallito (credenziali errate o SQLException) 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp");
         dispatcher.forward(request, response);
     }

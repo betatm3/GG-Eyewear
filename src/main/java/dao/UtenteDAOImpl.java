@@ -90,6 +90,24 @@ public class UtenteDAOImpl implements UtenteDAO {
         }
         return (result != 0);
     }
+    
+    @Override
+    public boolean doDeleteLogica(String email) throws SQLException {
+        return doToggleAttivo(email, false);
+    }
+
+    @Override
+    public boolean doToggleAttivo(String email, boolean status) throws SQLException {
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = ? WHERE email = ?";
+        int result = 0;
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+            preparedStatement.setBoolean(1, status);
+            preparedStatement.setString(2, email);
+            result = preparedStatement.executeUpdate();
+        }
+        return (result != 0);
+    }
 
     @Override
     public Utente doRetrieveByKey(String email) throws SQLException {
@@ -162,6 +180,7 @@ public class UtenteDAOImpl implements UtenteDAO {
             utente.setDataNascita(dbDate.toLocalDate());
         }
         
+        utente.setAttivo(rs.getBoolean("attivo"));
         utente.setIndirizzo(rs.getString("indirizzo"));
         utente.setTelefono(rs.getString("telefono"));
         
