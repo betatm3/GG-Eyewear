@@ -12,6 +12,8 @@ public interface UtenteDAO {
     
     boolean doUpdate(Utente utente) throws SQLException;
     
+    boolean doUpdateEmail(Utente utente, String oldEmail) throws SQLException;
+    
     boolean doDelete(String email) throws SQLException;
     
     boolean doDeleteLogica(String email) throws SQLException;

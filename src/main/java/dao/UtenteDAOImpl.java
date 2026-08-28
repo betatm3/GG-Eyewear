@@ -77,6 +77,35 @@ public class UtenteDAOImpl implements UtenteDAO {
         return (result != 0);
     }
 
+    
+    public boolean doUpdateEmail(Utente utente, String oldEmail) throws SQLException {
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET email = ?, password = ?, nome = ?, cognome = ?, data_nascita = ?, indirizzo = ?, telefono = ?, ruolo = ? WHERE email = ?";
+        int result = 0;
+        
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+            
+            preparedStatement.setString(1, utente.getEmail()); // Nuova Email
+            preparedStatement.setString(2, utente.getPassword());
+            preparedStatement.setString(3, utente.getNome());
+            preparedStatement.setString(4, utente.getCognome());
+            
+            if (utente.getDataNascita() != null) {
+                preparedStatement.setDate(5, java.sql.Date.valueOf(utente.getDataNascita()));
+            } else {
+                preparedStatement.setNull(5, java.sql.Types.DATE);
+            }
+            
+            preparedStatement.setString(6, utente.getIndirizzo());
+            preparedStatement.setString(7, utente.getTelefono());
+            preparedStatement.setString(8, utente.getRuolo() != null ? utente.getRuolo().name() : null);
+            preparedStatement.setString(9, oldEmail);
+
+            result = preparedStatement.executeUpdate();
+        }
+        return (result != 0);
+    }
+    
     @Override
     public boolean doDelete(String email) throws SQLException {
         String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE email = ?";

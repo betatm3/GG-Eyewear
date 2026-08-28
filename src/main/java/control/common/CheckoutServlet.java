@@ -143,7 +143,6 @@ public class CheckoutServlet extends HttpServlet {
                 disponibileDAO.doUpdate(disp);
             }
 
-            // Svuota il carrello dalla sessione
             carrello.svuota();
 
             request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo.");

@@ -27,8 +27,19 @@ public class RegistrazioneServlet extends HttpServlet {
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-    	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
-    	dispatcher.forward(request, response);
+    	HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("utenteLoggato") != null) {
+            Utente utente = (Utente) session.getAttribute("utenteLoggato");
+            if (utente.isAdmin()) {
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/common/area-utente");
+            }
+            return;
+        }
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");
+        dispatcher.forward(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -95,6 +106,7 @@ public class RegistrazioneServlet extends HttpServlet {
             nuovoUtente.setIndirizzo(indirizzo.trim());
             nuovoUtente.setDataNascita(dataNascita);
             nuovoUtente.setTelefono(telefono.replaceAll("\\s+", ""));
+            nuovoUtente.setAttivo(true);
             
             // --- HASHING PASSWORD CON BCRYPT ---
             // BCrypt.gensalt() genera un salt casuale ad ogni chiamata.
@@ -108,8 +120,13 @@ public class RegistrazioneServlet extends HttpServlet {
                 // eseguiamo il login automatico recupeando dell'utente appena creato dal DB per avere anche l'ID generato dall'AUTO_INCREMENT
                 Utente utenteLoggato = utenteDAO.doRetrieveByKey(nuovoUtente.getEmail());
                 
+                HttpSession oldSession = request.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utenteLoggato", utenteLoggato);
+                
                 response.sendRedirect(request.getContextPath() + "/common/area-utente");
                 return;
             } else {

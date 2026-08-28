@@ -43,11 +43,12 @@ public class AuthFilter implements Filter {
         //Imposta la data di "scadenza" del contenuto al timestamp 0 (ovvero l'1 Gennaio 1970). La pagina risulta già scaduta 
         //nel momento stesso in cui la riceve, quindi non la salverà in cache
         
-        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());        HttpSession session = httpRequest.getSession(false);
+        String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());        
+        HttpSession session = httpRequest.getSession(false);
         
         //impedisce che l'elaborazione dell'autenticazione venga eseguita anche quando il browser scarica un css, js o img.
         if (path.startsWith("/styles/") || path.startsWith("/scripts/") || 
-        	path.startsWith("/images/")) {
+        	path.startsWith("/images/") || path.startsWith("/uploads/")) {
             chain.doFilter(request, response);
             return;
         }

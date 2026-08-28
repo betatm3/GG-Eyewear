@@ -95,7 +95,7 @@ public class CatalogoServlet extends HttpServlet {
             try {
             	forma = Forma.valueOf(formaStr.toUpperCase().trim());
             } catch (IllegalArgumentException e) {
-                genere = null;
+                forma = null;
             }
         }
         
@@ -135,7 +135,7 @@ public class CatalogoServlet extends HttpServlet {
                     Collection<Disponibile> listaDisponibilita = disponibileDAO.doRetrieveByOcchiale(occhiale.getId());
                     occhiale.setDisponibilita(listaDisponibilita);
                     
-                    // Calcolo della media recensioni del prodotto
+                    // Calcolo media recensioni del prodotto
                     try {
                         Collection<Recensione> recensioni = recensioneDAO.doRetrieveByOcchiale(occhiale.getId());
                         if (recensioni != null && !recensioni.isEmpty()) {
@@ -154,32 +154,22 @@ public class CatalogoServlet extends HttpServlet {
 
             String tipo = request.getParameter("tipo");
             if (tipo != null && !tipo.trim().isEmpty()) {
-                Tipologia targetTipo = null;
-                String cleanedTipo = tipo.toUpperCase().trim();
-                if (cleanedTipo.equals("SOLE") || cleanedTipo.equals("DA_SOLE")) {
-                    targetTipo = Tipologia.DA_SOLE;
-                } else if (cleanedTipo.equals("VISTA") || cleanedTipo.equals("DA_VISTA")) {
-                    targetTipo = Tipologia.DA_VISTA;
-                } else {
-                    try {
-                        targetTipo = Tipologia.valueOf(cleanedTipo);
-                    } catch (IllegalArgumentException e) {
-                        targetTipo = null;
-                    }
-                }
-                
-                if (targetTipo != null) {
-                    final Tipologia finalTarget = targetTipo;
-                    listaOcchiali.removeIf(occhiale -> occhiale.getTipo() != finalTarget);
-                }
+            	Tipologia targetTipo = switch (tipo.toUpperCase().trim()) {
+	                case "SOLE", "DA_SOLE" -> Tipologia.DA_SOLE;
+	                case "VISTA", "DA_VISTA" -> Tipologia.DA_VISTA;
+	                default -> null;
+	            };
+	
+	            if (targetTipo != null) {
+	                listaOcchiali.removeIf(occhiale -> occhiale.getTipo() != targetTipo);
+	            }
             }
             
-            // Gestione sezione Outlet: seleziona esattamente 7 occhiali fissi
+            // Gestione sezione Outlet: 7 occhiali fissi (4 Sole, 3 Vista)
             String isOutletStr = request.getParameter("outlet");
             boolean isOutlet = "true".equalsIgnoreCase(isOutletStr);
             
             if (isOutlet) {
-                // Definiamo i 7 ID fissi per l'Outlet (4 Sole, 3 Vista)
                 java.util.Set<Integer> fixedOutletIds = new java.util.HashSet<>(java.util.Arrays.asList(201, 202, 203, 204, 221, 222, 223));
                 listaOcchiali.removeIf(occhiale -> !fixedOutletIds.contains(occhiale.getId()));
             }
@@ -193,15 +183,15 @@ public class CatalogoServlet extends HttpServlet {
         
         boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
         /*
-			true: Interroghi il DB e inoltri la richiesta (forward) solo a un frammento JSP (grigliaProdotto.jsp) che restituisce SOLO l'HTML dei prodotti.
-			false: l'utente ha aperto la pagina inserendo l'URL a mano, quindi fai il forward alla JSP completa (catalogo.jsp) con tutto il layout della pagina.
+			true: Interrogo DB e faccio forward solo a grigliaProdotto.jsp
+			false: l'utente ha aperto la pagina inserendo l'URL a mano: faccio forward a catalogo.jsp
          */
         if (isAjax) {
             // Rinvio file con le sole schede dei prodotti
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp");
         	dispatcher.forward(request, response);
         } else {
-            // Caricamento normale della pagina intera
+            // Caricamento pagina intera
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp");
         	dispatcher.forward(request, response);
         }

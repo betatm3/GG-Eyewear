@@ -24,16 +24,13 @@ public class LoginServlet extends HttpServlet {
     @jakarta.annotation.Resource(name = "jdbc/ecommerce_db")
     private DataSource ds;
     
-    // Il GET mostra semplicemente la pagina JSP con il form di login
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
     	// 1. Controlla se l'utente è già loggato in sessione
         HttpSession session = request.getSession(false);
         if (session != null) {
             Utente utente = (Utente) session.getAttribute("utenteLoggato");
-            if (utente == null) {
-                utente = (Utente) session.getAttribute("utente");
-            }
+   
             // Se l'utente è già loggato, fai il redirect alla pagina corretta
             if (utente != null) {
                 if (utente.isAdmin()) {
@@ -55,7 +52,6 @@ public class LoginServlet extends HttpServlet {
     	dispatcher.forward(request, response);
     }
 
-    // Il POST gestisce l'invio dei dati del form e l'autenticazione
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -83,14 +79,17 @@ public class LoginServlet extends HttpServlet {
                     return;
                 }
             	
-            	// AUTENTICAZIONE RIUSCITA: Creiamo la sessione lato server
-                HttpSession session = request.getSession(true);
-                
-                // Salvo l'oggetto utente in sessione
-                session.setAttribute("utenteLoggato", utente);
-                session.setAttribute("utente", utente);
+            	// PREVENZIONE SESSION FIXATION
+                HttpSession oldSession = request.getSession(false);
+                if (oldSession != null) {
+                    oldSession.invalidate();
+                }
 
-                if ("ADMIN".equalsIgnoreCase(utente.getRuolo().name())) {
+                // Nuova sessione pulita post-login
+                HttpSession session = request.getSession(true);
+                session.setAttribute("utenteLoggato", utente);
+
+                if (utente.isAdmin()) {
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
                     response.sendRedirect(request.getContextPath() + "/common/area-utente");

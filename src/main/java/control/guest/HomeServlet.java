@@ -43,15 +43,15 @@ public class HomeServlet extends HttpServlet {
         Map<Integer, Double> medieVoti = new HashMap<>();
 
         try {
-            // Recupera gli occhiali da sole attivi (massimo 4)
+            // Recupera gli occhiali da sole attivi
             Collection<Occhiale> sole = occhialeDAO.doRetrieveByTipologia(Tipologia.DA_SOLE);
             List<Occhiale> soleCompleti = caricaDettagli(sole, versioneDAO, 4);
 
-            // Recupera gli occhiali da vista attivi (massimo 4)
+            // Recupera gli occhiali da vista attivi
             Collection<Occhiale> vista = occhialeDAO.doRetrieveByTipologia(Tipologia.DA_VISTA);
             List<Occhiale> vistaCompleti = caricaDettagli(vista, versioneDAO, 4);
 
-            // Calcola la media voti delle recensioni per ciascun occhiale
+            // Calcola media voti delle recensioni per ciascun occhiale
             List<Occhiale> tuttiProdotti = new ArrayList<>();
             tuttiProdotti.addAll(soleCompleti);
             tuttiProdotti.addAll(vistaCompleti);

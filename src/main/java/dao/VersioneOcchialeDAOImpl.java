@@ -458,7 +458,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
             
             while (rs.next()) {
                 VersioneOcchiale versione = new VersioneOcchiale();
-                // NON USO LA FUNZIONE AUSILIARIA PERCHE DEVO ANCHE RECUPERARE L'OCCHIALE ATTIVO DI RIFERIMENTO 
+                // NON USO FUNZIONE AUSILIARIA PERCHE DEVO ANCHE RECUPERARE L'OCCHIALE ATTIVO DI RIFERIMENTO 
                 // (USANDOLA, ATTIVEREI QUERY AGGIUNTIVE INUTILI PER RECUPERARE L'OCCHIALE)
                 // Settiamo tutti gli attributi di VersioneOcchiale
                 versione.setCodice(rs.getInt("codice"));

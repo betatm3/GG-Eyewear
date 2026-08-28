@@ -120,7 +120,7 @@ public class CarrelloServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    // --- METODI PRIVATI DI SUPPORTO ---
+    // --- METODI DI SUPPORTO ---
 
     private void aggiungiProdotto(HttpServletRequest request, Carrello carrello) throws NumberFormatException {
         int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));

@@ -44,9 +44,6 @@ public class AreaUtenteServlet extends HttpServlet {
         Utente utente = null;
         if (session != null) {
             utente = (Utente) session.getAttribute("utenteLoggato");
-            if (utente == null) {
-                utente = (Utente) session.getAttribute("utente");
-            }
         }
 
         if (utente == null) {
@@ -82,13 +79,14 @@ public class AreaUtenteServlet extends HttpServlet {
                                 Occhiale occCompleto = occhialeDAO.doRetrieveByKey(prod.getOcchiale().getId());
                                 if (occCompleto != null) {
                                     prod.setOcchiale(occCompleto);
-                                }
-                                // Carica la versione commerciale
-                                if (prod.getVersioneOcchiale() != null) {
-                                	VersioneOcchiale verCompleta = versioneDAO.doRetrieveByKey(prod.getVersioneOcchiale().getCodice(), occCompleto.getId());
-                                	if (verCompleta != null) {
-                                		prod.setVersioneOcchiale(verCompleta);
-                                	}
+                                
+	                                // Carica la versione commerciale
+	                                if (prod.getVersioneOcchiale() != null) {
+	                                	VersioneOcchiale verCompleta = versioneDAO.doRetrieveByKey(prod.getVersioneOcchiale().getCodice(), occCompleto.getId());
+	                                	if (verCompleta != null) {
+	                                		prod.setVersioneOcchiale(verCompleta);
+	                                	}
+	                                }
                                 }
                             }
                             
@@ -126,9 +124,6 @@ public class AreaUtenteServlet extends HttpServlet {
             Utente utenteSessione = null;
             if (session != null) {
                 utenteSessione = (Utente) session.getAttribute("utenteLoggato");
-                if (utenteSessione == null) {
-                    utenteSessione = (Utente) session.getAttribute("utente");
-                }
             }
 
             if (utenteSessione != null) {
@@ -137,7 +132,8 @@ public class AreaUtenteServlet extends HttpServlet {
                 String nuovoTelefono = request.getParameter("telefono");
                 String nuovoIndirizzo = request.getParameter("indirizzo");
                 String nuovaDataNascitaStr = request.getParameter("data_nascita");
-                String nuovaEmail = request.getParameter("email");
+                String emailParam = request.getParameter("email");
+                String nuovaEmail = (emailParam != null) ? emailParam.trim() : "";
                 
                 String oldPassword = request.getParameter("old_password");
                 String nuovaPassword = request.getParameter("new_password");
@@ -155,10 +151,17 @@ public class AreaUtenteServlet extends HttpServlet {
                     doGet(request, response);
                     return;
                 }
+                
+                Utente utenteAggiornato = new Utente();
+                utenteAggiornato.setNome(nuovoNome.trim());
+                utenteAggiornato.setCognome(nuovoCognome.trim());
+                utenteAggiornato.setTelefono(nuovoTelefono.trim());
+                utenteAggiornato.setIndirizzo(nuovoIndirizzo.trim());
+                utenteAggiornato.setRuolo(utenteSessione.getRuolo());
 
                 // --- 2. CONTROLLO GESTIONE PASSWORD (OPZIONALE) ---
                 if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
-                	// A) Verifichiamo che la vecchia password sia stata inserita e che corrisponda all'hash nel DB/sessione
+                	// Verifica vecchia password sia stata inserita e che corrisponda all'hash nel DB
                     if (oldPassword == null || oldPassword.trim().isEmpty() || 
                         utenteSessione.getPassword() == null || 
                         !BCrypt.checkpw(oldPassword, utenteSessione.getPassword())) {
@@ -168,38 +171,52 @@ public class AreaUtenteServlet extends HttpServlet {
                         return; 
                     }
                     
-                    // B) Verifichiamo che la nuova password e la conferma coincidano
                     if (confermaPassword == null || !nuovaPassword.equals(confermaPassword)) {
                         request.setAttribute("msgErrore", "La nuova password e la conferma non coincidono.");
                         doGet(request, response);
                         return;
                     }
-                    String passwordHash = BCrypt.hashpw(nuovaPassword.trim(), BCrypt.gensalt());
-                    utenteSessione.setPassword(passwordHash);
+                    else {
+	                    String passwordHash = BCrypt.hashpw(nuovaPassword.trim(), BCrypt.gensalt());
+	                    utenteAggiornato.setPassword(passwordHash);
+                    }
                 }
-
-                utenteSessione.setNome(nuovoNome.trim());
-                utenteSessione.setCognome(nuovoCognome.trim());
-                utenteSessione.setEmail(nuovaEmail.trim().toLowerCase());
-                utenteSessione.setTelefono(nuovoTelefono.trim());
-                utenteSessione.setIndirizzo(nuovoIndirizzo.trim());
-                
+                else {
+                    utenteAggiornato.setPassword(utenteSessione.getPassword());
+                }
+                     
                 try {
-                    utenteSessione.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
+                	utenteAggiornato.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
                 } catch (Exception e) {
                     request.setAttribute("msgErrore", "Formato data di nascita non valido.");
                     doGet(request, response);
                     return;
                 }
-
-                // --- 4. SALVATAGGIO SU DATABASE ---
+                String vecchiaEmail = utenteSessione.getEmail();
                 UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
-                boolean success = false;
+                // verifico nuova email sia diversa e se è già usata
+                if (!nuovaEmail.equalsIgnoreCase(vecchiaEmail)) {
+                    try {
+						if (utenteDao.doRetrieveByKey(nuovaEmail) != null) {
+						    request.setAttribute("msgErrore", "L'email inserita è già associata a un altro account.");
+						    doGet(request, response);
+						    return;
+						}
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+						request.setAttribute("msgErrore", "Errore durante la verifica dell'email.");
+				        doGet(request, response);
+				        return;
+					}
+                }
+                utenteAggiornato.setEmail(nuovaEmail);
+                
+                // --- 3. SALVATAGGIO SU DATABASE ---
                 try {
-                    success = utenteDao.doUpdate(utenteSessione);
+                	boolean success = utenteDao.doUpdateEmail(utenteAggiornato, vecchiaEmail);
                     if (success) {
-                        session.setAttribute("utenteLoggato", utenteSessione);
-                        session.setAttribute("utente", utenteSessione);
+                        session.setAttribute("utenteLoggato", utenteAggiornato);
                         session.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
                         
                         response.sendRedirect(request.getContextPath() + "/common/area-utente");
