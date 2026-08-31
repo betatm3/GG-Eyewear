@@ -46,7 +46,7 @@ public class AuthFilter implements Filter {
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());        
         HttpSession session = httpRequest.getSession(false);
         
-        //impedisce che l'elaborazione dell'autenticazione venga eseguita anche quando il browser scarica un css, js o img.
+        //impedisce che l'elaborazione dell'autenticazione venga eseguita anche per file css, js o img.
         if (path.startsWith("/styles/") || path.startsWith("/scripts/") || 
         	path.startsWith("/images/") || path.startsWith("/uploads/")) {
             chain.doFilter(request, response);
@@ -56,9 +56,6 @@ public class AuthFilter implements Filter {
         Utente utente = null;
         if (session != null) {
             utente = (Utente) session.getAttribute("utenteLoggato");
-            if (utente == null) {
-                utente = (Utente) session.getAttribute("utente");
-            }
         }
         
         // Richieste /admin/*
@@ -69,11 +66,16 @@ public class AuthFilter implements Filter {
                 dispatcher.forward(httpRequest, httpResponse);
                 return;
             }
+        // Richieste /common/*    
         } else if(path.startsWith("/common/")){
-            // Richieste /common/*
             if (utente == null) {
-                httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
-                return;
+            	if(path.startsWith("/common/area-utente")) {
+            		httpResponse.sendRedirect(httpRequest.getContextPath() + "/login");
+                    return;
+            	}else {
+            		httpResponse.sendRedirect(httpRequest.getContextPath() + "/login?errore=auth_required");
+            		return;
+            	}
             }
         }
         

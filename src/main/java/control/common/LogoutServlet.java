@@ -14,17 +14,14 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // Recuperiamo la sessione corrente, se esiste (con 'false' si evita di crearne una nuova)
+        // false evita di crearne una nuova
         HttpSession session = request.getSession(false);
         
         if (session != null) {
-            // Rimuoviamo l'attributo dell'utente
-            session.removeAttribute("utenteLoggato");
-            // Cancelliamo tutti i dati associati
-            session.invalidate();
+            session.invalidate(); // Invalida la sessione e cancella tutti gli attributi        
         }
         
-        // Usiamo sendRedirect perché lo stato sul server è cambiato (la sessione non esiste più)
+        // sendRedirect perché lo stato sul server è cambiato (la sessione non esiste più)
         response.sendRedirect(request.getContextPath() + "/home");
     }
 

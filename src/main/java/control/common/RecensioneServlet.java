@@ -21,6 +21,12 @@ public class RecensioneServlet extends HttpServlet {
 
     @jakarta.annotation.Resource(name = "jdbc/ecommerce_db")
     private DataSource ds;
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        response.sendRedirect(request.getContextPath() + "/catalogo");
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -33,7 +39,7 @@ public class RecensioneServlet extends HttpServlet {
             return;
         }
 
-        // 2. Recupero e validazione dei parametri della form
+        // Recupero e validazione dei parametri della form
         String occhialeIdStr = request.getParameter("occhialeId");
         String votoStr = request.getParameter("voto");
         String descrizione = request.getParameter("descrizione");
@@ -47,7 +53,12 @@ public class RecensioneServlet extends HttpServlet {
             int occhialeId = Integer.parseInt(occhialeIdStr);
             int voto = Integer.parseInt(votoStr);
             
-            // 3. Prendiamo l'email direttamente ed unicamente dall'oggetto sessione dell'utente autenticato
+            if (voto < 1 || voto > 5) {
+                response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeId);
+                return;
+            }
+            
+            // Email estratta unicamente dalla sessione dell'utente autenticato
             String email = utenteLoggato.getEmail();
             
             RecensioneDAOImpl recensioneDAO = new RecensioneDAOImpl(ds);
@@ -56,15 +67,13 @@ public class RecensioneServlet extends HttpServlet {
             Recensione esistente = recensioneDAO.doRetrieveByKey(email, occhialeId);
             Recensione r = new Recensione(email, occhialeId, descrizione, voto);
             
-            if (esistente != null) {
-                // Se esiste già, aggiorniamo la recensione precedente
+            if (esistente != null) { // Se esiste, aggiorniamo la precedente, altrimenti ne salviamo una nuova
                 recensioneDAO.doUpdate(r);
             } else {
-                // Altrimenti salviamo la nuova recensione
                 recensioneDAO.doSave(r);
             }
             
-            // Reindirizziamo l'utente alla scheda prodotto, posizionandolo sulla sezione #recensioni
+            // Reindirizzamento alla scheda prodotto, sulla sezione #recensioni
             response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeId + "#recensioni");
 
         } catch (NumberFormatException e) {

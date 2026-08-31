@@ -36,9 +36,9 @@ import dao.DisponibileDAOImpl;
 
 @WebServlet("/admin/GestioneProdotti")
 @jakarta.servlet.annotation.MultipartConfig(
-    fileSizeThreshold = 1024 * 1024 * 2, 
-    maxFileSize = 1024 * 1024 * 10,      
-    maxRequestSize = 1024 * 1024 * 50    
+    fileSizeThreshold = 1024 * 1024 * 2,	// 2MB
+    maxFileSize = 1024 * 1024 * 10,      	// 10 MB
+    maxRequestSize = 1024 * 1024 * 50    	// 50 MB
 )
 
 public class GestioneProdottiAdminServlet extends HttpServlet {
@@ -108,13 +108,17 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     // --- METODI PRIVATI DI SUPPORTO ---
 
     private void rimuoviOcchialeLogico(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
-        int idOcchiale = Integer.parseInt(request.getParameter("id"));
-        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
-        
-        if (occhialeDAO.doDeleteLogica(idOcchiale)) {
-            request.getSession().setAttribute("msgSuccesso", "Prodotto disattivato con successo.");
-        } else {
-            request.getSession().setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
+    	try {
+	    	int idOcchiale = Integer.parseInt(request.getParameter("id"));
+	        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
+	        
+	        if (occhialeDAO.doDeleteLogica(idOcchiale)) {
+	            request.getSession().setAttribute("msgSuccesso", "Prodotto disattivato con successo.");
+	        } else {
+	            request.getSession().setAttribute("errore", "Impossibile disattivare il prodotto: ID non trovato.");
+	        }
+    	} catch (NumberFormatException e) {
+            request.getSession().setAttribute("errore", "ID prodotto non valido.");
         }
         response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
@@ -130,21 +134,29 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         
         String tipologiaStr = request.getParameter("tipologia");
         if (tipologiaStr != null && !tipologiaStr.trim().isEmpty()) {
-            nuovoOcchiale.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
+        	try {
+                nuovoOcchiale.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
+            } catch (IllegalArgumentException e) {
+	            request.getSession().setAttribute("errore", "Errore! Tipologia occhiale vuota o non valida.");
+	            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+	            return;
+            }
         } else {
-            nuovoOcchiale.setTipo(Tipologia.DA_SOLE);
+        	request.getSession().setAttribute("errore", "Errore! Tipologia occhiale vuota o non valida.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+            return;
         }
         
         int generatedId = occhialeDAO.doSave(nuovoOcchiale);
         if (generatedId <= 0) {
-        	request.setAttribute("errore", "Errore durante la creazione dell'occhiale nel database.");
-            doGet(request, response);
+        	request.getSession().setAttribute("errore", "Errore durante la creazione dell'occhiale nel database.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
             return; 
         }
         // Salvataggio delle immagini caricate
         try {
             ArrayList<String> pathImg = salvaImmagine(request, generatedId); //salva su pc
-            if (pathImg != null) {
+            if (pathImg != null && !pathImg.isEmpty()) {
                 nuovoOcchiale.setImmagini(pathImg);
                 occhialeDAO.doUpdate(nuovoOcchiale);  // salva nel db
             }
@@ -162,27 +174,31 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         
         String prezzoStr = request.getParameter("prezzo");
         if (prezzoStr != null && !prezzoStr.trim().isEmpty()) {
-            primaVersione.setPrezzo(Double.parseDouble(prezzoStr.trim().replace(",", ".")));
+        	try {
+                primaVersione.setPrezzo(Double.parseDouble(prezzoStr.trim().replace(",", ".")));
+            } catch (NumberFormatException ignored) {
+            	request.getSession().setAttribute("errore", "Prezzo inserito non valido.");
+                response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+                return;
+            }
         }
         
-        String genereStr = request.getParameter("genere");
-        if (genereStr != null && !genereStr.trim().isEmpty()) {
-            primaVersione.setGenere(Genere.valueOf(genereStr.toUpperCase().trim()));
-        }
-        
-        String montaturaStr = request.getParameter("montatura");
-        if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
-            primaVersione.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
-        }
-        
-        String tagliaStr = request.getParameter("taglia");
-        if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
-            primaVersione.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
-        }
-        
-        String formaStr = request.getParameter("forma");
-        if (formaStr != null && !formaStr.trim().isEmpty()) {
-            primaVersione.setForma(Forma.valueOf(formaStr.toUpperCase().trim()));
+        try {
+            String genereStr = request.getParameter("genere");
+            if (genereStr != null && !genereStr.trim().isEmpty()) primaVersione.setGenere(Genere.valueOf(genereStr.toUpperCase().trim()));
+            
+            String montaturaStr = request.getParameter("montatura");
+            if (montaturaStr != null && !montaturaStr.trim().isEmpty()) primaVersione.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
+            
+            String tagliaStr = request.getParameter("taglia");
+            if (tagliaStr != null && !tagliaStr.trim().isEmpty()) primaVersione.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
+            
+            String formaStr = request.getParameter("forma");
+            if (formaStr != null && !formaStr.trim().isEmpty()) primaVersione.setForma(Forma.valueOf(formaStr.toUpperCase().trim()));
+        } catch (IllegalArgumentException ignored) {
+        	request.getSession().setAttribute("errore", "Campi forma, taglia, genere o montantura non validi.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+            return;
         }
         
         primaVersione.setOcchiale(nuovoOcchiale); 
@@ -200,16 +216,22 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 String qtaStr = quantitaColori[i];
 
                 if (codiceColore != null && !codiceColore.trim().isEmpty() && qtaStr != null && !qtaStr.trim().isEmpty()) {
-                    int quantita = Integer.parseInt(qtaStr);
                     
-                    Colore c = new Colore();
-                    c.setCodice(codiceColore);
-                    
-                    Disponibile d = new Disponibile ();
-                    d.setColore(c);
-                    d.setOcchiale(nuovoOcchiale);
-                    d.setQuantita(quantita);
-                    disponibileDAO.doSave(d);
+                    try {
+                    	int quantita = Integer.parseInt(qtaStr);
+	                    Colore c = new Colore();
+	                    c.setCodice(codiceColore);
+	                    
+	                    Disponibile d = new Disponibile ();
+	                    d.setColore(c);
+	                    d.setOcchiale(nuovoOcchiale);
+	                    d.setQuantita(quantita);
+	                    disponibileDAO.doSave(d);
+                    } catch (NumberFormatException ignored) {
+                    	request.getSession().setAttribute("errore", "Errore! Quantità inserita non valida.");
+                        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+                        return;
+                    }
                 }
             }
         }
@@ -223,20 +245,36 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
 
         // Recupero chiavi passate 
-        int idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
-        int codiceVersione = Integer.parseInt(request.getParameter("codiceVersione"));
+        int idOcchiale;
+        int codiceVersione; 
 
+        try {
+            idOcchiale = Integer.parseInt(request.getParameter("idOcchiale"));
+            codiceVersione = Integer.parseInt(request.getParameter("codiceVersione"));
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errore", "Identificativi prodotto non validi.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+            return;
+        }
+        
         // Recupero record correnti dal db
         Occhiale occhialeModificato = occhialeDAO.doRetrieveByKey(idOcchiale);
         VersioneOcchiale versioneVecchia = versioneDAO.doRetrieveByKey(codiceVersione, idOcchiale);
-        VersioneOcchiale versioneModificata = versioneVecchia.clone();
+        
         
         // --- AGGIORNAMENTO ATTRIBUTI OCCHIALE ---
-        if (occhialeModificato != null && versioneModificata != null) {         
-            
+        if (occhialeModificato != null && versioneVecchia != null) {         
+        	VersioneOcchiale versioneModificata = versioneVecchia.clone();
+        	
             String tipologiaStr = request.getParameter("tipologia");
             if (tipologiaStr != null && !tipologiaStr.trim().isEmpty()) {
-                occhialeModificato.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
+                try{
+	            	occhialeModificato.setTipo(Tipologia.valueOf(tipologiaStr.toUpperCase().trim()));
+	            } catch (IllegalArgumentException ignored) {
+	            	request.getSession().setAttribute("errore", "Errore! Tipologia non valida.");
+	                response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+	                return;
+	            }
             }
 
             String attivoStr = request.getParameter("attivo");
@@ -263,7 +301,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		                        }
 		
 		                        // 2. Percorso sorgente locale del progetto
-		                        String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
+		                        String uploadDir2 = "C:\\Users\\percorso_privato\\uploads\\occhiali";
 		                        File oldFileLocale = new File(uploadDir2, oldFileName);
 		                        if (oldFileLocale.exists()) {
 		                            oldFileLocale.delete();
@@ -291,38 +329,47 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     double prezzoParsed = Double.parseDouble(prezzoStr.trim().replace(",", "."));
                     versioneModificata.setPrezzo(prezzoParsed);
                 } catch (NumberFormatException e) {
-                    request.setAttribute("errore", "Formato prezzo non valido. Usa valori numerici es. 120.50");
-                    doGet(request, response);
+                	request.getSession().setAttribute("errore", "Formato prezzo non valido. Usa valori numerici es. 120.50");
+                    response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
                     return;
                 }
             }
 
-            String genereStr = request.getParameter("genere");
-            if (genereStr != null && !genereStr.trim().isEmpty()) {
-                versioneModificata.setGenere(Genere.valueOf(genereStr.toUpperCase().trim()));
+            try {
+	            String genereStr = request.getParameter("genere");
+	            if (genereStr != null && !genereStr.trim().isEmpty()) {
+	                versioneModificata.setGenere(Genere.valueOf(genereStr.toUpperCase().trim()));
+	            }
+	
+	            String montaturaStr = request.getParameter("montatura");
+	            if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
+	                versioneModificata.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
+	            }
+	            
+	            String tagliaStr = request.getParameter("taglia");
+	            if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
+	                versioneModificata.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
+	            }
+	            
+	            String formaStr = request.getParameter("forma");
+	            if (formaStr != null && !formaStr.trim().isEmpty()) {
+	            	versioneModificata.setForma(Forma.valueOf(formaStr.toUpperCase().trim()));
+	            }
+            } catch (IllegalArgumentException ignored) {
+            	request.getSession().setAttribute("errore", "Campi forma, taglia, genere o montantura non validi.");
+                response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+                return;
             }
-
-            String montaturaStr = request.getParameter("montatura");
-            if (montaturaStr != null && !montaturaStr.trim().isEmpty()) {
-                versioneModificata.setMontatura(Montatura.valueOf(montaturaStr.toUpperCase().trim()));
-            }
-            
-            String tagliaStr = request.getParameter("taglia");
-            if (tagliaStr != null && !tagliaStr.trim().isEmpty()) {
-                versioneModificata.setTaglia(Taglia.valueOf(tagliaStr.toUpperCase().trim()));
-            }
-            
-            String formaStr = request.getParameter("forma");
-            if (formaStr != null && !formaStr.trim().isEmpty()) {
-            	versioneModificata.setForma(Forma.valueOf(formaStr.toUpperCase().trim()));
-            }
-
             int nuovoCodice = versioneDAO.doSave(versioneModificata);
             versioneModificata.setCodice(nuovoCodice);
             versioneDAO.disattivaVersione(versioneVecchia);
+            
+            request.getSession().setAttribute("msgSuccesso", "Caratteristiche del prodotto modificate con successo!");
+
+        }else {
+            request.getSession().setAttribute("errore", "Prodotto o versione non trovata.");
         }
 
-        request.getSession().setAttribute("msgSuccesso", "Caratteristiche del prodotto modificate con successo!");
         response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
@@ -332,15 +379,23 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         
         String idStr = request.getParameter("idOcchiale");
         if (idStr == null || idStr.trim().isEmpty()) {
-            request.setAttribute("errore", "ID Occhiale non fornito.");
-            doGet(request, response);
+        	request.getSession().setAttribute("errore", "ID Occhiale non fornito.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
             return;
         }
-        int idOcchiale = Integer.parseInt(idStr);
+        int idOcchiale;
+        try {
+            idOcchiale = Integer.parseInt(idStr.trim());
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errore", "ID Occhiale non valido.");
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+            return;
+        }
+        
         String subAction = request.getParameter("subAction"); 
         
         if (subAction != null) {
-            switch (subAction.toLowerCase()) {
+            switch (subAction.toLowerCase().trim()) {
                 
 	            case "addcolor":
 	            	String codiceColore = request.getParameter("codiceColore");
@@ -352,96 +407,99 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 	            	
 	                // --- Colore da Catalogo ---
 	                if (codiceColore != null && !codiceColore.trim().isEmpty() && qtaCatalogStr != null && !qtaCatalogStr.trim().isEmpty()) {
-	                    int qta = Integer.parseInt(qtaCatalogStr.trim());
-	                    
-	                    Occhiale o = new Occhiale();
-	                    o.setId(idOcchiale);
-	                    Colore c = new Colore();
-	                    c.setCodice(codiceColore);
-
-	                    Disponibile d = new Disponibile();
-	                    d.setOcchiale(o);
-	                    d.setColore(c);
-	                    d.setQuantita(qta);
-
-	                    disponibileDAO.doSave(d);
-	                    request.setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+	                	try {
+		                	int qta = Integer.parseInt(qtaCatalogStr.trim());
+		                    
+		                    Occhiale o = new Occhiale();
+		                    o.setId(idOcchiale);
+		                    Colore c = new Colore();
+		                    c.setCodice(codiceColore);
+	
+		                    Disponibile d = new Disponibile();
+		                    d.setOcchiale(o);
+		                    d.setColore(c);
+		                    d.setQuantita(qta);
+	
+		                    disponibileDAO.doSave(d);
+		                    request.getSession().setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+	                	}catch (NumberFormatException e) {
+                            request.getSession().setAttribute("errore", "Quantità non valida.");
+                        }
 	                } 
 	                // --- Creazione Nuovo Colore ---
 	                else if (newNomeColore != null && !newNomeColore.trim().isEmpty() && newQtaStr != null && !newQtaStr.trim().isEmpty()) {
-	                    int newQta = Integer.parseInt(newQtaStr.trim());
-	                    
-	                    String codiceGenerato = generaCodiceColore(newNomeColore.trim());
-	                    Colore nuovoColore = new Colore();
-	                    nuovoColore.setNome(newNomeColore.trim());
-	                    nuovoColore.setHex(newHexColore != null ? newHexColore.trim() : "#000000");
-	                    nuovoColore.setCodice(codiceGenerato);
-	                    coloreDAO.doSave(nuovoColore);
-
-	                    Occhiale o = new Occhiale();
-	                    o.setId(idOcchiale);
-
-	                    Disponibile d = new Disponibile();
-	                    d.setOcchiale(o);
-	                    d.setColore(nuovoColore);
-	                    d.setQuantita(newQta);
-
-	                    boolean salvato = disponibileDAO.doSave(d);
-	                    if (salvato) {
-	                        request.setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
-	                    } else {
-	                        request.setAttribute("errore", "Impossibile associare la variante dal catalogo.");
-	                    }
-	                    request.setAttribute("msgSuccesso", "Nuovo colore inserito a catalogo ed associato con successo!");
-	                } 
-	                else {
-	                    request.setAttribute("errore", "Compilare un'opzione valida per aggiungere la variante colore.");
+	                	try {
+		                	int newQta = Integer.parseInt(newQtaStr.trim());
+		                    
+		                    String codiceGenerato = generaCodiceColore(newNomeColore.trim());
+		                    Colore nuovoColore = new Colore();
+		                    nuovoColore.setNome(newNomeColore.trim());
+		                    nuovoColore.setHex(newHexColore != null ? newHexColore.trim() : "#000000");
+		                    nuovoColore.setCodice(codiceGenerato);
+		                    coloreDAO.doSave(nuovoColore);
+	
+		                    Occhiale o = new Occhiale();
+		                    o.setId(idOcchiale);
+	
+		                    Disponibile d = new Disponibile();
+		                    d.setOcchiale(o);
+		                    d.setColore(nuovoColore);
+		                    d.setQuantita(newQta);
+	
+		                    if (disponibileDAO.doSave(d)) {
+			                    request.getSession().setAttribute("msgSuccesso", "Nuovo colore inserito a catalogo ed associato con successo!");
+		                    } else {
+		                        request.getSession().setAttribute("errore", "Impossibile associare la variante dal catalogo.");
+		                    }
+	                	} catch (NumberFormatException e) {
+                            request.getSession().setAttribute("errore", "Quantità per il nuovo colore non valida.");
+                        }
+	                }else {
+	                    request.getSession().setAttribute("errore", "Compilare un'opzione valida per aggiungere la variante colore.");
 	                }
 	                break;
 	                
 	            case "removecolor":
 	            	String codColoreRemove = request.getParameter("codiceColore");
-	                boolean eliminato = disponibileDAO.doDelete(idOcchiale, codColoreRemove);
-	                if (eliminato) {
-	                    request.setAttribute("msgSuccesso", "Variante colore rimossa con successo!");
+	                if (disponibileDAO.doDelete(idOcchiale, codColoreRemove)) {
+	                    request.getSession().setAttribute("msgSuccesso", "Variante colore rimossa con successo!");
 	                } else {
-	                    request.setAttribute("errore", "Impossibile rimuovere la variante colore: elemento non trovato.");
+	                    request.getSession().setAttribute("errore", "Impossibile rimuovere la variante colore: elemento non trovato.");
 	                }
 	                break;
 	                
 	            case "updatequantity":
 	            	String codColoreUpdate = request.getParameter("codiceColore");
-	                int nuovaQuantita = Integer.parseInt(request.getParameter("quantita"));
-	                Occhiale o = new Occhiale();
-	                o.setId(idOcchiale);
-	                Colore c = new Colore();
-	                c.setCodice(codColoreUpdate);
-
-	                Disponibile d = new Disponibile();
-	                d.setOcchiale(o);
-	                d.setColore(c);
-	                d.setQuantita(nuovaQuantita);
-	                
-	                boolean aggiornato = disponibileDAO.doUpdate(d);
-	                if (aggiornato) {
-	                    request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
-	                } else {
-	                    request.setAttribute("errore", "Impossibile aggiornare la quantità: variante non trovata.");
-	                }
+	            	String qtaUpdateStr = request.getParameter("quantita");
+	            	
+	            	try {
+		                int nuovaQuantita = Integer.parseInt(qtaUpdateStr.trim());
+		                Occhiale o = new Occhiale();
+		                o.setId(idOcchiale);
+		                Colore c = new Colore();
+		                c.setCodice(codColoreUpdate);
+	
+		                Disponibile d = new Disponibile();
+		                d.setOcchiale(o);
+		                d.setColore(c);
+		                d.setQuantita(nuovaQuantita);
+		                
+		                boolean aggiornato = disponibileDAO.doUpdate(d);
+		                if (aggiornato) {
+		                    request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
+		                } else {
+		                    request.setAttribute("errore", "Impossibile aggiornare la quantità: variante non trovata.");
+		                }
+	            	}catch (NumberFormatException e) {
+                        request.getSession().setAttribute("errore", "Quantità specificata non valida.");
+                    }
 	                break;
                     
                 default:
-                	request.setAttribute("errore", "Sub-action colore non riconosciuta.");
-                    return;
+                	request.getSession().setAttribute("errore", "Azione variante colore non riconosciuta.");
+                    break;
             }
         }
-        if (request.getAttribute("msgSuccesso") != null) {
-            request.getSession().setAttribute("msgSuccesso", request.getAttribute("msgSuccesso"));
-        }
-        if (request.getAttribute("errore") != null) {
-            request.getSession().setAttribute("errore", request.getAttribute("errore"));
-        }
-
         response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
 
@@ -449,7 +507,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/TuoProgetto/images/occhiali).        
     	String uploadDir1 = getServletContext().getRealPath(File.separator + "uploads" + File.separator + "occhiali");
     	//per memorizzarla in locale
-    	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
+    	String uploadDir2 = "C:\\Users\\percorso_privato\\uploads\\occhiali";
     	
     	File folder1 = new File(uploadDir1);
         if (!folder1.exists()) folder1.mkdirs();
@@ -505,17 +563,15 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 .replaceAll("[ÒÓÔÕÖ]", "O")
                 .replaceAll("[ÙÚÛÜ]", "U")
                 .replaceAll("[^A-Z0-9]", "_")  // sostituisce spazi e caratteri non alfanumerici con '_'
-                .replaceAll("_+", "_");         // rimuove underscore doppi/multipli
+                .replaceAll("_+", "_")         // rimuove underscore doppi/multipli
+        		.replaceAll("^_+|_+$", "");// per eventuali underscore a inizio/fine stringa
 
-        // Rimuove eventuali underscore a inizio/fine stringa
-        pulito = pulito.replaceAll("^_+|_+$", "");
-
-        // Tronca il nome se troppo lungo (es. max 12 caratteri per la parte del nome)
+        // Tronca il nome se troppo lungo
         if (pulito.length() > 12) {
             pulito = pulito.substring(0, 12);
         }
 
-        // Genera un suffisso casuale di 3 caratteri alfanumerici univoci per evitare duplicati
+        // Genera suffisso di 3 caratteri alfanumerici univoci
         String caratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder suffisso = new StringBuilder(3);
         java.util.Random rnd = new java.util.Random();

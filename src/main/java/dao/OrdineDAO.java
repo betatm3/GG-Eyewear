@@ -13,6 +13,10 @@ public interface OrdineDAO {
 	boolean doUpdate(Ordine ordine) throws SQLException;
 
 	boolean doDelete(int id) throws SQLException;
+	
+	int doCount() throws SQLException;
+	
+	double doTotaleIncassi() throws SQLException;
 
 	Ordine doRetrieveByKey(int id) throws SQLException;
 

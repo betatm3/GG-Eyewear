@@ -78,6 +78,36 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
         return (result != 0);
     }
+    
+    public int doCount() throws SQLException {
+        String selectSQL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        int count = 0;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+    
+    public double doTotaleIncassi() throws SQLException {
+        String selectSQL = "SELECT SUM(totale) FROM " + TABLE_NAME;
+        double totaleGuadagni = 0.0;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                totaleGuadagni = rs.getDouble(1);
+            }
+        }
+        return totaleGuadagni;
+    }
 
     @Override
     public Ordine doRetrieveByKey(int id) throws SQLException {

@@ -46,6 +46,11 @@ public class ModificaStatoOrdineServlet extends HttpServlet {
                     return;
                 }
                 
+                if (ordine.getStato() == nuovoStato) {
+                	response.sendRedirect(request.getContextPath() + "/admin/GestioneOrdini");
+                	return;
+                }
+                
                 ordine.setStato(nuovoStato);
                 if (ordineDAO.doUpdate(ordine)) {
                     response.sendRedirect(request.getContextPath() + "/admin/GestioneOrdini?msg=StatoAggiornato");

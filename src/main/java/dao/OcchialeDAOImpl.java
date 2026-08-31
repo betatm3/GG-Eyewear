@@ -126,7 +126,21 @@ public class OcchialeDAOImpl implements OcchialeDAO {
         return (result != 0);
     }
     
+    public int doCount() throws SQLException {
+        String selectSQL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        int count = 0;
 
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+    
     @Override
     public Occhiale doRetrieveByKey(int id) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";

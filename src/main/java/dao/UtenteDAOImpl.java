@@ -130,12 +130,27 @@ public class UtenteDAOImpl implements UtenteDAO {
         String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = ? WHERE email = ?";
         int result = 0;
         try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+        	PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             preparedStatement.setBoolean(1, status);
             preparedStatement.setString(2, email);
             result = preparedStatement.executeUpdate();
         }
         return (result != 0);
+    }
+    
+    public int doCount() throws SQLException {
+        String selectSQL = "SELECT COUNT(*) FROM " + TABLE_NAME;
+        int count = 0;
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
     }
 
     @Override

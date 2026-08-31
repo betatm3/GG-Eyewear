@@ -20,6 +20,8 @@ public interface UtenteDAO {
 
     boolean doToggleAttivo(String email, boolean status) throws SQLException;
     
+    int doCount() throws SQLException;
+    
     Utente doRetrieveByKey(String email) throws SQLException;
     
     Collection<Utente> doRetrieveByRuolo(Ruolo ruoloScelto) throws SQLException;
