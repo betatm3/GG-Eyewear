@@ -1,6 +1,7 @@
 package control.common;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import jakarta.servlet.RequestDispatcher;
@@ -35,17 +36,23 @@ public class CheckoutServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("utenteLoggato") == null) {
-            response.sendRedirect(request.getContextPath() + "/login?errore=auth_required");
-            return;
-        }
-
 		Carrello carrello = (Carrello) session.getAttribute("carrello");
 
         if (carrello == null || carrello.isEmpty()) {
             request.setAttribute("errore", "Il tuo carrello è attualmente vuoto.");
         }
 
+        if (session != null) {
+            if (session.getAttribute("errore") != null) {
+                request.setAttribute("errore", session.getAttribute("errore"));
+                session.removeAttribute("errore");
+            }
+            if (session.getAttribute("successo") != null) {
+                request.setAttribute("successo", session.getAttribute("successo"));
+                session.removeAttribute("successo");
+            }
+        }
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
         dispatcher.forward(request, response);
     }
@@ -54,18 +61,12 @@ public class CheckoutServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("utenteLoggato") == null) {
-            response.sendRedirect(request.getContextPath() + "/login?errore=auth_required");
-            return;
-        }
-
         Utente utenteLoggato = (Utente) session.getAttribute("utenteLoggato");
-
 		Carrello carrello = (Carrello) session.getAttribute("carrello");
-        if (carrello == null || carrello.isEmpty()) {
-            request.setAttribute("errore", "Il carrello è vuoto. Impossibile procedere.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
-            dispatcher.forward(request, response);
+
+		if (carrello == null || carrello.isEmpty()) {
+			session.setAttribute("errore", "Il carrello è vuoto. Impossibile procedere.");
+            response.sendRedirect(request.getContextPath() + "/common/checkout");
             return;
         }
 
@@ -82,77 +83,90 @@ public class CheckoutServlet extends HttpServlet {
             telefono == null || telefono.trim().isEmpty() ||
             metodoPagamento == null || metodoPagamento.trim().isEmpty()) {
             
-            request.setAttribute("errore", "Tutti i campi di spedizione e pagamento sono obbligatori.");
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
-            dispatcher.forward(request, response);
+        	session.setAttribute("errore", "Tutti i campi di spedizione e pagamento sono obbligatori.");
+            response.sendRedirect(request.getContextPath() + "/common/checkout");
             return;
         }
 
-        OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
-        ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
-        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
-
+        Connection connection = null;
         try {
-            // Validazione preliminare delle disponibilità di magazzino
+        	connection = ds.getConnection();
+            connection.setAutoCommit(false); // Avvio Transazione SQL
+        
+	        OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
+	        ProdottoAcquistatoDAOImpl prodottoAcquistatoDAO = new ProdottoAcquistatoDAOImpl(ds);
+	        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
+
+      
+            // Verifica preliminare disponibilità magazzino
             for (ProdottoAcquistato item : carrello.getProdotti()) {
-                Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice());
+                Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice(), connection);
                 if (disp == null || disp.getQuantita() < item.getQuantita()) {
+                	connection.rollback();
                     String nomeColore = item.getColore().getNome() != null ? item.getColore().getNome() : item.getColore().getCodice();
-                    request.setAttribute("errore", "Prodotto non disponibile a magazzino in quantità sufficiente: " 
+                    session.setAttribute("errore", "Prodotto non disponibile a magazzino in quantità sufficiente: " 
                             + item.getVersioneOcchiale().getModello() + " (" + nomeColore + ").");
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
-                    dispatcher.forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/common/checkout");
                     return;
                 }
             }
 
-            double totale = carrello.getTotale();
-
-            // Generazione e salvataggio dell'ordine
-            int idOrdine = new java.util.Random().nextInt(900000) + 100000; // ID univoco a 6 cifre
+            // Creazione ordine
             Ordine ordine = new Ordine();
-            ordine.setId(idOrdine);
             ordine.setMetodoPagamento(metodoPagamento);
             ordine.setDataOrdine(LocalDateTime.now());
             ordine.setStato(Stato.IN_LAVORAZIONE);
-            ordine.setTotale(totale);
+            ordine.setTotale(carrello.getTotale());
             
-            // Impostiamo l'utente loggato. Usiamo l'indirizzo inserito per l'ordine
-            // Salviamo l'indirizzo inserito nel checkout per la spedizione dell'ordine
+            // Salviamo l'indirizzo inserito nel checkout per la spedizione
             Utente utenteSpedizione = utenteLoggato.clone();
             utenteSpedizione.setIndirizzo(indirizzo + ", " + cap + " " + citta);
             utenteSpedizione.setTelefono(telefono);
             ordine.setUtente(utenteSpedizione);
 
-            ordineDAO.doSave(ordine);
+            int idOrdine = ordineDAO.doSave(ordine, connection);
 
-            for (ProdottoAcquistato item : carrello.getProdotti()) {
-                // Genera codice riga
-                int numeroRiga = new java.util.Random().nextInt(900000) + 100000;
-                
+            for (ProdottoAcquistato item : carrello.getProdotti()) {             
                 ProdottoAcquistato riga = item.clone();
-                riga.setNumero(numeroRiga);
+
                 riga.setOrdine(ordine);
                 
-                prodottoAcquistatoDAO.doSave(riga);
+                prodottoAcquistatoDAO.doSave(riga, connection);
 
                 // Aggiorna la quantità a magazzino
-                Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice());
+                Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice(), connection);
                 int nuovaQuantita = disp.getQuantita() - item.getQuantita();
                 disp.setQuantita(nuovaQuantita);
-                disponibileDAO.doUpdate(disp);
+                disponibileDAO.doUpdate(disp, connection);
             }
+            // Commit se tutte le operazioni hanno avuto esito positivo
+            connection.commit();
 
             carrello.svuota();
 
-            request.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo.");
+            session.setAttribute("successo", "Complimenti! Ordine #" + idOrdine + " effettuato con successo.");
             
         } catch (SQLException e) {
+        	if (connection != null) {
+                try {
+                    connection.rollback(); // Storno in caso di errore DB
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
-            request.setAttribute("errore", "Errore sul database durante la finalizzazione dell'ordine. Si prega di riprovare.");
+            session.setAttribute("errore", "Errore sul database durante la finalizzazione dell'ordine. Si prega di riprovare.");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/checkout.jsp");
-        dispatcher.forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/common/checkout");
     }
 }

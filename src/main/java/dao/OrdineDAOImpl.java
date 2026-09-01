@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.SQLException; 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,26 +25,36 @@ public class OrdineDAOImpl implements OrdineDAO {
     }
 
     @Override
-    public boolean doSave(Ordine ordine) throws SQLException {
+    public int doSave(Ordine ordine, Connection connection) throws SQLException {
         
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (id, metodo_pagamento, data_ordine, stato, totale, utente_email) VALUES (?, ?, ?, ?, ?, ?)";
-        int result = 0;
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (metodo_pagamento, data_ordine, stato, totale, utente_email) VALUES (?, ?, ?, ?, ?)";
+        int generatedId = -1;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
             
-            preparedStatement.setInt(1, ordine.getId());
-            preparedStatement.setString(2, ordine.getMetodoPagamento());
-            
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(ordine.getDataOrdine()));
-            
-            preparedStatement.setString(4, ordine.getStato() != null ? ordine.getStato().name() : null);
-            preparedStatement.setDouble(5, ordine.getTotale());
-            
-            preparedStatement.setString(6, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
+            preparedStatement.setString(1, ordine.getMetodoPagamento());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(ordine.getDataOrdine()));
+            preparedStatement.setString(3, ordine.getStato() != null ? ordine.getStato().name() : null);
+            preparedStatement.setDouble(4, ordine.getTotale());
+            preparedStatement.setString(5, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
 
-            result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+            
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    generatedId = generatedKeys.getInt(1);
+                    ordine.setId(generatedId);
+                } else {
+                    throw new SQLException("Inserimento ordine fallito: nessun ID generato dal database.");
+                }
+            }
         }
-        return (result != 0);
+        return generatedId;
+    }
+    
+    public int doSave(Ordine ordine) throws SQLException {
+        try (Connection connection = ds.getConnection()) {
+            return doSave(ordine, connection);
+        }
     }
 
     @Override

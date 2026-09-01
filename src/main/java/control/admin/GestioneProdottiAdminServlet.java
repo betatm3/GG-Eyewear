@@ -100,8 +100,8 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errore", "Errore durante l'operazione sul database: " + e.getMessage());
-            doGet(request, response);
+            request.getSession().setAttribute("errore", "Errore durante l'operazione sul database: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
         }
     }
 
@@ -301,7 +301,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		                        }
 		
 		                        // 2. Percorso sorgente locale del progetto
-		                        String uploadDir2 = "C:\\Users\\percorso_privato\\uploads\\occhiali";
+		                        String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
 		                        File oldFileLocale = new File(uploadDir2, oldFileName);
 		                        if (oldFileLocale.exists()) {
 		                            oldFileLocale.delete();
@@ -486,9 +486,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		                
 		                boolean aggiornato = disponibileDAO.doUpdate(d);
 		                if (aggiornato) {
-		                    request.setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
+		                    request.getSession().setAttribute("msgSuccesso", "Quantità aggiornata con successo!");
 		                } else {
-		                    request.setAttribute("errore", "Impossibile aggiornare la quantità: variante non trovata.");
+		                    request.getSession().setAttribute("errore", "Impossibile aggiornare la quantità: variante non trovata.");
 		                }
 	            	}catch (NumberFormatException e) {
                         request.getSession().setAttribute("errore", "Quantità specificata non valida.");
@@ -507,7 +507,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/TuoProgetto/images/occhiali).        
     	String uploadDir1 = getServletContext().getRealPath(File.separator + "uploads" + File.separator + "occhiali");
     	//per memorizzarla in locale
-    	String uploadDir2 = "C:\\Users\\percorso_privato\\uploads\\occhiali";
+    	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
     	
     	File folder1 = new File(uploadDir1);
         if (!folder1.exists()) folder1.mkdirs();
@@ -519,34 +519,38 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         String[] nomiParametri = {"immagine1", "immagine2"};
         
         for (int i = 0; i < nomiParametri.length; i++) {
-        	Part part = request.getPart(nomiParametri[i]);
-        
-        	if (part != null && part.getSize() > 0 
-                && part.getSubmittedFileName() != null 
-                && !part.getSubmittedFileName().isBlank()) {
-
-	            String nomeOriginale = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+        	try {
+	        	Part part = request.getPart(nomiParametri[i]);
+	        
+	        	if (part != null && part.getSize() > 0 
+	                && part.getSubmittedFileName() != null 
+	                && !part.getSubmittedFileName().isBlank()) {
 	
-	            String estensione = "";
-	            int dotIndex = nomeOriginale.lastIndexOf('.');
-	            if (dotIndex > 0) {
-	                estensione = nomeOriginale.substring(dotIndex);
-	            }
-	            
-	            String nomeFile = "immagine_" + idOcchiale + "_" + (i + 1) + "_" + System.currentTimeMillis() + estensione;
-	            
-	            // Uso pulito delle classi Path, Paths e Files senza il prefisso del pacchetto
-	            Path pathLocale = Paths.get(uploadDir2, nomeFile);
-	            Path pathTomcat = Paths.get(uploadDir1, nomeFile);
-	
-	            // Scrittura del file nella cartella di lavoro
-	            part.write(pathLocale.toString());
-	
-	            // Copia nella cartella di esecuzione Tomcat
-	            Files.copy(pathLocale, pathTomcat, StandardCopyOption.REPLACE_EXISTING);
-	            
-	            listaImg.add("uploads/occhiali/" + nomeFile);
-        	}
+		            String nomeOriginale = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+		
+		            String estensione = "";
+		            int dotIndex = nomeOriginale.lastIndexOf('.');
+		            if (dotIndex > 0) {
+		                estensione = nomeOriginale.substring(dotIndex);
+		            }
+		            
+		            String nomeFile = "immagine_" + idOcchiale + "_" + (i + 1) + "_" + System.currentTimeMillis() + estensione;
+		            
+		            // Uso pulito delle classi Path, Paths e Files senza il prefisso del pacchetto
+		            Path pathLocale = Paths.get(uploadDir2, nomeFile);
+		            Path pathTomcat = Paths.get(uploadDir1, nomeFile);
+		
+		            // Scrittura del file nella cartella di lavoro
+		            part.write(pathLocale.toString());
+		
+		            // Copia nella cartella di esecuzione Tomcat
+		            Files.copy(pathLocale, pathTomcat, StandardCopyOption.REPLACE_EXISTING);
+		            
+		            listaImg.add("uploads/occhiali/" + nomeFile);
+	        	}
+        	} catch (Exception ignored) {
+                // Se la parte non è presente nel form inviato, ignora e prosegui
+            }
         }
         return !listaImg.isEmpty() ? listaImg : null;
     }
@@ -571,7 +575,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             pulito = pulito.substring(0, 12);
         }
 
-        // Genera suffisso di 3 caratteri alfanumerici univoci
+        // Genera suffisso di 3 caratteri alfanumerici univoci 
         String caratteri = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder suffisso = new StringBuilder(3);
         java.util.Random rnd = new java.util.Random();

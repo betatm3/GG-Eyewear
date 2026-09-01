@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
@@ -24,23 +25,35 @@ public class ProdottoAcquistatoDAOImpl implements ProdottoAcquistatoDAO {
     }
 
     @Override
-    public boolean doSave(ProdottoAcquistato prodotto) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (numero, ordine_id, quantita, colore_codice, versione_codice, occhiale_id) VALUES (?, ?, ?, ?, ?, ?)";
-        int result = 0;
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
-            
-            preparedStatement.setInt(1, prodotto.getNumero());
-            
-            preparedStatement.setInt(2, prodotto.getOrdine() != null ? prodotto.getOrdine().getId() : 0); 
-            preparedStatement.setInt(3, prodotto.getQuantita());
-            preparedStatement.setString(4, prodotto.getColore() != null ? prodotto.getColore().getCodice() : null);
-            preparedStatement.setInt(5, prodotto.getVersioneOcchiale() != null ? prodotto.getVersioneOcchiale().getCodice() : 0);
-            preparedStatement.setInt(6, prodotto.getOcchiale() != null ? prodotto.getOcchiale().getId() : 0);
+    public int doSave(ProdottoAcquistato prodotto, Connection connection) throws SQLException {
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (ordine_id, quantita, colore_codice, versione_codice, occhiale_id) VALUES (?, ?, ?, ?, ?)";
+        int generatedNum = -1;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
+                      
+            preparedStatement.setInt(1, prodotto.getOrdine() != null ? prodotto.getOrdine().getId() : 0); 
+            preparedStatement.setInt(2, prodotto.getQuantita());
+            preparedStatement.setString(3, prodotto.getColore() != null ? prodotto.getColore().getCodice() : null);
+            preparedStatement.setInt(4, prodotto.getVersioneOcchiale() != null ? prodotto.getVersioneOcchiale().getCodice() : 0);
+            preparedStatement.setInt(5, prodotto.getOcchiale() != null ? prodotto.getOcchiale().getId() : 0);
 
-            result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                	generatedNum = generatedKeys.getInt(1);
+                    prodotto.setNumero(generatedNum);
+                } else {
+                    throw new SQLException("Inserimento fallito, nessun numero generato dal database.");
+                }
+            }
         }
-        return (result != 0);
+        return generatedNum;
+    }
+    
+    public int doSave(ProdottoAcquistato prodotto) throws SQLException {
+        try (Connection connection = ds.getConnection()) {
+            return doSave(prodotto, connection);
+        }
     }
 
     @Override

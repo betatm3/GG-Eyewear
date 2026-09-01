@@ -37,11 +37,10 @@ public class DisponibileDAOImpl implements DisponibileDAO {
     }
 
     @Override
-    public boolean doUpdate(Disponibile disponibile) throws SQLException {
+    public boolean doUpdate(Disponibile disponibile, Connection connection) throws SQLException {
         String updateSQL = "UPDATE " + TABLE_NAME + " SET quantita = ? WHERE occhiale_id = ? AND colore_codice = ?";
         int result = 0;
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             
             preparedStatement.setInt(1, disponibile.getQuantita());
             preparedStatement.setInt(2, disponibile.getOcchiale() != null ? disponibile.getOcchiale().getId() : 0);
@@ -52,6 +51,12 @@ public class DisponibileDAOImpl implements DisponibileDAO {
         return (result != 0);
     }
 
+    public boolean doUpdate(Disponibile disponibile) throws SQLException {
+        try (Connection connection = ds.getConnection()) {
+            return doUpdate(disponibile, connection);
+        }
+    }
+    
     @Override
     public boolean doDelete(int idOcchiale, String codiceColore) throws SQLException {
         String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE occhiale_id = ? AND colore_codice = ?";
@@ -68,12 +73,11 @@ public class DisponibileDAOImpl implements DisponibileDAO {
     }
 
     @Override
-    public Disponibile doRetrieveByKey(int idOcchiale, String codiceColore) throws SQLException {
+    public Disponibile doRetrieveByKey(int idOcchiale, String codiceColore, Connection connection) throws SQLException {
         String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE occhiale_id = ? AND colore_codice = ?";
         Disponibile disponibile = null;
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             
             preparedStatement.setInt(1, idOcchiale);
             preparedStatement.setString(2, codiceColore);
@@ -85,6 +89,13 @@ public class DisponibileDAOImpl implements DisponibileDAO {
             }
         }
         return disponibile;
+    }
+    
+    @Override
+    public Disponibile doRetrieveByKey(int idOcchiale, String codiceColore) throws SQLException {
+        try (Connection connection = ds.getConnection()) {
+            return doRetrieveByKey(idOcchiale, codiceColore, connection);
+        }
     }
 
     @Override

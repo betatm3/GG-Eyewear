@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
@@ -8,8 +9,10 @@ import model.ProdottoAcquistato;
 
 public interface ProdottoAcquistatoDAO {
     
-    boolean doSave(ProdottoAcquistato prodotto) throws SQLException;
+    int doSave(ProdottoAcquistato prodotto) throws SQLException;
     
+    int doSave(ProdottoAcquistato prodotto, Connection connection) throws SQLException;
+
     boolean doUpdate(ProdottoAcquistato prodotto) throws SQLException;
     
     boolean doDelete(int numero) throws SQLException;

@@ -1,4 +1,5 @@
 package dao;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -8,7 +9,9 @@ import model.Stato;
 
 public interface OrdineDAO {
 
-	boolean doSave(Ordine ordine) throws SQLException;
+	int doSave(Ordine ordine) throws SQLException;
+	
+	int doSave(Ordine ordine, Connection conncection) throws SQLException;
 
 	boolean doUpdate(Ordine ordine) throws SQLException;
 
