@@ -49,16 +49,16 @@
 
     
     <%
-    String paramTipo = request.getParameter("tipologia") != null ? request.getParameter("tipologia") : "";
-    String paramMarca = request.getParameter("marca") != null ? request.getParameter("marca") : "";
-    String paramStato = request.getParameter("stato") != null ? request.getParameter("stato") : "";
-    String paramMetodo = request.getParameter("metodoPagamento") != null ? request.getParameter("metodoPagamento") : "";
-    String paramPrezzoMin = request.getParameter("prezzoMin") != null ? request.getParameter("prezzoMin") : "";
-    String paramPrezzoMax = request.getParameter("prezzoMax") != null ? request.getParameter("prezzoMax") : "";
-    String paramDataInizio = request.getParameter("dataInizio") != null ? request.getParameter("dataInizio") : "";
-    String paramDataFine = request.getParameter("dataFine") != null ? request.getParameter("dataFine") : "";
-    String paramEmailUtente = request.getParameter("emailUtente") != null ? request.getParameter("emailUtente") : "";
-%>
+	    String paramTipo = request.getParameter("tipologia") != null ? request.getParameter("tipologia") : "";
+	    String paramMarca = request.getParameter("marca") != null ? request.getParameter("marca") : "";
+	    String paramStato = request.getParameter("stato") != null ? request.getParameter("stato") : "";
+	    String paramMetodo = request.getParameter("metodoPagamento") != null ? request.getParameter("metodoPagamento") : "";
+	    String paramPrezzoMin = request.getParameter("prezzoMin") != null ? request.getParameter("prezzoMin") : "";
+	    String paramPrezzoMax = request.getParameter("prezzoMax") != null ? request.getParameter("prezzoMax") : "";
+	    String paramDataInizio = request.getParameter("dataInizio") != null ? request.getParameter("dataInizio") : "";
+	    String paramDataFine = request.getParameter("dataFine") != null ? request.getParameter("dataFine") : "";
+	    String paramEmailUtente = request.getParameter("emailUtente") != null ? request.getParameter("emailUtente") : "";
+	%>
     <form id="filtriOrdine" class="filters-section">
         <div class="filters-title">
             <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />

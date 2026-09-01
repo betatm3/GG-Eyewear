@@ -308,7 +308,7 @@
             <% } else if (occhialeColori != null) { %>
                 
                 <div class="card-title">
-                    <span>🎨</span> Gestione Colori & Scorte
+                    <span>🎨</span> Gestione Colori &amp; Scorte
                 </div>
                 
                 <div style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-secondary);">

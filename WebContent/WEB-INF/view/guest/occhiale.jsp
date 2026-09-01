@@ -199,7 +199,6 @@
                                     boolean inStock = disp.getQuantita() > 0;
                                     
                                     String hexColor = (c.getHex() != null && !c.getHex().isBlank()) ? c.getHex() : "#111111";
-                                    System.out.println("\nCodice hex: "+c.getHex() + c.getNome() + c.getCodice() + c.getIdColore());
                                     String cNameLower = nomeColore.toLowerCase();
                         %>
                                     <label class="swatch-label <%= inStock ? "" : "disabled" %>">
@@ -269,37 +268,39 @@
                 
                 <div class="write-review-card">
                     <h3>Scrivi la tua Recensione</h3>
-                    <form action="${pageContext.request.contextPath}/common/recensione" method="POST" class="review-form">
-                        <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
-                        
-                        <% 
-                            Utente uLog = (session != null) ? (Utente) session.getAttribute("utente") : null;
-                            if (uLog == null) {
-                        %>
-                            <div class="form-group-field">
-                                <label for="utenteEmail">La tua Email:</label>
-                                <input type="email" id="utenteEmail" name="utenteEmail" placeholder="inserisci la tua email..." required class="review-input" />
-                            </div>
-                        <% } %>
-
-                        <div class="form-group-field">
-                            <label for="votoSelect">Valutazione (Stelle):</label>
-                            <select id="votoSelect" name="voto" required class="review-select">
-                                <option value="5">★★★★★ (5 Stelle - Eccellente)</option>
-                                <option value="4">★★★★☆ (4 Stelle - Molto Buono)</option>
-                                <option value="3">★★★☆☆ (3 Stelle - Medio)</option>
-                                <option value="2">★★☆☆☆ (2 Stelle - Scarso)</option>
-                                <option value="1">★☆☆☆☆ (1 Stella - Pessimo)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group-field">
-                            <label for="descrizioneInput">Commento / Esperienza:</label>
-                            <textarea id="descrizioneInput" name="descrizione" rows="3" placeholder="Scrivi un commento sul comfort, lo stile e la qualità..." required class="review-textarea"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-submit-review">Invia Recensione</button>
-                    </form>
+                    <% 
+                    	Utente uLog = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
+                        if (uLog != null) {
+                    %>
+						<form action="${pageContext.request.contextPath}/common/recensione" method="POST" class="review-form">
+	                        <input type="hidden" name="occhialeId" value="<%= occhiale.getId() %>" />
+	                        
+	                        <div class="form-group-field">
+	                            <label for="votoSelect">Valutazione (Stelle):</label>
+	                            <select id="votoSelect" name="voto" class="review-select">
+	                                <option value="5">★★★★★ (5 Stelle - Eccellente)</option>
+	                                <option value="4">★★★★☆ (4 Stelle - Molto Buono)</option>
+	                                <option value="3">★★★☆☆ (3 Stelle - Medio)</option>
+	                                <option value="2">★★☆☆☆ (2 Stelle - Scarso)</option>
+	                                <option value="1">★☆☆☆☆ (1 Stella - Pessimo)</option>
+	                            </select>
+	                        </div>
+	
+	                        <div class="form-group-field">
+	                            <label for="descrizioneInput">Commento / Esperienza:</label>
+	                            <textarea id="descrizioneInput" name="descrizione" rows="3" placeholder="Scrivi un commento sul comfort, lo stile e la qualità..." class="review-textarea"></textarea>
+	                        </div>
+	
+	                        <button type="submit" class="btn-submit-review">Invia Recensione</button>
+	                    </form>
+	                <% } else { %>
+						<div class="review-login-prompt" style="text-align: center; padding: 15px;">
+				            <p style="margin-bottom: 20px;">Vuoi lasciare una recensione per questo prodotto?</p>
+				            <a href="<%= request.getContextPath() %>/login" class="btn-submit-review" style="display: inline-block; text-decoration: none; width: auto; padding: 8px 16px;">
+				                Accedi per recensire
+				            </a>
+				        </div>
+				    <% } %>
                 </div>
             </div>
 
@@ -365,5 +366,6 @@
     </script>
 
 <%@ include file="../partials/footer.jsp" %>
+<script src="${pageContext.request.contextPath}/scripts/recensione.js"></script>
 </body>
 </html>

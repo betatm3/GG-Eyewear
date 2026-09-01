@@ -112,7 +112,7 @@
                                             <table class="items-table">
                                                 <thead>
                                                     <tr>
-                                                        <th>Marca & Modello</th>
+                                                        <th>Marca &amp; Modello</th>
                                                         <th>Colore</th>
                                                         <th>Misura</th>
                                                         <th style="text-align: center;">Q.tà</th>

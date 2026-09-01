@@ -96,7 +96,7 @@
                         <option value="">Tutti</option>
                         <option value="L" <%= "L".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>L ( > 55 mm)</option>
                         <option value="M" <%= "M".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>M ( 51 - 54 mm)</option>
-                        <option value="S" <%= "S".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>S ( < 50 mm)</option>
+                        <option value="S" <%= "S".equalsIgnoreCase(paramTaglia) ? "selected" : "" %>>S ( &lt; 50 mm)</option>
                     </select>                
                 </div>
 
@@ -107,7 +107,7 @@
 
                 <div class="filter-field">
                     <label class="filter-label" for="filterForma">Forma</label>
-                	<select id="filterForma" name="forma" ">
+                	<select id="filterForma" name="forma">
 				        <option value="" <%= (paramForma == null || paramForma.isEmpty()) ? "selected" : "" %>>Tutte</option>
 				        <%
 				            for (Forma f : Forma.values()) {

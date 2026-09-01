@@ -32,14 +32,8 @@ public class RecensioneServlet extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession(false);
-        Utente utenteLoggato = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
-        
-        if (utenteLoggato == null) {
-            response.sendRedirect(request.getContextPath() + "/login?errore=auth_required");
-            return;
-        }
+        Utente utenteLoggato = (Utente) session.getAttribute("utenteLoggato");
 
-        // Recupero e validazione dei parametri della form
         String occhialeIdStr = request.getParameter("occhialeId");
         String votoStr = request.getParameter("voto");
         String descrizione = request.getParameter("descrizione");
@@ -58,7 +52,6 @@ public class RecensioneServlet extends HttpServlet {
                 return;
             }
             
-            // Email estratta unicamente dalla sessione dell'utente autenticato
             String email = utenteLoggato.getEmail();
             
             RecensioneDAOImpl recensioneDAO = new RecensioneDAOImpl(ds);
@@ -67,7 +60,7 @@ public class RecensioneServlet extends HttpServlet {
             Recensione esistente = recensioneDAO.doRetrieveByKey(email, occhialeId);
             Recensione r = new Recensione(email, occhialeId, descrizione, voto);
             
-            if (esistente != null) { // Se esiste, aggiorniamo la precedente, altrimenti ne salviamo una nuova
+            if (esistente != null) { // Se esiste, aggiorniamo la precedente
                 recensioneDAO.doUpdate(r);
             } else {
                 recensioneDAO.doSave(r);
@@ -77,7 +70,11 @@ public class RecensioneServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeId + "#recensioni");
 
         } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() + "/catalogo");
+        	if (occhialeIdStr != null && occhialeIdStr.matches("\\d+")) {
+                response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeIdStr);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/catalogo");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/catalogo?error=db");

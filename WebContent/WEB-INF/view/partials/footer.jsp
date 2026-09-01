@@ -17,12 +17,12 @@
       <h4 style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2B2B2B; margin-bottom: 4px;">Esplora</h4>
       <a href="<%= request.getContextPath() %>/catalogo?tipo=DA_SOLE" style="font-size: 13px; color: #555; text-decoration: none;">Occhiali da Sole</a>
       <a href="<%= request.getContextPath() %>/catalogo?tipo=DA_VISTA" style="font-size: 13px; color: #555; text-decoration: none;">Occhiali da Vista</a>
-      <a href="<%= request.getContextPath() %>/catalogo?outlet=true" style="font-size: 13px; color: #C86A55; text-decoration: none; font-weight: 600; margin-top: 4px;">Outlet & Offerte</a>
+      <a href="<%= request.getContextPath() %>/catalogo?outlet=true" style="font-size: 13px; color: #C86A55; text-decoration: none; font-weight: 600; margin-top: 4px;">Outlet &amp; Offerte</a>
     </div>
 
     
     <div style="display: flex; flex-direction: column; gap: 10px; font-family: 'Outfit', sans-serif;">
-      <h4 style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2B2B2B; margin-bottom: 4px;">Info & Legale</h4>
+      <h4 style="font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #2B2B2B; margin-bottom: 4px;">Info &amp; Legale</h4>
       <span style="font-size: 13px; color: #555;">Privacy Policy</span>
       <span style="font-size: 13px; color: #555;">Termini di Servizio</span>
       <p style="font-size: 12px; color: #888; margin-top: 12px;">&copy; 2026 GG Eyewear. Tutti i diritti riservati.</p>

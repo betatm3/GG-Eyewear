@@ -23,13 +23,14 @@
 </head>
 <body>
 <%@ include file="../partials/header.jsp" %>
+
+	
     <div class="container">
-        
+    <%  Utente utente = (Utente) session.getAttribute("utenteLoggato");	%>
         
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
             <% 
-                Utente utenteCheckAdmin = (Utente) session.getAttribute("utenteLoggato");
-                if (utenteCheckAdmin != null && utenteCheckAdmin.getRuolo() != null && "ADMIN".equalsIgnoreCase(utenteCheckAdmin.getRuolo().name())) { 
+                if (utente != null && utente.isAdmin()) { 
             %>
                 <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard" style="width: auto; margin-top: 0; padding: 8px 16px;">
                     <img src="<%= request.getContextPath() %>/images/icons8-product-24.png" alt="Admin" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
@@ -75,12 +76,6 @@
 			</div>
 			<button type="button" style="text-align: right;" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
 		</div> 
-
-        <% 
-            
-            Utente utente = (Utente) session.getAttribute("utenteLoggato");
-            if (utente != null) {
-        %>
 
         <div class="area-grid">
             
@@ -301,10 +296,6 @@
             </div>
 
         </div>
-
-        <% 
-            } 
-        %>
 
     </div>
     
