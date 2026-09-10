@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 	const form = document.getElementById("checkoutForm");
-    //const form = document.querySelector("form[action='checkout']");
     if (!form) return;
 
     const indirizzoInput = document.getElementById("indirizzo");
@@ -129,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const v5 = validateMetodoPagamento();
 
         if (!(v1 && v2 && v3 && v4 && v5)) {
-            event.preventDefault(); //blocca l'invio del form e mostra i messaggi di errore
+            event.preventDefault(); //blocca invio e mostra messaggi d'errore
         }
     });
 });

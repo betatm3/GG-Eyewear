@@ -221,10 +221,16 @@
                         %>
                     </div>
 
-                    
-                    <button type="submit" class="btn-main-action">
-                        Aggiungi al Carrello
-                    </button>
+                    <% 
+                    	if (occhiale.getDisponibilita() != null && !occhiale.getDisponibilita().isEmpty()) {
+                    %>
+		                    <button type="submit" class="btn-main-action">
+		                        Aggiungi al Carrello
+		                    </button>
+                    <%
+                     	} 
+                     %>
+                        
                 </form>
 
                 

@@ -3,10 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
    const form = document.querySelector("form.product-form");
     if (!form) return;
 
-    // Disabilita i popup nativi dell'HTML5 se presenti
+    // Disabilita i popup nativi
     form.setAttribute("novalidate", "true");
 
-    // Riferimenti ai campi input comuni
     const marcaInput = document.getElementById("marca");
     const modelloInput = document.getElementById("modello");
     const prezzoInput = document.getElementById("prezzo");
@@ -18,8 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	const modifyImg1Input = document.getElementById("edit_immagine1"); 
 	const modifyImg2Input = document.getElementById("edit_immagine2"); 
 
-    // Varianti Colore (Presenti solo nel form di Aggiunta)
-	
+    // Varianti Colore (form di Aggiunta)
     const coloreSelects = document.querySelectorAll("select[name='codiceColore']");
     const quantitaInputs = document.querySelectorAll("input[name='quantitaColore']");
 	const nuovoNomeColore = document.getElementById("nuovoNomeColore");
@@ -31,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const regexTestoCampi = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
 	const regexHexColor = /^#[0-9A-Fa-f]{6}$/;
 		
-    // Funzione helper per mostrare/rimuovere i messaggi d'errore
     function showFieldError(input, message) {
         if (!input) return;
         let parent = input.parentElement;
@@ -58,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 	
-	// Helper per  messaggi d'errore su box varianti colori
+	// per  messaggi d'errore su box varianti colori
 	function showContainerError(container, message) {
 	    if (!container) return;
 	    
@@ -85,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    }
 	}
 	
-	// --- PULSANTI DI RIMOZIONE PER TUTTI I FILE ---
+	// --- PULSANTE RIMOZIONE IMG ---
 	    const fileWrappers = document.querySelectorAll(".file-input-wrapper");
 	    fileWrappers.forEach(wrapper => {
 	        const fileInput = wrapper.querySelector("input[type='file']");
@@ -257,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 	function validateColori() {
-		// Se non siamo nel form di aggiunta (ovvero se i controlli colore non esistono nella pagina), salta la validazione
+		// Se non siamo nel form di aggiunta (controlli colore non esistono), salta la validazione
 		if (coloreSelects.length === 0 && !nuovoNomeColore) {
 		    return true;
 		}
@@ -265,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    let almenoUnColoreValido = false;
 	    let isCoerente = true;
 
-	    // 1. COLORI DA CATALOGO
+	    // COLORI DA CATALOGO
 	    coloreSelects.forEach((select, index) => {
 	        const qtyInput = quantitaInputs[index];
 	        const codColore = select.value.trim();
@@ -302,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	        }
 	    });
 
-	    // 2. NUOVO COLORE
+	    // NUOVO COLORE
 	    if (nuovoNomeColore && nuovaQtaColore) {
 	        const nomeVal = nuovoNomeColore.value.trim();
 	        const qtaNuovoStr = nuovaQtaColore.value.trim();
@@ -373,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	    return isCoerente && almenoUnColoreValido;
 	}
 
-    // --- AGGANCIO EVENTI INPUT & BLUR ---
+    // AGGANCIO EVENTI
 
     const fields = [
         { el: marcaInput, fn: validateMarca },
@@ -401,8 +398,6 @@ document.addEventListener("DOMContentLoaded", function () {
         input.addEventListener("change", validateColori);
         input.addEventListener("blur", validateColori);
     });
-
-    // --- CONTROLLO FINALE ALL'INVIO (SUBMIT) ---
 
     form.addEventListener("submit", function (event) {
         const vMarca = validateMarca();

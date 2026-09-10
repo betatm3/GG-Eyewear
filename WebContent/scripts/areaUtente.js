@@ -1,5 +1,4 @@
 //DOMContentLoaded: Aspetta che tutta la pagina HTML sia caricata prima di eseguire il codice.
-//novalidate: Disabilita i messaggi di errore automatici del browser, lasciando il controllo totale al nostro script.
 
 document.addEventListener("DOMContentLoaded", function() {
     //const form = document.querySelector("form.edit-profile-form");
@@ -27,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const closeBtn = document.querySelector("#js-error-banner .close-banner-btn");
 	if (closeBtn) {
 	    closeBtn.addEventListener("click", function() {
-	        showBannerError(null); // Nasconde il banner tramite la tua funzione
+	        showBannerError(null); // nasconde banner
 	    });
 	}
 
@@ -63,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	    if (banner && bannerText) {
 	        if (message) {
 	            bannerText.textContent = message;
-	            banner.style.display = "flex"; // Mostra il banner
+	            banner.style.display = "flex"; // Mostra banner
 	        } else {
-	            banner.style.display = "none";  // Nasconde il banner se non ci sono errori
+	            banner.style.display = "none";  // Nasconde banner se non ci sono errori
 	        }
 	    }
 	}
@@ -174,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let isValid = true;
 
-        // Se l'utente digita una nuova password, la vecchia password e la conferma diventano obbligatorie!
+        // Se l'utente digita una nuova password, la vecchia password e la conferma diventano obbligatorie
         if (newPass.length > 0) {
             if (!oldPass) {
                 showFieldError(oldPasswordInput, "Inserisci la vecchia password per autorizzare il cambio.");
@@ -212,7 +211,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return isValid;
     }
 
-    // Listener eventi
     [nomeInput, cognomeInput, emailInput, telefonoInput, dataNascitaInput, indirizzoInput].forEach(input => {
         if (input) {
             input.addEventListener("change", () => {
@@ -241,7 +239,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Controllo al Submit
     form.addEventListener("submit", function(event) {
 		try{
         const v1 = validateNome();
@@ -256,10 +253,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	            event.preventDefault();
 	  			showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
 			} else {
-			    showBannerError(null); // Rimuove il banner se tutti i dati sono corretti
+			    showBannerError(null); // Rimuove banner se i dati sono corretti
 			}
 		} catch (e) {
-			// Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
+			// In caso di errore imprevisto nel codice JS, blocchiamo l'invio per sicurezza
 			console.error("Errore durante la validazione:", e);
 			event.preventDefault();
 		}

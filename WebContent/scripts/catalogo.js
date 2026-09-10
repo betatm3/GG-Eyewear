@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Selezioniamo tutti gli input e select visibili
+    // Selezione degli input e select visibili
     const filterInputs = filterForm.querySelectorAll("input, select");
 	// Applicazione di Tom Select ai 4 campi del form
     const selectSelectors = ["#filterForma", "#filterTaglia", "#filterMontatura", "#filterGenere"];
@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 	
 	// --- REGEX E LOGICA DI VALIDAZIONE ---
+	
 	// Permette lettere, numeri, spazi, trattini, . e ' (NO slash /)
 	const regexTestoFiltri = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
 	
@@ -157,14 +158,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         fetch(contextPath + "/catalogo?" + searchParams, {
             headers: {   "X-Requested-With": "XMLHttpRequest"   } 
-			//Permette alla Servlet di capire se la richiesta arriva da una chiamata fetch fatta in background da JavaScript
         })
         .then(response => {
             if (!response.ok) {
                 throw new Error("Errore nella risposta della Servlet: " + response.status);
             }
             return response.text();
-			//leggo HTML che ha restituito la Servlet e lo sovrascrivo nel contenitore del catalogo. Niente ricaricamento di pagina, aggiornamento istantaneo
+			//leggo HTML restituito della Servlet e lo sovrascrivo nel contenitore del catalogo. Niente ricaricamento di pagina, aggiornamento istantaneo
         })
         .then(html => {
             catalogContainer.innerHTML = html;
@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error("Errore durante il filtraggio:", error));
     }
 
-    // Event listener per gli input di testo / numero
     filterInputs.forEach(input => {
         if (input.tagName !== "SELECT") {
             input.addEventListener("blur", applyFilters);

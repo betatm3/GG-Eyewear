@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            errorSpan.style.display = "block";
 	            errorSpan.style.fontWeight = "500";
 	            
-	            // Inserisce l'errore sotto l'input
+	            // errore sotto l'input
 	            parent.appendChild(errorSpan);
 	        }
 	        errorSpan.textContent = message;
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 	
-	// VALIDAZIONE PER LA MODIFICA QUANTITÀ ESISTENTI	
+	// VALIDAZIONE MODIFICA QUANTITÀ ESISTENTI	
     function validateQuantitaSingola(input) {
         if (!input) return true;
 
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	        let almenoUnOpzioneCompilata = false;
 	        let isCoerente = true;
 	
-	        // --- A) COLORE DA CATALOGO ---
+	        // --- COLORE DA CATALOGO ---
 	        if (selectColore && inputNuovaQuantita) {
 		        const codColore = selectColore.value.trim();
 	            const qtaStr = inputNuovaQuantita.value.trim();
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            }
 	        }
 	
-	        // --- B) NUOVO COLORE AL CATALOGO ---
+	        // --- NUOVO COLORE AL CATALOGO ---
 	        if (newNomeColore && newQtaColore) {
 	            const nomeVal = newNomeColore.value.trim();
 	            const qtaNuovoStr = newQtaColore.value.trim();
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 	            if (nomeVal !== "" || qtaNuovoStr !== "") {
 	                let nuovoValido = true;
-					// Validazione Nome
+					// Nome
 			        if (nomeVal === "") {
 		                showFieldError(newNomeColore, "Inserisci il nome del nuovo colore.");
 	                    nuovoValido = false;
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	                	showFieldError(newNomeColore, null);
 	                }
 	
-	                // Validazione HEX
+	                // HEX
 	                if (nuovoHexColore) {
 	                    if (!regexHexColor.test(hexVal)) {
 	                        showFieldError(nuovoHexColore, "Formato colore HEX non valido (es. #FF0000).");
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	                        showFieldError(nuovoHexColore, null);
 	                    }
 	                }
-	                // Validazione Quantità
+	                // Quantità
 	                if (qtaNuovoStr === "") {
 	                    showFieldError(newQtaColore, "Inserisci la quantità per il nuovo colore.");
 	                    nuovoValido = false;
@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	            }
 	        }
 	
-	        // --- C) VERIFICA ALMENO UN'OPZIONE SELEZIONATA ---
+	        // --- VERIFICA ALMENO UN'OPZIONE SELEZIONATA ---
 	        if (!almenoUnOpzioneCompilata && isCoerente) {
 		        showContainerError(colorVariantsContainer, "Seleziona un colore dal catalogo oppure creane uno nuovo inserendo la quantità.");
 	            return false;
@@ -231,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	        return isCoerente && almenoUnOpzioneCompilata;
 	    }
 
-    	// Collegamento eventi agli input
 		const addColorFields = [
             selectColore,
             inputNuovaQuantita,
@@ -247,7 +246,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Submit Nuovo Colore
         addColorForm.addEventListener("submit", function (event) {
             try {
                 const isValid = validateFormAddColor();

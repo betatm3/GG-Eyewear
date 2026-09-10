@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Recupero degli elementi principali del DOM necessari per il filtraggio
+    // Recupero elementi del DOM necessari per il filtraggio
     const filterForm = document.getElementById("filtriOrdine");
     const ordiniContainer = document.getElementById("ordiniContainer"); 
 	const btnReset = document.getElementById("btnResetFiltriOrdini");  
@@ -137,10 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
 				
         // Serializza tutti i campi visibili e nascosti del form in un oggetto FormData
         const formData = new FormData(filterForm);
-        // Converte i dati del form nel formato query string per la richiesta GET (es. ?genere=DA_SOLE&stato=SPEDITO)
+        // Converte i dati nel formato query string per la richiesta GET (es. ?genere=DA_SOLE&stato=SPEDITO)
         const searchParams = new URLSearchParams(formData).toString();
 
-        // Esegue la chiamata HTTP asincrona verso l'endpoint degli ordini dell'Admin
+        // Esegue chiamata HTTP asincrona
         fetch(contextPath + "/admin/GestioneOrdini?" + searchParams, {
             headers: {
                 // Header custom fondamentale per permettere alla Servlet di distinguere 
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) {
                 throw new Error("Errore nella risposta della Servlet Ordini: " + response.status);
             }
-            return response.text(); // Legge la risposta HTML restituita dalla Servlet
+            return response.text(); // legge risposta HTML restituita dalla Servlet
         })
         .then(html => {
             // Aggiorna solo la tabella degli ordini
@@ -166,13 +166,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch(error => console.error("Errore durante il filtraggio degli ordini:", error));
     }
 
-    // Associazione degli Event Listener ai campi di input
     filterInputs.forEach(input => {
 		input.addEventListener("change", applyFilters);
 		input.addEventListener("blur", () => validateForm());
     });
 
-    // reset dei Filtri
+    // reset filtri
     if (btnReset) {
         btnReset.addEventListener("click", () => {
             filterForm.reset();
@@ -187,19 +186,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         input.value = ""; 
                     }
                 }
-				// Rimuove messaggi d'errore residui
+				// Rimuove messaggi d'errore
 				showFieldError(input, null);
             });
             applyFilters();
         });
     }
 	
-	// per espandere/comprimere i dettagli dell'ordine
+	// Per mostrare dettagli dell'ordine
 	ordiniContainer.addEventListener("click", (event) => {
 		const orderRow = event.target.closest(".order-row");
 	    if (!orderRow) return;
 
-	    // Impedisce l'espansione/compressione se si clicca su controlli interattivi
+	    // Impedisce espansione/compressione se si clicca su controlli interattivi
 	    if (event.target.closest(".status-form") || 
 	    	event.target.tagName === "SELECT" || 
 	        event.target.tagName === "BUTTON" || 

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 	const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-	//msg: "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
+	// password con almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
 	
     
     function showFieldError(input, message) {
@@ -155,7 +155,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	    // Aggiorna il valore visivo nell'input
 	    telefonoInput.value = formattato;
 
-	    // Controllo finale con la Regex
 	    if (!regexTelefono.test(telefonoInput.value.trim())) {
 	        showFieldError(telefonoInput, "Inserisci un numero di cellulare valido (es. +39 333 123 4567 o 333 123 4567).");
 	        return false;
@@ -241,13 +240,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	        const v8 = validateIndirizzo();
 	
 	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
-	            event.preventDefault();  //blocca l'invio del form e mostra i messaggi di errore
+	            event.preventDefault();  //blocca invio form e mostra messaggi di errore
 				showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
 			} else {
 				showBannerError(null); // Rimuove il banner se tutti i dati sono corretti
 			}
 		} catch (e) {
-		    // Se c'è un errore imprevisto nel codice JS, blocchiamo comunque l'invio per sicurezza
+		    // in caso di errori imprevisti, blocchiamo l'invio per sicurezza
 		    console.error("Errore durante la validazione:", e);
 		    event.preventDefault();
 		}

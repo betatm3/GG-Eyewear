@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const emptyCart = document.getElementById("emptyCartContent");
     const cartTotal = document.getElementById("cartTotal");
 
-    // Delegazione degli eventi all'interno del contenitore del carrello
     if (activeCart) {
         activeCart.addEventListener("click", (event) => {
             const target = event.target;
@@ -28,19 +27,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function gestisciModificaQuantita(link) {
-	/*	Crea l'oggetto URL a partire dal link (l'elemento <a>) su cui l'utente ha cliccato
-		Trasformando il link in un oggetto URL, JavaScript  permette di leggere e modificare facilmente l'indirizzo web
+	/*	Crea l'oggetto URL a partire dal link (elemento <a>) su cui l'utente ha cliccato
+		Trasforma link in oggetto URL (con JavaScript posso leggere e modificare l'indirizzo web)
 	*/
         const urlObj = new URL(link.href, window.location.origin);
         urlObj.searchParams.set("ajax", "true");  //aggiunge in coda la coppia chiave-valore ajax=true.
 		
-		//recupero i parametri dall'url
+		// recupero parametri
         const id = urlObj.searchParams.get("idOcchiale");
         const cod = urlObj.searchParams.get("codiceVersioneOcchiale");
         const col = urlObj.searchParams.get("coloreScelto");
         const nuovaQty = parseInt(urlObj.searchParams.get("quantita"), 10);
 
-        // Se la quantità scende sotto 1, chiediamo rimozione (o la servlet eliminerà l'articolo)
         const row = document.querySelector(`tr[data-id="${id}"][data-codice="${cod}"][data-colore="${col}"]`);
 
         fetch(urlObj.pathname + urlObj.search)
@@ -53,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (data.carrelloVuoto) {
                         mostraCarrelloVuoto();
                     } else if (nuovaQty <= 0) {
-                        // Se la quantità impostata era 0, la riga va eliminata
+                        // quantità < 1 -> rimuovo occhiale
                         rimuoviRigaConAnimazione(row, data.totaleCarrello);
                     } else {
                         // Aggiorna quantità e subtotale nella riga
@@ -84,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.error("Errore AJAX quantità:", err);
-                // Fallback: ricarica la pagina in caso di errore di connessione
+                // Fallback: ricarica pagina in caso di errore di connessione
                 window.location.reload();
             });
     }
@@ -144,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Helper per rimuovere una riga con un effetto di dissolvenza (fadeout)
+    // rimuove riga con effetto di dissolvenza (fadeout)
     function rimuoviRigaConAnimazione(row, nuovoTotale) {
         if (!row) return;
         row.style.transition = "opacity 0.4s ease, transform 0.4s ease";

@@ -504,7 +504,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
     }
 
     private ArrayList<String> salvaImmagine(HttpServletRequest request, int idOcchiale) throws Exception {
-    	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/TuoProgetto/images/occhiali).        
+    	// realPath è il percorso assoluto dove Tomcat sta eseguendo l'applicazione web; punta a una cartella di build temporanea (es. .metadata/.plugins/.../wtpwebapps/Progetto/uploads/occhiali).        
     	String uploadDir1 = getServletContext().getRealPath(File.separator + "uploads" + File.separator + "occhiali");
     	//per memorizzarla in locale
     	String uploadDir2 = "C:\\Users\\famig\\OneDrive\\Documenti\\GENNARO\\UNIVERSITA' G\\II ANNO\\TECNOLOGIE SOFTWARE PER WEB\\Progetto TSW\\uploads\\occhiali";
@@ -536,7 +536,6 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		            
 		            String nomeFile = "immagine_" + idOcchiale + "_" + (i + 1) + "_" + System.currentTimeMillis() + estensione;
 		            
-		            // Uso pulito delle classi Path, Paths e Files senza il prefisso del pacchetto
 		            Path pathLocale = Paths.get(uploadDir2, nomeFile);
 		            Path pathTomcat = Paths.get(uploadDir1, nomeFile);
 		

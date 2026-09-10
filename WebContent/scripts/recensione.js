@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function validateDescrizione() {
         const val = descrizioneInput.value.trim();
         
-        // Regex per vietare il carattere '='
         const regexSicura = /^[^=<>]+$/;
 
         if (!val) {
