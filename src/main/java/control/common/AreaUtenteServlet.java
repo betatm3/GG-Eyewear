@@ -139,7 +139,7 @@ public class AreaUtenteServlet extends HttpServlet {
                 String nuovaPassword = request.getParameter("new_password");
                 String confermaPassword = request.getParameter("conferma_password");
 
-                // --- 1. CONTROLLO DI OBBLIGATORIETÀ LATO SERVER ---
+                // CONTROLLO DATI
                 if (nuovoNome == null || nuovoNome.trim().isEmpty() ||
                     nuovoCognome == null || nuovoCognome.trim().isEmpty() ||
                     nuovaEmail == null || nuovaEmail.trim().isEmpty() ||
@@ -159,7 +159,7 @@ public class AreaUtenteServlet extends HttpServlet {
                 utenteAggiornato.setIndirizzo(nuovoIndirizzo.trim());
                 utenteAggiornato.setRuolo(utenteSessione.getRuolo());
 
-                // --- 2. CONTROLLO GESTIONE PASSWORD (OPZIONALE) ---
+                // CONTROLLO PASSWORD
                 if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
                 	// Verifica vecchia password sia stata inserita e che corrisponda all'hash nel DB
                     if (oldPassword == null || oldPassword.trim().isEmpty() || 
@@ -194,6 +194,7 @@ public class AreaUtenteServlet extends HttpServlet {
                 }
                 String vecchiaEmail = utenteSessione.getEmail();
                 UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
+                
                 // verifico nuova email sia diversa e se è già usata
                 if (!nuovaEmail.equalsIgnoreCase(vecchiaEmail)) {
                     try {
@@ -212,7 +213,7 @@ public class AreaUtenteServlet extends HttpServlet {
                 }
                 utenteAggiornato.setEmail(nuovaEmail);
                 
-                // --- 3. SALVATAGGIO SU DATABASE ---
+                // SALVATAGGIO SU DB
                 try {
                 	boolean success = utenteDao.doUpdateEmail(utenteAggiornato, vecchiaEmail);
                     if (success) {
@@ -230,8 +231,11 @@ public class AreaUtenteServlet extends HttpServlet {
                 }
             }
             
-            // Richiama doGet per ricaricare lo storico ordini e inoltrare alla corretta view JSP
+            // Richiamo doGet per ricaricare lo storico ordini e inoltrare alla corretta view JSP
             doGet(request, response);
+        }
+        else {
+            response.sendRedirect(request.getContextPath() + "/common/area-utente");
         }
     }
 }

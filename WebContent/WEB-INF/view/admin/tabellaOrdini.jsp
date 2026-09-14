@@ -32,7 +32,8 @@
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                 for (Ordine ordine : ordini) {
                     String dataStr = ordine.getDataOrdine() != null ? ordine.getDataOrdine().format(formatter) : "N/D";
-                    String utenteEmail = (ordine.getUtente() != null && ordine.getUtente().getEmail() != null) ? ordine.getUtente().getEmail() : "Ospite";
+                    Utente cliente = ordine.getUtente();
+                    String utenteEmail = (cliente != null && cliente.getEmail() != null) ? cliente.getEmail() : "Ospite";
         %>
                     <div class="order-card">
                         <div class="order-row">
@@ -90,7 +91,7 @@
                         <% 
                             Map<Integer, Collection<ProdottoAcquistato>> prodottiMap = (Map<Integer, Collection<ProdottoAcquistato>>) request.getAttribute("prodottiOrdineMap");
                             Collection<ProdottoAcquistato> items = (prodottiMap != null) ? prodottiMap.get(ordine.getId()) : null;
-                            Utente cliente = ordine.getUtente();
+                            
                         %>
                         <div class="order-details">
                             <div class="details-grid">
@@ -99,9 +100,9 @@
                                         Dettagli Spedizione
                                     </h4>
                                     <div class="shipping-details-content">
-                                        <p><strong>Destinatario:</strong> <%= (cliente != null && cliente.getNome() != null) ? (cliente.getNome() + " " + cliente.getCognome()) : "N/D" %></p>
-                                        <p><strong>Indirizzo:</strong> <%= (cliente != null && cliente.getIndirizzo() != null) ? cliente.getIndirizzo() : "N/D" %></p>
-                                        <p><strong>Telefono:</strong> <%= (cliente != null && cliente.getTelefono() != null) ? cliente.getTelefono() : "N/D" %></p>
+                                        <p><strong>Destinatario:</strong> <%= (ordine != null && ordine.getDestinatario() != null) ? ordine.getDestinatario() : "N/D" %></p>
+                                        <p><strong>Indirizzo:</strong> <%= (ordine != null && ordine.getIndirizzo() != null) ? ordine.getIndirizzo() : "N/D" %></p>
+                                        <p><strong>Telefono:</strong> <%= (ordine != null && ordine.getTelefono() != null) ? ordine.getTelefono() : "N/D" %></p>
                                     </div>
                                 </div>
                                 

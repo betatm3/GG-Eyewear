@@ -121,7 +121,6 @@
                         <div class="info-value">
                             <% 
                                 if (utente.getDataNascita() != null) { 
-                                    DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd / myyyy"); 
                                     // Utilizziamo un semplice formato localizzato
                                     DateTimeFormatter formatterIT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                                     out.print(utente.getDataNascita().format(formatterIT));
@@ -162,6 +161,9 @@
                                     <div>
                                         <div class="order-id">Ordine #<%= ordine.getId() %></div>
                                         <div class="order-date">Effettuato il <%= ordine.getDataOrdine().format(formatter) %></div>
+                                        <div class="order-date">Destinatario: <%= ordine.getDestinatario() != null ? ordine.getDestinatario() : "Non specificato" %></div>
+										<div class="order-date">Recapito telefonico: <%= ordine.getTelefono() != null ? ordine.getTelefono() : "-" %></div>
+										<div class="order-date">Indirizzo: <%= ordine.getIndirizzo() != null ? ordine.getIndirizzo() : "Non specificato" %></div>
                                     </div>
                                     <div class="order-meta-info">
                                         <div class="order-status">Stato: <%= ordine.getStato().toString().replace("_", " ") %></div>

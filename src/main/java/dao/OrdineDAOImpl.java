@@ -27,15 +27,18 @@ public class OrdineDAOImpl implements OrdineDAO {
     @Override
     public int doSave(Ordine ordine, Connection connection) throws SQLException {
         
-        String insertSQL = "INSERT INTO " + TABLE_NAME + " (metodo_pagamento, data_ordine, stato, totale, utente_email) VALUES (?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO " + TABLE_NAME + " (destinatario, indirizzo, telefono, metodo_pagamento, data_ordine, stato, totale, utente_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
             
-            preparedStatement.setString(1, ordine.getMetodoPagamento());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(ordine.getDataOrdine()));
-            preparedStatement.setString(3, ordine.getStato() != null ? ordine.getStato().name() : null);
-            preparedStatement.setDouble(4, ordine.getTotale());
-            preparedStatement.setString(5, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
+        	preparedStatement.setString(1, ordine.getDestinatario());
+            preparedStatement.setString(2, ordine.getIndirizzo());
+            preparedStatement.setString(3, ordine.getTelefono());
+            preparedStatement.setString(4, ordine.getMetodoPagamento());
+            preparedStatement.setTimestamp(5, ordine.getDataOrdine() != null ? Timestamp.valueOf(ordine.getDataOrdine()) : null);
+            preparedStatement.setString(6, ordine.getStato() != null ? ordine.getStato().name() : null);
+            preparedStatement.setDouble(7, ordine.getTotale());
+            preparedStatement.setString(8, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
 
             preparedStatement.executeUpdate();
             
@@ -59,17 +62,20 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     @Override
     public boolean doUpdate(Ordine ordine) throws SQLException {
-        String updateSQL = "UPDATE " + TABLE_NAME + " SET metodo_pagamento = ?, data_ordine = ?, stato = ?, totale = ?, utente_email = ? WHERE id = ?";
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET destinatario = ?, indirizzo = ?, telefono = ?, metodo_pagamento = ?, data_ordine = ?, stato = ?, totale = ?, utente_email = ? WHERE id = ?";
         int result = 0;
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             
-            preparedStatement.setString(1, ordine.getMetodoPagamento());
-            preparedStatement.setTimestamp(2, Timestamp.valueOf(ordine.getDataOrdine()));
-            preparedStatement.setString(3, ordine.getStato() != null ? ordine.getStato().name() : null);
-            preparedStatement.setDouble(4, ordine.getTotale());
-            preparedStatement.setString(5, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
-            preparedStatement.setInt(6, ordine.getId());
+        	preparedStatement.setString(1, ordine.getDestinatario());
+            preparedStatement.setString(2, ordine.getIndirizzo());
+            preparedStatement.setString(3, ordine.getTelefono());
+            preparedStatement.setString(4, ordine.getMetodoPagamento());
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(ordine.getDataOrdine()));
+            preparedStatement.setString(6, ordine.getStato() != null ? ordine.getStato().name() : null);
+            preparedStatement.setDouble(7, ordine.getTotale());
+            preparedStatement.setString(8, ordine.getUtente() != null ? ordine.getUtente().getEmail() : null);
+            preparedStatement.setInt(9, ordine.getId());
 
             result = preparedStatement.executeUpdate();
         }
@@ -250,11 +256,11 @@ public class OrdineDAOImpl implements OrdineDAO {
             return ordini;
         }
 
-        // 1. Costruiamo dinamicamente i segnaposto '?' per la clausola IN
+        // 1. Aggiunta dinamica segnaposto '?' per la clausola IN
         StringBuilder sbCodici = new StringBuilder();
         for (int i = 0; i < codiciVersioni.size(); i++) {
             sbCodici.append("?");
-            if (i < codiciVersioni.size() - 1) sbCodici.append(","); // per mettere una virgola, separando i vari valori (l'ultimo non la mette)
+            if (i < codiciVersioni.size() - 1) sbCodici.append(","); // per mettere una virgola, separando i vari valori (tranne all'ultimo)
         }
 
         StringBuilder sbIdOcchiali = new StringBuilder();
@@ -264,7 +270,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         }
 
         // 2. Definiamo la query SQL con la JOIN sulla tabella dei prodotti acquistati (chiave composta)
-        // Usiamo DISTINCT per evitare di duplicare lo stesso ordine se contiene più occhiali che corrispondono ai filtri
+        // DISTINCT per evitare di duplicare lo stesso ordine se contiene più occhiali che corrispondono ai filtri
         String query = "SELECT DISTINCT o.* FROM ordine o " +
                        "JOIN prodotto_acquistato pa ON o.id = pa.ordine_id " +
                        "WHERE pa.versione_codice IN (" + sbCodici.toString() + ") " +
@@ -354,7 +360,11 @@ public class OrdineDAOImpl implements OrdineDAO {
   
     private Ordine leggiDBOrdine(ResultSet rs) throws SQLException {
         Ordine ordine = new Ordine();
+        
         ordine.setId(rs.getInt("id"));
+        ordine.setDestinatario(rs.getString("destinatario"));
+        ordine.setIndirizzo(rs.getString("indirizzo"));
+        ordine.setTelefono(rs.getString("telefono"));
         ordine.setMetodoPagamento(rs.getString("metodo_pagamento"));
         
         Timestamp timestamp = rs.getTimestamp("data_ordine");
@@ -362,7 +372,6 @@ public class OrdineDAOImpl implements OrdineDAO {
             ordine.setDataOrdine(timestamp.toLocalDateTime());
         }
         
-      
         String statoStr = rs.getString("stato");
         if (statoStr != null) {
             ordine.setStato(Stato.valueOf(statoStr));

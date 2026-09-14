@@ -2,14 +2,15 @@ document.addEventListener("DOMContentLoaded", function() {
 	const form = document.getElementById("checkoutForm");
     if (!form) return;
 
+	const destInput = document.getElementById("destinatario");
     const indirizzoInput = document.getElementById("indirizzo");
     const cittaInput = document.getElementById("citta");
     const capInput = document.getElementById("cap");
     const telefonoInput = document.getElementById("telefono");
     const metodoPagamentoSelect = document.getElementById("metodoPagamento");
 
-    
-    const regexCitta = /^[a-zA-ZàèéìòùÀÈÉÌÒÙ\s']{2,50}$/;
+	const regexDest = /^[A-Za-zÀ-ÿ\s']{4,50}$/;
+    const regexCitta = /^[a-zA-ZàèéìòùÀÈÉÌÒÙ\s']{4,50}$/;
     const regexCap = /^\d{5}$/;
     const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 
@@ -37,6 +38,20 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+	
+	function validateDestinatario() {
+		const val = destInput.value.trim();
+	    if (!val) {
+	    	showFieldError(destInput, "Il destinatario è obbligatorio.");
+	        return false;
+		} else if (!regexDest.test(val)) {
+	    	showFieldError(destInput, "Il campo può contenere solo lettere (minimo 4).");
+	        return false;
+		}
+	    showFieldError(destInput, null);
+	    return true;
+	}
+		
     function validateIndirizzo() {
         const val = indirizzoInput.value.trim();
         if (!val) {
@@ -56,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
             showFieldError(cittaInput, "La città è obbligatoria.");
             return false;
         } else if (!regexCitta.test(val)) {
-            showFieldError(cittaInput, "Inserisci un nome di città valido.");
+            showFieldError(cittaInput, "Il campo può contenere solo lettere (minimo 4)");
             return false;
         }
         showFieldError(cittaInput, null);
@@ -98,7 +113,11 @@ document.addEventListener("DOMContentLoaded", function() {
         showFieldError(metodoPagamentoSelect, null);
         return true;
     }
-
+	
+	if (destInput) {
+		destInput.addEventListener("change", validateDestinatario);
+	    destInput.addEventListener("blur", validateDestinatario);
+	}
     if (indirizzoInput) {
         indirizzoInput.addEventListener("change", validateIndirizzo);
         indirizzoInput.addEventListener("blur", validateIndirizzo);
@@ -121,13 +140,14 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     form.addEventListener("submit", function(event) {
-        const v1 = validateIndirizzo();
-        const v2 = validateCitta();
-        const v3 = validateCap();
-        const v4 = validateTelefono();
-        const v5 = validateMetodoPagamento();
+		const v1 = validateDestinatario();
+        const v2 = validateIndirizzo();
+        const v3 = validateCitta();
+        const v4 = validateCap();
+        const v5 = validateTelefono();
+        const v6= validateMetodoPagamento();
 
-        if (!(v1 && v2 && v3 && v4 && v5)) {
+        if (!(v1 && v2 && v3 && v4 && v5 && v6)) {
             event.preventDefault(); //blocca invio e mostra messaggi d'errore
         }
     });

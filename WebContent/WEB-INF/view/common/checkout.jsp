@@ -41,8 +41,6 @@
             <h1>Completa il tuo Ordine</h1>
 
             <% if (errore != null) { 
-            //in altre jsp come areUtente e registrazione, per i banner uso showBanner error in modo che 
-            //il banner di errore appaia anche quando si compila male il form
             %>
             
                 <div class="error-banner" style="align-items: center; justify-content: space-between;">
@@ -95,7 +93,7 @@
                         
                         <div class="form-group">
                             <label>Destinatario</label>
-                            <input type="text" value="<%= nome %> <%= cognome %>" disabled style="opacity: 0.6; cursor: not-allowed;" />
+                            <input type="text" id="destinatario" name = "destinatario" value="<%= nome %> <%= cognome %>" placeholder ="Mario Rossi"/>
                         </div>
 
                         <div class="form-group">

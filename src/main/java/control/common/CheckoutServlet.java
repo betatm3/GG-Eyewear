@@ -70,6 +70,7 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
+		String destinatario = request.getParameter("destinatario");
         String indirizzo = request.getParameter("indirizzo");
         String citta = request.getParameter("citta");
         String cap = request.getParameter("cap");
@@ -77,7 +78,8 @@ public class CheckoutServlet extends HttpServlet {
         String metodoPagamento = request.getParameter("metodoPagamento");
 
         // Validazione dei dati inseriti
-        if (indirizzo == null || indirizzo.trim().isEmpty() ||
+        if (destinatario == null || destinatario.trim().isEmpty() ||
+        	indirizzo == null || indirizzo.trim().isEmpty() ||
             citta == null || citta.trim().isEmpty() ||
             cap == null || cap.trim().isEmpty() ||
             telefono == null || telefono.trim().isEmpty() ||
@@ -98,7 +100,7 @@ public class CheckoutServlet extends HttpServlet {
 	        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
 
       
-            // Verifica preliminare disponibilità magazzino
+            // Verifica disponibilità magazzino
             for (ProdottoAcquistato item : carrello.getProdotti()) {
                 Disponibile disp = disponibileDAO.doRetrieveByKey(item.getOcchiale().getId(), item.getColore().getCodice(), connection);
                 if (disp == null || disp.getQuantita() < item.getQuantita()) {
@@ -113,16 +115,15 @@ public class CheckoutServlet extends HttpServlet {
 
             // Creazione ordine
             Ordine ordine = new Ordine();
+            ordine.setDestinatario(destinatario);
+            ordine.setTelefono(telefono);
+            ordine.setIndirizzo(indirizzo + ", " + cap + " " + citta);
             ordine.setMetodoPagamento(metodoPagamento);
             ordine.setDataOrdine(LocalDateTime.now());
             ordine.setStato(Stato.IN_LAVORAZIONE);
             ordine.setTotale(carrello.getTotale());
-            
-            // Salviamo l'indirizzo inserito nel checkout per la spedizione
-            Utente utenteSpedizione = utenteLoggato.clone();
-            utenteSpedizione.setIndirizzo(indirizzo + ", " + cap + " " + citta);
-            utenteSpedizione.setTelefono(telefono);
-            ordine.setUtente(utenteSpedizione);
+          
+            ordine.setUtente(utenteLoggato);
 
             int idOrdine = ordineDAO.doSave(ordine, connection);
 
