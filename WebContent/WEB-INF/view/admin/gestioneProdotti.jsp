@@ -212,7 +212,6 @@
         <div class="card" id="form-container">
             
             <% if (versioneInModifica != null) { %>
-                <!-- SEZIONE 3: Modifica Caratteristiche -->
                 <div class="card-title">
                     <span>✏️</span> Modifica Caratteristiche
                 </div>

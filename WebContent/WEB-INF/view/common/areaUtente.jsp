@@ -235,6 +235,42 @@
             </div>
 
             <!-- SCHEDA MODIFICA DATI UTENTE -->
+            <%
+            	String indirizzoEsteso = utente != null && utente.getIndirizzo() != null ? utente.getIndirizzo() : "";
+                            
+                String via = indirizzoEsteso;
+				String civico = "";
+				String cap = "";
+				String citta = "";
+						
+				if (indirizzoEsteso.contains(",")) {
+					String[] parti = indirizzoEsteso.split(",");
+					String stradaECivico = parti[0].trim();
+						        
+					// Separo via dal civico
+					int ultimoSpazio = stradaECivico.lastIndexOf(' ');
+					if (ultimoSpazio != -1) {
+						via = stradaECivico.substring(0, ultimoSpazio).trim();
+						civico = stradaECivico.substring(ultimoSpazio + 1).trim();
+					} else {
+						via = stradaECivico;
+					}
+						
+				// Estrazione di CAP e Città
+					if (parti.length > 1) {
+						String resto = parti[1].trim();
+						String[] restoParti = resto.split("\\s+"); //individua spazi consecutivi, evitando errori
+						if (restoParti.length > 0) cap = restoParti[0];
+						if (restoParti.length > 1) {
+							StringBuilder sb = new StringBuilder();
+							for (int i = 1; i < restoParti.length; i++) {
+								sb.append(restoParti[i]).append(" ");
+							}
+							citta = sb.toString().trim();
+						}
+					}
+				}
+            %>
             <div class="orders-card" id="edit-profile-card" style="display: none;">
                 <div class="section-title">
                     <span>✏️</span> Modifica Dati Utente
@@ -246,22 +282,22 @@
 				    <div class="form-grid-2">
 				        <div class="form-group">
 				            <label for="edit_nome">Nome</label>
-				            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" />
+				            <input type="text" id="edit_nome" name="nome" value="<%= utente.getNome() %>" placeholder="<%= utente.getNome() %>"   />
 				        </div>
 				        
 				        <div class="form-group">
 				            <label for="edit_cognome">Cognome</label>
-				            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" />
+				            <input type="text" id="edit_cognome" name="cognome" value="<%= utente.getCognome() %>" placeholder="<%= utente.getCognome() %>" />
 				        </div>
 				    
 					    <div class="form-group">
-		                    <label for="email">Indirizzo E-mail</label>
-		                    <input type="email" id="edit_email" name="email" value="<%= utente.getEmail() %>" />
+		                    <label for="edit_email">Indirizzo E-mail</label>
+		                    <input type="email" id="edit_email" name="email" value="<%= utente.getEmail() %>" placeholder="<%= utente.getEmail() %>" />
 		                </div>
                 
 				        <div class="form-group">
 				            <label for="edit_telefono">Telefono</label>
-				            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" />
+				            <input type="tel" id="edit_telefono" name="telefono" value="<%= utente.getTelefono() != null ? utente.getTelefono() : "" %>" placeholder="<%= utente.getTelefono() %>" />
 				        </div>
 				        
 				        <div class="form-group">
@@ -269,10 +305,30 @@
 				            <input type="date" id="edit_data_nascita" name="data_nascita" value="<%= utente.getDataNascita() != null ? utente.getDataNascita().toString() : "" %>" />
 				        </div>
 				   
-					    <div class="form-group">
-					        <label for="edit_indirizzo">Indirizzo di Spedizione</label>
-					        <input type="text" id="edit_indirizzo" name="indirizzo" value="<%= utente.getIndirizzo() != null ? utente.getIndirizzo() : "" %>" />
-					    </div>
+					    <div class="form-group full-width">
+		                	<span>Indirizzo di spedizione predefinito</span>
+		                 
+			                <div class="form-grid-2">
+			                   
+			                    <div class="form-group">
+			                    	<label for="edit_via" style="font-weight: 500;">Via</label>
+			                    	<input type="text" id="edit_via" name="via" value="<%= via %>" placeholder="<%= via %>" />
+			                    </div>
+			                    <div class="form-group">
+									<label for="edit_civico" style="font-weight: 500;">Civico</label>
+									<input type="text" id="edit_civico" name="civico" value="<%= civico %>" placeholder="<%= civico %>" style="width: 120px;"/>
+								</div>
+			                    <div class="form-group" >
+				                    <label for="edit_citta" style="font-weight: 500;">Città</label>
+				                    <input type="text" id="edit_citta" name="citta" value="<%= citta %>" placeholder="<%= citta %>"/>
+			                    </div>
+			                    <div class="form-group">
+			                    	<label for="edit_cap" style="font-weight: 500;">CAP</label>
+			                    	<input type="text" inputmode="numeric" id="edit_cap" name="cap" value="<%= cap %>" placeholder="<%= cap %>" style="width: 120px;" />
+			                    </div>
+			                    
+			                </div>
+		                </div>
 					</div>
 					
 					<div class="form-group">
@@ -302,20 +358,44 @@
     </div>
     
     <script>
-        function toggleEditProfile(show) {
-            var ordersCard = document.getElementById("orders-card-section");
-            var editCard = document.getElementById("edit-profile-card");
-            if (ordersCard && editCard) {
-                if (show) {
-                    ordersCard.style.display = "none";
-                    editCard.style.display = "block";
-                } else {
-                    ordersCard.style.display = "block";
-                    editCard.style.display = "none";
-                }
-            }
-        }
-    </script>
+    	function toggleEditProfile(show) {
+	        var ordersCard = document.getElementById("orders-card-section");
+	        var editCard = document.getElementById("edit-profile-card");
+	        var form = document.querySelector(".edit-profile-form");
+	
+	        if (ordersCard && editCard) {
+	            if (show) {
+	                ordersCard.style.display = "none";
+	                editCard.style.display = "block";
+	            } else {
+	                ordersCard.style.display = "block";
+	                editCard.style.display = "none";
+	
+	                // Ripristino campi form
+	                if (form) {
+	                    form.reset();
+	
+	                    // Rimuove messaggi d'errore
+	                    var errorSpans = form.querySelectorAll(".error-msg");
+	                    errorSpans.forEach(function(span) {
+	                        span.remove();
+	                    });
+	
+	                    var inputs = form.querySelectorAll("input");
+	                    inputs.forEach(function(input) {
+	                        input.style.borderColor = "#E2DDD5";
+	                    });
+	
+	                    // Nasconde banner di errore
+	                    var banner = document.getElementById("js-error-banner");
+	                    if (banner) {
+	                        banner.style.display = "none";
+	                    }
+	                }
+	            }
+	        }
+	    }
+	</script>
     
 <%@ include file="../partials/footer.jsp" %>
 <script src="${pageContext.request.contextPath}/scripts/areaUtente.js"></script>

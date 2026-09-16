@@ -71,44 +71,62 @@
                             
                             // Splittiamo l'indirizzo per precompilare se possibile
                             String via = indirizzoEsteso;
-                            String capVal = "";
-                            String cittaVal = "";
-                            if (indirizzoEsteso.contains(",")) {
-                                String[] parti = indirizzoEsteso.split(",");
-                                via = parti[0].trim();
-                                if (parti.length > 1) {
-                                    String resto = parti[1].trim();
-                                    String[] restoParti = resto.split(" ");
-                                    if (restoParti.length > 0) capVal = restoParti[0];
-                                    if (restoParti.length > 1) {
-                                        StringBuilder sb = new StringBuilder();
-                                        for(int i=1; i<restoParti.length; i++) {
-                                            sb.append(restoParti[i]).append(" ");
-                                        }
-                                        cittaVal = sb.toString().trim();
-                                    }
-                                }
-                            }
+						    String civico = "";
+						    String cap = "";
+						    String citta = "";
+						
+						    if (indirizzoEsteso.contains(",")) {
+						        String[] parti = indirizzoEsteso.split(",");
+						        String stradaECivico = parti[0].trim();
+						        
+						        // Separo via dal civico
+						        int ultimoSpazio = stradaECivico.lastIndexOf(' ');
+						        if (ultimoSpazio != -1) {
+						            via = stradaECivico.substring(0, ultimoSpazio).trim();
+						            civico = stradaECivico.substring(ultimoSpazio + 1).trim();
+						        } else {
+						            via = stradaECivico;
+						        }
+						
+						        // Estrazione di CAP e Città
+						        if (parti.length > 1) {
+						            String resto = parti[1].trim();
+						            String[] restoParti = resto.split("\\s+"); //individua spazi consecutivi, evitando errori
+						            if (restoParti.length > 0) cap = restoParti[0];
+						            if (restoParti.length > 1) {
+						                StringBuilder sb = new StringBuilder();
+						                for (int i = 1; i < restoParti.length; i++) {
+						                    sb.append(restoParti[i]).append(" ");
+						                }
+						                citta = sb.toString().trim();
+						            }
+						        }
+						    }
                         %>
                         
                         <div class="form-group">
                             <label>Destinatario</label>
                             <input type="text" id="destinatario" name = "destinatario" value="<%= nome %> <%= cognome %>" placeholder ="Mario Rossi"/>
                         </div>
-
-                        <div class="form-group">
-                            <label for="indirizzo">Indirizzo (Via, Piazza, Numero Civico)</label>
-                            <input type="text" id="indirizzo" name="indirizzo" value="<%= via %>" placeholder="Es. Via Roma 12" />
-                        </div>
-
+                        
+						<div class="form-row">
+	                        <div class="form-group">
+	                            <label for="via">Via / Piazza</label>
+	                            <input type="text" id="via" name="via" value="<%= via %>" placeholder="Es. Via Roma" />
+	                        </div>
+	                        <div class="form-group">
+	                            <label for="civico">Civico</label>
+	                            <input type="text" id="civico" name="civico" value="<%= civico %>" placeholder="Es. 12" />
+	                        </div>
+						</div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="citta">Città</label>
-                                <input type="text" id="citta" name="citta" value="<%= cittaVal %>" placeholder="Es. Napoli" />
+                                <input type="text" id="citta" name="citta" value="<%= citta %>" placeholder="Es. Napoli" />
                             </div>
                             <div class="form-group">
                                 <label for="cap">CAP</label>
-                                <input type="text" id="cap" name="cap" value="<%= capVal %>" placeholder="Es. 80100" />
+                                <input type="text" inputmode="numeric" id="cap" name="cap" value="<%= cap %>" placeholder="Es. 80100" />
                             </div>
                         </div>
 

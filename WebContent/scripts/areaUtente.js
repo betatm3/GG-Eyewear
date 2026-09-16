@@ -1,7 +1,5 @@
 //DOMContentLoaded: Aspetta che tutta la pagina HTML sia caricata prima di eseguire il codice.
-
 document.addEventListener("DOMContentLoaded", function() {
-    //const form = document.querySelector("form.edit-profile-form");
 	const form = document.querySelector("form[action*='area-utente']");
     if (!form) return;
 
@@ -12,9 +10,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const emailInput = document.getElementById("edit_email");
     const telefonoInput = document.getElementById("edit_telefono");
     const dataNascitaInput = document.getElementById("edit_data_nascita");
-    const indirizzoInput = document.getElementById("edit_indirizzo");
+	const viaInput = document.getElementById('edit_via');
+	const civicoInput = document.getElementById('edit_civico');
+	const cittaInput = document.getElementById('edit_citta');
+	const capInput = document.getElementById('edit_cap');    
     
-    const oldPasswordInput = document.getElementById("old_password");
+	const oldPasswordInput = document.getElementById("old_password");
     const newPasswordInput = document.getElementById("edit_password");
     const confermaPasswordInput = document.getElementById("conferma_password");
 
@@ -22,6 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
     const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+	const regexCivico = /^[a-zA-Z0-9\s/\\-]{1,10}$/;
+	const regexCitta = /^[A-Za-zÀ-ÿ\s'-]{2,50}$/;
+	const regexCap = /^\d{5}$/;
 	
 	const closeBtn = document.querySelector("#js-error-banner .close-banner-btn");
 	if (closeBtn) {
@@ -152,18 +156,57 @@ document.addEventListener("DOMContentLoaded", function() {
         return true;
     }
 
-    function validateIndirizzo() {
-        const val = indirizzoInput.value.trim();
-        if (!val) {
-            showFieldError(indirizzoInput, "L'indirizzo è obbligatorio.");
-            return false;
-        } else if (val.length < 10) {
-            showFieldError(indirizzoInput, "Inserisci almeno 10 caratteri.");
-            return false;
-        }
-        showFieldError(indirizzoInput, null);
-        return true;
-    }
+	function validateVia(){
+		const viaVal = viaInput.value.trim();
+		if (!viaVal) {
+			showFieldError(viaInput, "La via è obbligatoria.");
+			return false;
+		} else if (viaVal.length < 4) {
+			showFieldError(viaInput, "Inserisci una via valida (almeno 4 caratteri).");
+			return false;
+		}
+		showFieldError(viaInput, null);
+		return true;	    
+	}
+		
+	function validateCivico(){
+		const civicoVal = civicoInput.value.trim();
+		if (!civicoVal) {
+			showFieldError(civicoInput, "Il civico è obbligatorio.");
+			return false;
+		} else if (!regexCivico.test(civicoVal)) {
+			showFieldError(civicoInput, "Numero civico non valido.");
+			return false;
+		}
+		showFieldError(civicoInput, null);
+		return true;    
+	}
+
+	function validateCitta() {
+		const val = cittaInput.value.trim();
+	    if (!val) {
+	    	showFieldError(cittaInput, "La città è obbligatoria.");
+	        return false;
+	    } else if (!regexCitta.test(val)) {
+	    	showFieldError(cittaInput, "Il campo può contenere solo lettere (minimo 2)");
+	        return false;
+		}
+	    showFieldError(cittaInput, null);
+	    return true;
+	}
+
+	function validateCap() {
+		const val = capInput.value.trim();
+		if (!val) {
+			showFieldError(capInput, "Il CAP è obbligatorio.");
+			return false;
+		} else if (!regexCap.test(val)) {
+			showFieldError(capInput, "Il CAP deve contenere esattamente 5 cifre.");
+			return false;
+		}
+		showFieldError(capInput, null);
+		return true;
+	}
 
     // --- GESTIONE PASSWORD OPZIONALI ---
     function validatePasswords() {
@@ -194,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 isValid = false;
 			} else if (!regexPassword.test(confPass)) {
 				showFieldError(confermaPasswordInput, "La password deve contenere almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio.");
-			    return false;
+			    isValid = false;
             } else if (newPass !== confPass) {
                 showFieldError(confermaPasswordInput, "Le password non coincidono.");
                 isValid = false;
@@ -211,33 +254,31 @@ document.addEventListener("DOMContentLoaded", function() {
         return isValid;
     }
 
-    [nomeInput, cognomeInput, emailInput, telefonoInput, dataNascitaInput, indirizzoInput].forEach(input => {
-        if (input) {
-            input.addEventListener("change", () => {
-                if(input === nomeInput) validateNome();
-                if(input === cognomeInput) validateCognome();
-                if(input === emailInput) validateEmail();
-                if(input === telefonoInput) validateTelefono();
-                if(input === dataNascitaInput) validateDataNascita();
-                if(input === indirizzoInput) validateIndirizzo();
-            });
-            input.addEventListener("blur", () => {
-                if(input === nomeInput) validateNome();
-                if(input === cognomeInput) validateCognome();
-                if(input === emailInput) validateEmail();
-                if(input === telefonoInput) validateTelefono();
-                if(input === dataNascitaInput) validateDataNascita();
-                if(input === indirizzoInput) validateIndirizzo();
-            });
-        }
-    });
+	const fieldMap = [
+		{ el: nomeInput, fn: validateNome },
+	    { el: cognomeInput, fn: validateCognome },
+	    { el: emailInput, fn: validateEmail },
+	    { el: telefonoInput, fn: validateTelefono },
+	    { el: dataNascitaInput, fn: validateDataNascita },
+	    { el: viaInput, fn: validateVia },
+	    { el: civicoInput, fn: validateCivico },
+	    { el: capInput, fn: validateCap },
+	    { el: cittaInput, fn: validateCitta }
+	];
 
-    [oldPasswordInput, newPasswordInput, confermaPasswordInput].forEach(input => {
-        if (input) {
-            input.addEventListener("change", validatePasswords);
-            input.addEventListener("blur", validatePasswords);
-        }
-    });
+	fieldMap.forEach(({ el, fn }) => {
+		if (el) {
+	    	el.addEventListener("change", fn);
+	        el.addEventListener("blur", fn);
+		}
+	});
+
+	[oldPasswordInput, newPasswordInput, confermaPasswordInput].forEach(input => {
+		if (input) {
+			input.addEventListener("change", validatePasswords);
+			input.addEventListener("blur", validatePasswords);
+		}
+	});
 
     form.addEventListener("submit", function(event) {
 		try{
@@ -246,10 +287,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	        const v3 = validateEmail();
 	        const v4 = validateTelefono();
 	        const v5 = validateDataNascita();
-	        const v6 = validateIndirizzo();
-	        const v7 = validatePasswords();
+	        const v6 = validatePasswords();
+			const v7 = validateVia();
+			const v8 = validateCivico();
+			const v9 = validateCap();
+			const v10 = validateCitta();
 	
-	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7)) {
+	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8 && v9 && v10)) {
 	            event.preventDefault();
 	  			showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
 			} else {

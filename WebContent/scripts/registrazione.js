@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const confermaPasswordInput = document.getElementById("confermaPassword");
     const telefonoInput = document.getElementById("telefono");
     const dataNascitaInput = document.getElementById("dataNascita");
-    const indirizzoInput = document.getElementById("indirizzo");
+	const viaInput = document.getElementById('via');
+	const civicoInput = document.getElementById('civico');
+	const cittaInput = document.getElementById('citta');
+	const capInput = document.getElementById('cap')
 
     
     const regexNomeCognome = /^[A-Za-zÀ-ÿ\s']{2,50}$/;
@@ -17,7 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 	const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 	// password con almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
-	
+	const regexCivico = /^[a-zA-Z0-9\s/\\-]{1,10}$/;
+	const regexCitta = /^[A-Za-zÀ-ÿ\s'-]{2,50}$/;
+	const regexCap = /^\d{5}$/;
     
     function showFieldError(input, message) {
         let parent = input.parentElement;
@@ -56,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function() {
 	        }
 	    }
 	}
-
    
     function validateNome() {
         const val = nomeInput.value.trim();
@@ -180,20 +184,58 @@ document.addEventListener("DOMContentLoaded", function() {
         return true;
     }
 
-    function validateIndirizzo() {
-        const val = indirizzoInput.value.trim();
-        if (!val) {
-            showFieldError(indirizzoInput, "L'indirizzo di spedizione è obbligatorio.");
-            return false;
-        } else if (val.length < 10) {
-            showFieldError(indirizzoInput, "Inserisci un indirizzo valido (minimo 10 caratteri).");
-            return false;
-        }
-        showFieldError(indirizzoInput, null);
-        return true;
-    }
-
-    
+	function validateVia(){
+		const viaVal = viaInput.value.trim();
+		if (!viaVal) {
+			showFieldError(viaInput, "La via è obbligatoria.");
+			return false;
+		} else if (viaVal.length < 4) {
+			showFieldError(viaInput, "Inserisci una via valida (almeno 4 caratteri).");
+			return false;
+		}
+		showFieldError(viaInput, null);
+		return true;	    
+	}
+	
+	function validateCivico(){
+		const civicoVal = civicoInput.value.trim();
+		if (!civicoVal) {
+			showFieldError(civicoInput, "Il civico è obbligatorio.");
+			return false;
+		} else if (!regexCivico.test(civicoVal)) {
+			showFieldError(civicoInput, "Numero civico non valido.");
+			return false;
+		}
+		showFieldError(civicoInput, null);
+		return true;    
+	}
+	
+	function validateCAP(){
+		const capVal = capInput.value.trim();
+		if (!capVal) {
+			showFieldError(capInput, "Il CAP è obbligatorio.");
+			return false;
+		} else if (!regexCap.test(capVal)) {
+			showFieldError(capInput, "Il CAP deve contenere esattamente 5 cifre.");
+			return false;
+		}
+		showFieldError(capInput, null);
+		return true;    
+	}
+	
+	function validateCitta(){
+		const cittaVal = cittaInput.value.trim();
+		if (!cittaVal) {
+			showFieldError(cittaInput, "La città è obbligatoria.");
+			return false;
+		} else if (!regexCitta.test(cittaVal)) {
+			showFieldError(cittaInput, "Inserisci una città valida.");
+			return false;
+		}
+		showFieldError(cittaInput, null);
+		return true;
+	}
+ 
     if (nomeInput) {
         nomeInput.addEventListener("change", validateNome);
         nomeInput.addEventListener("blur", validateNome);
@@ -222,10 +264,22 @@ document.addEventListener("DOMContentLoaded", function() {
         dataNascitaInput.addEventListener("change", validateDataNascita);
         dataNascitaInput.addEventListener("blur", validateDataNascita);
     }
-    if (indirizzoInput) {
-        indirizzoInput.addEventListener("change", validateIndirizzo);
-        indirizzoInput.addEventListener("blur", validateIndirizzo);
+    if (viaInput) {
+        viaInput.addEventListener("change", validateVia);
+        viaInput.addEventListener("blur", validateVia);
     }
+	if (civicoInput) {
+		civicoInput.addEventListener("change", validateCivico);
+	    civicoInput.addEventListener("blur", validateCivico);
+	}
+	if (capInput) {
+		capInput.addEventListener("change", validateCAP);
+		capInput.addEventListener("blur", validateCAP);
+	}
+	if (cittaInput) {
+		cittaInput.addEventListener("change", validateCitta);
+		cittaInput.addEventListener("blur", validateCitta);
+	}
 
     
     form.addEventListener("submit", function(event) {
@@ -237,9 +291,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	        const v5 = validateConfermaPassword();
 	        const v6 = validateTelefono();
 	        const v7 = validateDataNascita();
-	        const v8 = validateIndirizzo();
+	        const v8 = validateVia();
+			const v9 = validateCivico();
+			const v10 = validateCAP();
+			const v11 = validateCitta();
 	
-	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8)) {
+	        if (!(v1 && v2 && v3 && v4 && v5 && v6 && v7 && v8 && v9 && v10 && v11)) {
 	            event.preventDefault();  //blocca invio form e mostra messaggi di errore
 				showBannerError("Tutti i campi contrassegnati sono obbligatori o contengono errori.");
 			} else {

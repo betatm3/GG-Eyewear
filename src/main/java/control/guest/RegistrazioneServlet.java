@@ -50,7 +50,10 @@ public class RegistrazioneServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String confermaPassword = request.getParameter("confermaPassword");
-        String indirizzo = request.getParameter("indirizzo");
+        String via = request.getParameter("via");
+        String civico = request.getParameter("civico");
+        String cap = request.getParameter("cap");
+        String citta = request.getParameter("citta");
         String dataNascitaStr = request.getParameter("dataNascita"); // Arriva come stringa "YYYY-MM-DD" dal tag <input type="date">
         String telefono = request.getParameter("telefono");
 
@@ -59,7 +62,10 @@ public class RegistrazioneServlet extends HttpServlet {
             cognome == null || cognome.trim().isEmpty() ||
             email == null || email.trim().isEmpty() ||
             password == null || password.trim().isEmpty() ||
-            indirizzo == null || indirizzo.trim().isEmpty() ||
+            via == null || via.trim().isEmpty() ||
+            civico == null || civico.trim().isEmpty() ||
+            cap == null || cap.trim().isEmpty() ||
+            citta == null || citta.trim().isEmpty() ||
             dataNascitaStr == null || dataNascitaStr.trim().isEmpty() ||
             telefono == null || telefono.trim().isEmpty()){
         	
@@ -68,6 +74,7 @@ public class RegistrazioneServlet extends HttpServlet {
         	dispatcher.forward(request, response);
         	return;
         }
+        String indirizzo = via.trim() + " " + civico.trim() + ", " + cap.trim() + " " + citta.trim();
 
         // Conversione e validazione della data di nascita
         java.time.LocalDate dataNascita = null;
@@ -117,7 +124,6 @@ public class RegistrazioneServlet extends HttpServlet {
             boolean isCreato = utenteDAO.doSave(nuovoUtente);
 
             if (isCreato) {
-                // eseguiamo il login automatico recupeando dell'utente appena creato dal DB per avere anche l'ID generato dall'AUTO_INCREMENT
                 Utente utenteLoggato = utenteDAO.doRetrieveByKey(nuovoUtente.getEmail());
                 
                 HttpSession oldSession = request.getSession(false);

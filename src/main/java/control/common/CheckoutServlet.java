@@ -71,7 +71,8 @@ public class CheckoutServlet extends HttpServlet {
         }
 
 		String destinatario = request.getParameter("destinatario");
-        String indirizzo = request.getParameter("indirizzo");
+        String via = request.getParameter("via");
+        String civico = request.getParameter("civico");
         String citta = request.getParameter("citta");
         String cap = request.getParameter("cap");
         String telefono = request.getParameter("telefono");
@@ -79,7 +80,8 @@ public class CheckoutServlet extends HttpServlet {
 
         // Validazione dei dati inseriti
         if (destinatario == null || destinatario.trim().isEmpty() ||
-        	indirizzo == null || indirizzo.trim().isEmpty() ||
+        	via == null || via.trim().isEmpty() ||
+            civico == null || civico.trim().isEmpty() ||
             citta == null || citta.trim().isEmpty() ||
             cap == null || cap.trim().isEmpty() ||
             telefono == null || telefono.trim().isEmpty() ||
@@ -117,7 +119,9 @@ public class CheckoutServlet extends HttpServlet {
             Ordine ordine = new Ordine();
             ordine.setDestinatario(destinatario);
             ordine.setTelefono(telefono);
-            ordine.setIndirizzo(indirizzo + ", " + cap + " " + citta);
+
+            String indirizzoFormattato = via.trim() + " " + civico.trim() + ", " + cap.trim() + " " + citta.trim();
+            ordine.setIndirizzo(indirizzoFormattato);
             ordine.setMetodoPagamento(metodoPagamento);
             ordine.setDataOrdine(LocalDateTime.now());
             ordine.setStato(Stato.IN_LAVORAZIONE);
@@ -159,8 +163,12 @@ public class CheckoutServlet extends HttpServlet {
             session.setAttribute("errore", "Errore sul database durante la finalizzazione dell'ordine. Si prega di riprovare.");
         } finally {
             if (connection != null) {
-                try {
+            	try {
                     connection.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
                     connection.close();
                 } catch (SQLException e) {
                     e.printStackTrace();

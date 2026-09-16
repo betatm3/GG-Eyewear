@@ -308,7 +308,12 @@ h1 {
     gap: 20px;
 }
 
-/* Contenitore del singolo campo input + label */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+
+/* Singoli campi input */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -317,6 +322,12 @@ h1 {
 
 /* Etichette (Label) */
 .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555555;
+}
+
+.form-group span {
     font-size: 13px;
     font-weight: 600;
     color: #555555;

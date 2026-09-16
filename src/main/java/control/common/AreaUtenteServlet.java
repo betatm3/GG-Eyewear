@@ -130,7 +130,10 @@ public class AreaUtenteServlet extends HttpServlet {
                 String nuovoNome = request.getParameter("nome");
                 String nuovoCognome = request.getParameter("cognome");
                 String nuovoTelefono = request.getParameter("telefono");
-                String nuovoIndirizzo = request.getParameter("indirizzo");
+                String nuovaVia = request.getParameter("via");
+                String nuovoCivico = request.getParameter("civico");
+                String nuovoCap = request.getParameter("cap");
+                String nuovaCitta = request.getParameter("citta");
                 String nuovaDataNascitaStr = request.getParameter("data_nascita");
                 String emailParam = request.getParameter("email");
                 String nuovaEmail = (emailParam != null) ? emailParam.trim() : "";
@@ -144,7 +147,10 @@ public class AreaUtenteServlet extends HttpServlet {
                     nuovoCognome == null || nuovoCognome.trim().isEmpty() ||
                     nuovaEmail == null || nuovaEmail.trim().isEmpty() ||
                     nuovoTelefono == null || nuovoTelefono.trim().isEmpty() ||
-                    nuovoIndirizzo == null || nuovoIndirizzo.trim().isEmpty() ||
+                    nuovaVia == null || nuovaVia.trim().isEmpty() ||
+                    nuovoCivico == null || nuovoCivico.trim().isEmpty() ||
+                    nuovoCap == null || nuovoCap.trim().isEmpty() ||	
+                    nuovaCitta == null || nuovaCitta.trim().isEmpty() ||
                     nuovaDataNascitaStr == null || nuovaDataNascitaStr.trim().isEmpty()) {
 
                     request.setAttribute("msgErrore", "Impossibile salvare: tutti i campi anagrafici sono obbligatori.");
@@ -156,7 +162,8 @@ public class AreaUtenteServlet extends HttpServlet {
                 utenteAggiornato.setNome(nuovoNome.trim());
                 utenteAggiornato.setCognome(nuovoCognome.trim());
                 utenteAggiornato.setTelefono(nuovoTelefono.trim());
-                utenteAggiornato.setIndirizzo(nuovoIndirizzo.trim());
+                String nuovoIndirizzo = nuovaVia.trim() + " " + nuovoCivico.trim() + ", " + nuovoCap.trim() + " " + nuovaCitta.trim();
+                utenteAggiornato.setIndirizzo(nuovoIndirizzo);
                 utenteAggiornato.setRuolo(utenteSessione.getRuolo());
 
                 // CONTROLLO PASSWORD

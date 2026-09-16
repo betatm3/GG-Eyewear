@@ -73,11 +73,29 @@
                     <label for="dataNascita">Data di Nascita</label>
                     <input type="date" id="dataNascita" name="dataNascita" />
                 </div>
-
-                
-                <div class="form-group full-width">
-                    <label for="indirizzo">Indirizzo di Spedizione predefinito</label>
-                    <input type="text" id="indirizzo" name="indirizzo" placeholder="Es. Via Roma 12, 80100 Napoli" />
+				<div class="form-group full-width">
+                	<span>Indirizzo di spedizione predefinito</span>
+                 
+	                <div class="form-grid">
+	                   
+	                    <div class="form-group">
+	                    	<label for="via" style="font-weight: 500;">Via</label>
+	                    	<input type="text" id="via" name="via" placeholder="Via / Piazzia / Corso e Nome " />
+	                    </div>
+	                    <div class="form-group">
+							<label for="civico" style="font-weight: 500;">Civico</label>
+							<input type="text" id="civico" name="civico" placeholder="Es. 12" style="width: 120px;"/>
+						</div>
+	                    <div class="form-group" >
+		                    <label for="citta" style="font-weight: 500;">Città</label>
+		                    <input type="text" id="citta" name="citta" placeholder="Es. Napoli"/>
+	                    </div>
+	                    <div class="form-group">
+	                    	<label for="cap" style="font-weight: 500;">CAP</label>
+	                    	<input type="text" inputmode="numeric" id="cap" name="cap" placeholder="Es. 80100" style="width: 120px;" />
+	                    </div>
+	                    
+	                </div>
                 </div>
             </div>
 
