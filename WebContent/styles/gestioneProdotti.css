@@ -219,6 +219,16 @@ h1 {
   background: rgba(200, 106, 85, 0.25);
 }
 
+.btn-action.activate {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.btn-action.activate:hover {
+  background: rgba(16, 185, 129, 0.2);
+}
+
 /* Form di Inserimento/Modifica */
 .form-grid {
   display: grid;

@@ -8,6 +8,7 @@ import java.nio.file.StandardCopyOption;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -63,6 +64,50 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
 
         try {           
+        	
+        	OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
+            VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
+            ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
+            DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
+
+            Collection<VersioneOcchiale> versioniCorrenti = versioneDAO.doRetrieveByCorrente(true);
+            Collection<Colore> tuttiColori = coloreDAO.doRetrieveAll(null);
+            request.setAttribute("versioniCorrenti", versioniCorrenti);
+            request.setAttribute("tuttiColori", tuttiColori);
+
+            // Eventuale caricamento della versione da modificare
+            String editIdStr = request.getParameter("editId");
+            String editCodiceStr = request.getParameter("editCodice");
+            if (editIdStr != null && editCodiceStr != null) {
+                try {
+                    int editId = Integer.parseInt(editIdStr);
+                    int editCodice = Integer.parseInt(editCodiceStr);
+                    VersioneOcchiale versioneInModifica = versioneDAO.doRetrieveByKey(editCodice, editId);
+                    request.setAttribute("versioneInModifica", versioneInModifica);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errore", "Parametri di modifica non validi.");
+                }
+            }
+
+            // Eventuale caricamento della gestione colori dell'occhiale
+            String manageColorsIdStr = request.getParameter("manageColorsId");
+            if (manageColorsIdStr != null) {
+                try {
+                    int manageColorsId = Integer.parseInt(manageColorsIdStr);
+                    Occhiale occhialeColori = occhialeDAO.doRetrieveByKey(manageColorsId);
+                    Collection<Disponibile> coloriAssociati = disponibileDAO.doRetrieveByOcchiale(manageColorsId);
+                    ArrayList<Colore> colDettagliAssociati = new ArrayList<>();
+                    for(Disponibile disp : coloriAssociati) {
+                    	colDettagliAssociati.add(coloreDAO.doRetrieveByCodice(disp.getColore().getCodice()));
+                    }
+                    
+                    request.setAttribute("occhialeColori", occhialeColori);
+                    request.setAttribute("coloriAssociati", coloriAssociati);
+                    request.setAttribute("colDettagliAssociati", colDettagliAssociati);
+                } catch (NumberFormatException e) {
+                    request.setAttribute("errore", "ID occhiale non valido.");
+                }
+            }
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/gestioneProdotti.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
@@ -94,6 +139,9 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                 case "delete":
                     rimuoviOcchialeLogico(request, response);
                     break;
+                case "activate":
+                    attivaOcchialeLogico(request, response);
+                    break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Azione non riconosciuta.");
                     break;
@@ -122,11 +170,28 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
     }
+    
+    private void attivaOcchialeLogico(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+    	try {
+	    	int idOcchiale = Integer.parseInt(request.getParameter("id"));
+	        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
+	        
+	        if (occhialeDAO.doToggleAttivo(idOcchiale, true)) {
+	            request.getSession().setAttribute("msgSuccesso", "Prodotto attivato con successo.");
+	        } else {
+	            request.getSession().setAttribute("errore", "Impossibile attivare il prodotto: ID non trovato.");
+	        }
+    	} catch (NumberFormatException e) {
+            request.getSession().setAttribute("errore", "ID prodotto non valido.");
+        }
+        response.sendRedirect(request.getContextPath() + "/admin/GestioneProdotti");
+    }
 
     private void aggiungiNuovoProdotto(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
         VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
-        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds); // Inizializziamo il DAO per la tabella ponte
+        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
         OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
+        ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
         
         // Creazione e popolamento dell'oggetto OCCHIALE
         Occhiale nuovoOcchiale = new Occhiale();
@@ -164,7 +229,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        // 2. Creazione e popolamento dell'oggetto VERSIONEOCCHIALE
+        // Creazione e popolamento dell'oggetto VERSIONEOCCHIALE
         VersioneOcchiale primaVersione = new VersioneOcchiale();
         primaVersione.setCodice(1);
         primaVersione.setCorrente(true);
@@ -234,6 +299,34 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
                     }
                 }
             }
+        }
+        
+        String nuovoNomeColore = request.getParameter("nuovoNomeColore");
+        String nuovoHexColore = request.getParameter("nuovoHexColore");
+        String nuovaQtaColore = request.getParameter("nuovaQtaColore");
+        
+        if (nuovoNomeColore != null && !nuovoNomeColore.trim().isEmpty() && nuovaQtaColore != null && !nuovaQtaColore.trim().isEmpty()) {
+	        try {
+	        	int newQta = Integer.parseInt(nuovaQtaColore.trim());
+	            
+	            String codiceGenerato = generaCodiceColore(nuovoNomeColore.trim());
+	            Colore nuovoColore = new Colore();
+	            nuovoColore.setNome(nuovoNomeColore.trim());
+	            nuovoColore.setHex(nuovoHexColore != null ? nuovoHexColore.trim() : "#000000");
+	            nuovoColore.setCodice(codiceGenerato);
+	            coloreDAO.doSave(nuovoColore);
+	
+	            Disponibile d = new Disponibile();
+	            d.setOcchiale(nuovoOcchiale);
+	            d.setColore(nuovoColore);
+	            d.setQuantita(newQta);
+	
+	            if (!disponibileDAO.doSave(d)) {
+	                request.getSession().setAttribute("errore", "Impossibile inserire una nuova variante colore.");
+	            }
+	    	} catch (NumberFormatException e) {
+	            request.getSession().setAttribute("errore", "Quantità per il nuovo colore non valida.");
+	        }
         }
         
         request.getSession().setAttribute("msgSuccesso", "Nuovo prodotto inserito con successo!");
@@ -409,19 +502,27 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 	                if (codiceColore != null && !codiceColore.trim().isEmpty() && qtaCatalogStr != null && !qtaCatalogStr.trim().isEmpty()) {
 	                	try {
 		                	int qta = Integer.parseInt(qtaCatalogStr.trim());
-		                    
-		                    Occhiale o = new Occhiale();
-		                    o.setId(idOcchiale);
-		                    Colore c = new Colore();
-		                    c.setCodice(codiceColore);
-	
-		                    Disponibile d = new Disponibile();
-		                    d.setOcchiale(o);
-		                    d.setColore(c);
-		                    d.setQuantita(qta);
-	
-		                    disponibileDAO.doSave(d);
-		                    request.getSession().setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+		                    Disponibile dispExisting = disponibileDAO.doRetrieveByKey(idOcchiale, codiceColore);
+		                	if( dispExisting == null) {
+			                    Occhiale o = new Occhiale();
+			                    o.setId(idOcchiale);
+			                    Colore c = new Colore();
+			                    c.setCodice(codiceColore);
+		
+			                    Disponibile d = new Disponibile();
+			                    d.setOcchiale(o);
+			                    d.setColore(c);
+			                    d.setQuantita(qta);
+		
+			                    disponibileDAO.doSave(d);
+			                    request.getSession().setAttribute("msgSuccesso", "Variante dal catalogo associata con successo!");
+		                	}
+		                	else {
+		                		dispExisting.setQuantita(dispExisting.getQuantita()+qta);
+		                		disponibileDAO.doUpdate(dispExisting);
+			                    request.getSession().setAttribute("msgSuccesso", "Variante già presente, la quantità è stata aggiornata con successo!");
+
+		                	}
 	                	}catch (NumberFormatException e) {
                             request.getSession().setAttribute("errore", "Quantità non valida.");
                         }
@@ -583,6 +684,5 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
         }
 
         return "C_" + pulito + "_" + suffisso.toString();
-    }
-    
+    }    
 }

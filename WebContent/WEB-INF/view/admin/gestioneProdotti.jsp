@@ -1,10 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Collection" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Base64" %>
-<%@ page import="javax.sql.DataSource" %>
-<%@ page import="javax.naming.InitialContext" %>
 <%@ page import="model.*" %>
-<%@ page import="dao.*" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -24,50 +22,15 @@
 <%@ include file="../partials/header.jsp" %>
 
 <%
-   
-    DataSource ds = null;
-    try {
-        InitialContext ctx = new InitialContext();
-        ds = (DataSource) ctx.lookup("java:comp/env/jdbc/ecommerce_db");
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+	Collection<VersioneOcchiale> versioniCorrenti = (Collection<VersioneOcchiale>) request.getAttribute("versioniCorrenti");
+	VersioneOcchiale versioneInModifica = (VersioneOcchiale) request.getAttribute("versioneInModifica");
+	
+    Collection<Colore> tuttiColori = (Collection<Colore>) request.getAttribute("tuttiColori");
+    
+ 	Occhiale occhialeColori = (Occhiale) request.getAttribute("occhialeColori");
+    Collection<Disponibile> coloriAssociati = (Collection<Disponibile>) request.getAttribute("coloriAssociati");
+    ArrayList<Colore> colDettagliAssociati = (ArrayList<Colore>) request.getAttribute("colDettagliAssociati");
 
-    if (ds != null) {
-        OcchialeDAOImpl occhialeDAO = new OcchialeDAOImpl(ds);
-        VersioneOcchialeDAOImpl versioneDAO = new VersioneOcchialeDAOImpl(ds);
-        ColoreDAOImpl coloreDAO = new ColoreDAOImpl(ds);
-        DisponibileDAOImpl disponibileDAO = new DisponibileDAOImpl(ds);
-
-        Collection<VersioneOcchiale> versioniCorrenti = versioneDAO.doRetrieveByCorrente(true);
-        Collection<Colore> tuttiColori = coloreDAO.doRetrieveAll(null);
-
-        
-        String editIdStr = request.getParameter("editId");
-        String editCodiceStr = request.getParameter("editCodice");
-        VersioneOcchiale versioneInModifica = null;
-        if (editIdStr != null && editCodiceStr != null) {
-            try {
-                int editId = Integer.parseInt(editIdStr);
-                int editCodice = Integer.parseInt(editCodiceStr);
-                versioneInModifica = versioneDAO.doRetrieveByKey(editCodice, editId);
-            } catch (Exception e) {
-                
-            }
-        }
-
-        String manageColorsIdStr = request.getParameter("manageColorsId");
-        Occhiale occhialeColori = null;
-        Collection<Disponibile> coloriAssociati = null;
-        if (manageColorsIdStr != null) {
-            try {
-                int manageColorsId = Integer.parseInt(manageColorsIdStr);
-                occhialeColori = occhialeDAO.doRetrieveByKey(manageColorsId);
-                coloriAssociati = disponibileDAO.doRetrieveByOcchiale(manageColorsId);
-            } catch (Exception e) {
-                
-            }
-        }
 %>
 
 <div class="container">
@@ -138,6 +101,7 @@
                                 for (VersioneOcchiale v : versioniCorrenti) {
                                     Occhiale occ = v.getOcchiale();
                                     boolean attivo = occ != null && occ.isAttivo();
+                                    int occId = occ != null ? occ.getId() : 0;
                         %>
                                     <tr class="prod-tr">
                                         <td class="prod-td">
@@ -187,6 +151,15 @@
 											                ❌
 											            </button>
 											        </form>
+											    <% } else {%>
+											    	 <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
+											            <input type="hidden" name="action" value="activate" />
+											            <input type="hidden" name="id" value="<%= occ.getId() %>" />
+											            
+											            <button type="submit" class="btn-action activate" onclick="return confirm('Sicuro di voler attivare questo prodotto?');" title="Attiva prodotto">
+											                ✔️ Attiva
+											            </button>
+											         </form>
 											    <% } %>
                                             </div>
                                         </td>
@@ -318,14 +291,16 @@
                 <div class="color-manager-list">
                     <%
                         if (coloriAssociati != null && !coloriAssociati.isEmpty()) {
+                        	int i = 0;
+                        	Colore cDettaglio = null;
                             for (Disponibile disp : coloriAssociati) {
-                                
-                                Colore cDettaglio = coloreDAO.doRetrieveByCodice(disp.getColore().getCodice());
-                                String nomeC = cDettaglio != null ? cDettaglio.getNome() : disp.getColore().getCodice();
+                            	cDettaglio = colDettagliAssociati.get(i);
+                                String codiceC = cDettaglio != null ? cDettaglio.getCodice() : "Codice Not Found";
+                                String nomeC = cDettaglio != null ? cDettaglio.getNome() : codiceC;
                     %>
                                 <div class="color-manager-item">
                                     <div class="color-manager-name">
-                                        🎨 <%= nomeC %> <span style="font-size: 0.8rem; color: var(--text-secondary);">(<%= disp.getColore().getCodice() %>)</span>
+                                        🎨 <%= nomeC %> <span style="font-size: 0.8rem; color: var(--text-secondary);">(<%= codiceC %>)</span>
                                     </div>
                                     
                                     <div class="color-update-form">
@@ -334,7 +309,7 @@
 										    <input type="hidden" name="action" value="updatecolori" />
 										    <input type="hidden" name="subAction" value="updatequantity" />
 										    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>" />
-										    <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>" />
+										    <input type="hidden" name="codiceColore" value="<%= codiceC %>" />
 										    
 										    <div class="input-group-wrapper">
 										        <input type="number" name="quantita" value="<%= disp.getQuantita() %>" />
@@ -347,7 +322,7 @@
 										    <input type="hidden" name="action" value="updatecolori">
 										    <input type="hidden" name="subAction" value="removecolor">
 										    <input type="hidden" name="idOcchiale" value="<%= occhialeColori.getId() %>">
-										    <input type="hidden" name="codiceColore" value="<%= disp.getColore().getCodice() %>">
+										    <input type="hidden" name="codiceColore" value="<%= codiceC %>">
 										    
 										    <button type="submit" class="btn-mini delete" 
 										            onclick="return confirm('Sicuro di voler rimuovere questa variante colore? Verrà azzerato il magazzino per questa opzione.');">
@@ -357,6 +332,7 @@
                                     </div>
                                 </div>
                     <%
+                    			i++;
                             }
                         } else {
                     %>
@@ -551,16 +527,6 @@
     </div>
 </div>
 
-<%
-    } else {
-%>
-    <div class="container" style="text-align: center; padding: 50px;">
-        <h2>Errore di Configurazione Database</h2>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Impossibile recuperare il DataSource JNDI.</p>
-    </div>
-<%
-    }
-%>
 <%@ include file="../partials/footer.jsp" %>
 <script src="${pageContext.request.contextPath}/scripts/gestioneProdotti.js"></script>
 <script src="${pageContext.request.contextPath}/scripts/gestioneColori.js"></script>
