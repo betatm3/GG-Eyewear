@@ -15,6 +15,8 @@ public interface OcchialeDAO {
     
     boolean doDeleteLogica(int id) throws SQLException;
     
+    boolean doToggleAttivo(int id, boolean status) throws SQLException;
+    
     int doCount() throws SQLException;
 
     Occhiale doRetrieveByKey(int id) throws SQLException;

@@ -299,7 +299,7 @@ public class VersioneOcchialeDAOImpl implements VersioneOcchialeDAO {
 
     @Override
     public Collection<VersioneOcchiale> doRetrieveByCorrente(boolean correnteScelta) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE corrente = ?";
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE corrente = ? ORDER BY occhiale_id";
         Collection<VersioneOcchiale> lista = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();

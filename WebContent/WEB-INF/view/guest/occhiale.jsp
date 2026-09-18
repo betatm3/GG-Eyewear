@@ -6,7 +6,6 @@
 <%@ page import="model.Occhiale" %>
 <%@ page import="model.Disponibile" %>
 <%@ page import="model.Colore" %>
-<%@ page import="dao.ColoreDAOImpl" %>
 <%@ page import="model.VersioneOcchiale" %>
 <%@ page import="model.Recensione" %>
 <%@ page import="model.Utente" %>

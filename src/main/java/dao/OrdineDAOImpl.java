@@ -147,7 +147,7 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     @Override
     public Collection<Ordine> doRetrieveByUtente(String utente_email) throws SQLException {
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE utente_email = ?";
+        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE utente_email = ? ORDER BY data_ordine DESC";
         Collection<Ordine> ordini = new ArrayList<>();
 
         try (Connection connection = ds.getConnection();

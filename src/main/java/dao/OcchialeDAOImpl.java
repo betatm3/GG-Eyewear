@@ -114,13 +114,17 @@ public class OcchialeDAOImpl implements OcchialeDAO {
     }
     
     public boolean doDeleteLogica(int id) throws SQLException {
-        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = false WHERE id = ?";
+    	return doToggleAttivo(id, false);
+    }
+    
+    @Override
+    public boolean doToggleAttivo(int id , boolean status) throws SQLException {
+        String updateSQL = "UPDATE " + TABLE_NAME + " SET attivo = ? WHERE id = ?";
         int result = 0;
-
         try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
-            
-            preparedStatement.setInt(1, id);
+        	PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+            preparedStatement.setBoolean(1, status);
+            preparedStatement.setInt(2, id);
             result = preparedStatement.executeUpdate();
         }
         return (result != 0);
