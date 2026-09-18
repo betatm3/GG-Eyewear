@@ -162,15 +162,16 @@ UNLOCK TABLES;
 LOCK TABLES `ordine` WRITE;
 /*!40000 ALTER TABLE `ordine` DISABLE KEYS */;
 INSERT INTO `ordine` VALUES 
-(8001,'PayPal','2026-06-15 08:30:00','CONSEGNATO',635.00,'cliente@email.it'),
-(8002,'Carta di Credito','2026-07-02 12:15:00','SPEDITO',390.00,'giuseppe.verdi@email.it'),
-(8003,'Contrassegno','2026-07-18 14:45:00','IN_LAVORAZIONE',315.00,'francesca.neri@email.it'),
-(8004,'Carta di Credito','2026-07-20 07:20:00','CONSEGNATO',270.00,'marco.gialli@email.it'),
-(414665,'Contrassegno','2026-08-06 13:41:27','SPEDITO',360.00,'adminGE@email.it'),
-(437141,'PayPal','2026-08-11 10:32:14','IN_LAVORAZIONE',300.00,'adminGE@email.it'),
-(720769,'Contrassegno','2026-08-06 13:55:43','IN_CONSEGNA',360.00,'adminGE@email.it'),
-(762576,'Contrassegno','2026-08-06 14:41:42','IN_LAVORAZIONE',295.00,'adminGE@email.it'),
-(829204,'Contrassegno','2026-07-23 05:34:49','IN_LAVORAZIONE',340.00,'adminGE@email.it');
+(8001,'Mario Rossi','Via Toledo 150, 80132 Napoli','333 987 6543','PayPal','2026-06-15 08:30:00','CONSEGNATO',635.00,'cliente@email.it'),
+(8002,'Giuseppe Verdi','Via Roma 45, 00100 Roma','340 123 4567','Carta di Credito','2026-07-02 12:15:00','SPEDITO',390.00,'giuseppe.verdi@email.it'),
+(8003,'Francesca Neri','Corso Vittorio Emanuele 88, 20121 Milano','339 876 5432','Contrassegno','2026-07-18 14:45:00','IN_LAVORAZIONE',315.00,'francesca.neri@email.it'),
+(8004,'Marco Gialli','Via Garibaldi 12, 50100 Firenze','335 112 2334','Carta di Credito','2026-07-20 07:20:00','CONSEGNATO',270.00,'marco.gialli@email.it'),
+(414665,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','Contrassegno','2026-08-06 13:41:27','SPEDITO',360.00,'adminGE@email.it'),
+(437141,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','PayPal','2026-08-11 10:32:14','IN_LAVORAZIONE',300.00,'adminGE@email.it'),
+(720769,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','Contrassegno','2026-08-06 13:55:43','IN_CONSEGNA',360.00,'adminGE@email.it'),
+(762576,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','Contrassegno','2026-08-06 14:41:42','IN_LAVORAZIONE',295.00,'adminGE@email.it'),
+(829204,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','Contrassegno','2026-07-23 05:34:49','IN_LAVORAZIONE',340.00,'adminGE@email.it'),
+(829205,'Gennaro Esposito','Via Carducci 12, 80121 Napoli','333 111 2222','Carta di Credito','2026-09-11 12:54:46','IN_LAVORAZIONE',2940.00,'adminGE@email.it');
 /*!40000 ALTER TABLE `ordine` ENABLE KEYS */;
 UNLOCK TABLES;
 

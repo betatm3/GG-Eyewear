@@ -113,17 +113,21 @@ CREATE TABLE `immagine` (
 -- ------------------------------------------------------
 -- Table structure for table `ordine`
 -- ------------------------------------------------------
+
 CREATE TABLE `ordine` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `metodo_pagamento` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `data_ordine` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `stato` enum('IN_LAVORAZIONE','SPEDITO','IN_CONSEGNA','CONSEGNATO') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `totale` decimal(10,2) NOT NULL,
-  `utente_email` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `destinatario` VARCHAR(80) NOT NULL,
+  `indirizzo` VARCHAR(255) NOT NULL,
+  `telefono` VARCHAR(20) NOT NULL,
+  `metodo_pagamento` VARCHAR(50) NOT NULL,
+  `data_ordine` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `stato` ENUM('IN_LAVORAZIONE','SPEDITO','IN_CONSEGNA','CONSEGNATO') NOT NULL,
+  `totale` DECIMAL(10,2) NOT NULL,
+  `utente_email` VARCHAR(70) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `utente_email` (`utente_email`),
   CONSTRAINT `ordine_ibfk_1` FOREIGN KEY (`utente_email`) REFERENCES `utente` (`email`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=829205 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- ------------------------------------------------------
 -- Table structure for table `prodotto_acquistato`
