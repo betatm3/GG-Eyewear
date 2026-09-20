@@ -356,47 +356,7 @@
         </div>
 
     </div>
-    
-    <script>
-    	function toggleEditProfile(show) {
-	        var ordersCard = document.getElementById("orders-card-section");
-	        var editCard = document.getElementById("edit-profile-card");
-	        var form = document.querySelector(".edit-profile-form");
-	
-	        if (ordersCard && editCard) {
-	            if (show) {
-	                ordersCard.style.display = "none";
-	                editCard.style.display = "block";
-	            } else {
-	                ordersCard.style.display = "block";
-	                editCard.style.display = "none";
-	
-	                // Ripristino campi form
-	                if (form) {
-	                    form.reset();
-	
-	                    // Rimuove messaggi d'errore
-	                    var errorSpans = form.querySelectorAll(".error-msg");
-	                    errorSpans.forEach(function(span) {
-	                        span.remove();
-	                    });
-	
-	                    var inputs = form.querySelectorAll("input");
-	                    inputs.forEach(function(input) {
-	                        input.style.borderColor = "#E2DDD5";
-	                    });
-	
-	                    // Nasconde banner di errore
-	                    var banner = document.getElementById("js-error-banner");
-	                    if (banner) {
-	                        banner.style.display = "none";
-	                    }
-	                }
-	            }
-	        }
-	    }
-	</script>
-    
+       
 <%@ include file="../partials/footer.jsp" %>
 <script src="${pageContext.request.contextPath}/scripts/areaUtente.js"></script>
 

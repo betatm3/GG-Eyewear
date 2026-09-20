@@ -64,20 +64,6 @@ h1 {
   margin-bottom: 40px;
 }
 
-/* Banner Successo */
-.success-banner {
-  background: rgba(90, 114, 97, 0.1);
-  border: 1px solid rgba(90, 114, 97, 0.3);
-  color: var(--bottle);
-  padding: 14px 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  font-weight: 500;
-  text-align: center;
-  font-size: 0.95rem;
-  animation: slideDown 0.4s ease-out;
-}
-
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }

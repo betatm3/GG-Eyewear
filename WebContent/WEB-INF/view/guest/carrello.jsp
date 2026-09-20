@@ -139,7 +139,6 @@
 
     </div>
 <%@ include file="../partials/footer.jsp" %>
-    <!-- Script AJAX per il carrello -->
     <script src="<%= request.getContextPath() %>/scripts/carrelloAjax.js"></script>
 </body>
 </html>

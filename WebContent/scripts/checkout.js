@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const metodoPagamentoSelect = document.getElementById("metodoPagamento");
 
 	const regexDest = /^[A-Za-zÀ-ÿ\s']{4,50}$/;
-	const regexCivico = /^[a-zA-Z0-9\s/\\-]{1,10}$/;
+	const regexCivico = /^[0-9]{1,4}([a-zA-Z]|\s*-\s*[a-zA-Z0-9]+)?$/;
 	const regexCitta = /^[A-Za-zÀ-ÿ\s'-]{2,50}$/;
 	const regexCap = /^\d{5}$/;
     const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			showFieldError(civicoInput, "Il civico è obbligatorio.");
 			return false;
 		} else if (!regexCivico.test(civicoVal)) {
-			showFieldError(civicoInput, "Numero civico non valido.");
+			showFieldError(civicoInput, "Numero civico non valido. (es. 12, 3B, 27 A)");
 			return false;
 		}
 		showFieldError(civicoInput, null);

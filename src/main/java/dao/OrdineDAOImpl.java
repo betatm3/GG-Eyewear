@@ -210,6 +210,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         if (emailUtente != null) {
             sbQuery.append(" AND utente_email = ?");
         }
+        sbQuery.append(" ORDER BY data_ordine DESC");
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sbQuery.toString())) {
@@ -274,7 +275,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         String query = "SELECT DISTINCT o.* FROM ordine o " +
                        "JOIN prodotto_acquistato pa ON o.id = pa.ordine_id " +
                        "WHERE pa.versione_codice IN (" + sbCodici.toString() + ") " +
-                       "AND pa.occhiale_id IN (" + sbIdOcchiali.toString() + ")";
+                       "AND pa.occhiale_id IN (" + sbIdOcchiali.toString() + ") ORDER BY o.data_ordine DESC";
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -317,7 +318,7 @@ public class OrdineDAOImpl implements OrdineDAO {
 
         String query = "SELECT DISTINCT o.* FROM ordine o " +
                        "JOIN prodotto_acquistato pa ON o.id = pa.ordine_id " +
-                       "WHERE pa.occhiale_id IN (" + sbIdOcchiali.toString() + ")";
+                       "WHERE pa.occhiale_id IN (" + sbIdOcchiali.toString() + ") ORDER BY o.data_ordine DESC";
 
         try (Connection connection = ds.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

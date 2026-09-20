@@ -204,7 +204,7 @@
                                         <input type="radio" name="coloreScelto" value="<%= codiceColore %>" 
                                                <%= inStock && first ? "checked" : "" %> 
                                                <%= inStock ? "" : "disabled" %>
-                                               onchange="document.getElementById('selectedColorName').innerText = '<%= nomeColore %>'" />
+                                               onchange="updateSelectedColorName('<%= nomeColore %>')" />
                                         <span class="swatch-circle-btn" style="background-color: <%= hexColor %>;" title="<%= nomeColore %>"></span>
                                     </label>
                         <% 
@@ -362,15 +362,8 @@
         %>
     </div>
 
-    <script>
-        function changeMainImage(src, element) {
-            document.getElementById('mainProductImg').src = src;
-            document.querySelectorAll('.thumb-box').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-        }
-    </script>
-
 <%@ include file="../partials/footer.jsp" %>
+<script src="${pageContext.request.contextPath}/scripts/occhiale.js"></script>
 <script src="${pageContext.request.contextPath}/scripts/recensione.js"></script>
 </body>
 </html>

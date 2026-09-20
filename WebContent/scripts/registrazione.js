@@ -19,8 +19,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	const regexTelefono = /^(\+39)?\s?\d{3}\s?\d{3}\s?\d{3,4}$/;
 	const regexPassword = /^(?=\S+$)(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-	// password con almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio." 
-	const regexCivico = /^[a-zA-Z0-9\s/\\-]{1,10}$/;
+	// password con almeno 8 caratteri, una maiuscola, un numero, un carattere speciale e nessun spazio
+	const regexCivico = /^[0-9]{1,4}([a-zA-Z]|\s*-\s*[a-zA-Z0-9]+)?$/;
+	// 1 a 4 cifre  + spazio o trattino + almeno un carattere o cifra (opzionali)
 	const regexCitta = /^[A-Za-zÀ-ÿ\s'-]{2,50}$/;
 	const regexCap = /^\d{5}$/;
     
@@ -203,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			showFieldError(civicoInput, "Il civico è obbligatorio.");
 			return false;
 		} else if (!regexCivico.test(civicoVal)) {
-			showFieldError(civicoInput, "Numero civico non valido.");
+			showFieldError(civicoInput, "Numero civico non valido. (es. 12, 3B, 27 A)");
 			return false;
 		}
 		showFieldError(civicoInput, null);

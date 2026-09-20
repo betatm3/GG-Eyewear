@@ -1,11 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.Collection" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="java.util.Base64" %>
 <%@ page import="model.Occhiale" %>
-<%@ page import="model.Disponibile" %>
 <%@ page import="model.VersioneOcchiale" %>
-<%@ page import="model.Colore" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -39,12 +36,12 @@
           	   <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Design contemporaneo e comfort per ogni momento della tua giornata</p>
          	 </div>       
 		</div>
-        
+
         <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('<%= request.getContextPath() %>/images/Gucci_banner.jpg') center/cover no-repeat;">
           <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
             <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Gucci</h4>
-            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Montature da Vista Premium</h4>
-            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">	Questa stagione, diventa protagonista</p>
+			<h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Montature da Vista Premium</h4>
+			<p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">	Questa stagione, diventa protagonista</p>
           </div>
         </div>
         
@@ -243,36 +240,6 @@
 </section>
 
 <%@ include file="../partials/footer.jsp" %>
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const slides = document.querySelectorAll(".hero-slide");
-    const dots = document.querySelectorAll(".slider-dot");
-    const discoverBtn = document.getElementById("heroDiscoverBtn");
-    let currentSlide = 0;
-
-    const brands = ["Ray-Ban", "Gucci", "Tom Ford"];
-
-    function showSlide(index) {
-      slides[currentSlide].classList.remove("active");
-      dots[currentSlide].classList.remove("active");
-      currentSlide = (index + slides.length) % slides.length;
-      slides[currentSlide].classList.add("active");
-      dots[currentSlide].classList.add("active");
-      
-      // Update href based on current slide brand
-      if (discoverBtn) {
-        discoverBtn.href = "${pageContext.request.contextPath}/catalogo?marca=" + encodeURIComponent(brands[currentSlide]);
-      }
-    }
-
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
-        showSlide(index);
-      });
-    });
-
-  });
-</script>
-
+<script src="${pageContext.request.contextPath}/scripts/home.js"></script>
 </body>
 </html>

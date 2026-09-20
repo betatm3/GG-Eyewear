@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -169,8 +172,8 @@ public class CatalogoServlet extends HttpServlet {
             String isOutletStr = request.getParameter("outlet");
             boolean isOutlet = "true".equalsIgnoreCase(isOutletStr);
             
-            if (isOutlet) {
-                java.util.Set<Integer> fixedOutletIds = new java.util.HashSet<>(java.util.Arrays.asList(201, 202, 203, 204, 221, 222, 223));
+            if (isOutlet) { // tolgo dalla lista quelli che non sono outlet
+                Set<Integer> fixedOutletIds = new HashSet<>(Arrays.asList(201, 202, 203, 204, 221, 222, 223));
                 listaOcchiali.removeIf(occhiale -> !fixedOutletIds.contains(occhiale.getId()));
             }
             
