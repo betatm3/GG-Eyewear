@@ -153,7 +153,7 @@ public class GestioneOrdiniAdminServlet extends HttpServlet {
                         }
                     }
                     
-                    // Carica i prodotti acquistati per questo ordine
+                    // Carica i prodotti acquistati per ogni ordine
                     Collection<ProdottoAcquistato> prodotti = prodottoAcquistatoDAO.doRetrieveByOrdine(ordine.getId());
                     if (prodotti != null) {
                         for (ProdottoAcquistato prod : prodotti) {

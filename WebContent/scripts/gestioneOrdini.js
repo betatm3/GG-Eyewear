@@ -130,20 +130,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return v1 && v2 && v3 && v4;
     }
 		
-    // Invia la richiesta AJAX se i dati nel form sono validi
+    // richiesta AJAX
     function applyFilters() {
 		
 		if (!validateForm()) {	return; }
 				
-        // Serializza tutti i campi visibili e nascosti del form in un oggetto FormData
+        // Serializza tutti i campi visibili e nascosti in un oggetto FormData
         const formData = new FormData(filterForm);
-        // Converte i dati nel formato query string per la richiesta GET (es. ?genere=DA_SOLE&stato=SPEDITO)
+        // Converte i dati nel formato query string (es. ?genere=DA_SOLE&stato=SPEDITO)
         const searchParams = new URLSearchParams(formData).toString();
 
         // Esegue chiamata HTTP asincrona
         fetch(contextPath + "/admin/GestioneOrdini?" + searchParams, {
             headers: {
-                // Header custom fondamentale per permettere alla Servlet di distinguere 
+                // Header custom per permettere alla Servlet di distinguere 
                 // una richiesta AJAX da una ricarica completa della pagina
                 "X-Requested-With": "XMLHttpRequest"
             }
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 	
-	// Per mostrare dettagli dell'ordine
+	// Dettagli dell'ordine
 	ordiniContainer.addEventListener("click", (event) => {
 		const orderRow = event.target.closest(".order-row");
 	    if (!orderRow) return;

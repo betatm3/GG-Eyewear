@@ -41,7 +41,6 @@ public class LoginServlet extends HttpServlet {
             }
         }
 
-        // NON è loggato -> messaggio di errore
     	String erroreParam = request.getParameter("errore");
     	if ("auth_required".equals(erroreParam)) {
     	    request.setAttribute("errore", "Effettua il login prima di effettuare altre azioni.");

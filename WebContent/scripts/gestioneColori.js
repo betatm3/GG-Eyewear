@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	            errorSpan.style.display = "block";
 	            errorSpan.style.fontWeight = "500";
 	            
-	            // errore sotto l'input
 	            parent.appendChild(errorSpan);
 	        }
 	        errorSpan.textContent = message;

@@ -14,7 +14,7 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        // false evita di crearne una nuova
+        // false per non crearne una nuova
         HttpSession session = request.getSession(false);
         
         if (session != null) {

@@ -36,7 +36,6 @@ function toggleEditProfile(show) {
     }
 }
 
-//DOMContentLoaded: Aspetta che tutta la pagina HTML sia caricata prima di eseguire il codice.
 document.addEventListener("DOMContentLoaded", function() {
 	const form = document.querySelector("form[action*='area-utente']");
     if (!form) return;
@@ -338,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			    showBannerError(null); // Rimuove banner se i dati sono corretti
 			}
 		} catch (e) {
-			// In caso di errore imprevisto nel codice JS, blocchiamo l'invio per sicurezza
+			// In caso di errore nel codice JS, blocchiamo l'invio per sicurezza
 			console.error("Errore durante la validazione:", e);
 			event.preventDefault();
 		}

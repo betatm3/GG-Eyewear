@@ -56,11 +56,11 @@ public class RecensioneServlet extends HttpServlet {
             
             RecensioneDAOImpl recensioneDAO = new RecensioneDAOImpl(ds);
             
-            // Verifichiamo se l'utente ha già lasciato una recensione per questo occhiale
+            // Se l'utente ha già lasciato una recensione per l'occhiale, la aggiorniamo
             Recensione esistente = recensioneDAO.doRetrieveByKey(email, occhialeId);
             Recensione r = new Recensione(email, occhialeId, descrizione, voto);
             
-            if (esistente != null) { // Se esiste, aggiorniamo la precedente
+            if (esistente != null) {
                 recensioneDAO.doUpdate(r);
             } else {
                 recensioneDAO.doSave(r);
@@ -70,7 +70,7 @@ public class RecensioneServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeId + "#recensioni");
 
         } catch (NumberFormatException e) {
-        	if (occhialeIdStr != null && occhialeIdStr.matches("\\d+")) {
+        	if (occhialeIdStr != null && occhialeIdStr.matches("\\d+")) {  //se ha almeno una cifra
                 response.sendRedirect(request.getContextPath() + "/occhiale?id=" + occhialeIdStr);
             } else {
                 response.sendRedirect(request.getContextPath() + "/catalogo");

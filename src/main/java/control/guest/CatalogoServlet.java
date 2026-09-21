@@ -190,11 +190,9 @@ public class CatalogoServlet extends HttpServlet {
 			false: l'utente ha aperto la pagina inserendo l'URL a mano: faccio forward a catalogo.jsp
          */
         if (isAjax) {
-            // Rinvio file con le sole schede dei prodotti
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/grigliaProdotti.jsp");
         	dispatcher.forward(request, response);
         } else {
-            // Caricamento pagina intera
         	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/catalogo.jsp");
         	dispatcher.forward(request, response);
         }

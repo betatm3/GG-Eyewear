@@ -2,6 +2,7 @@ package control.guest;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -77,9 +78,9 @@ public class RegistrazioneServlet extends HttpServlet {
         String indirizzo = via.trim() + " " + civico.trim() + ", " + cap.trim() + " " + citta.trim();
 
         // Conversione e validazione della data di nascita
-        java.time.LocalDate dataNascita = null;
+        LocalDate dataNascita = null;
         try {
-            dataNascita = java.time.LocalDate.parse(dataNascitaStr);
+            dataNascita = LocalDate.parse(dataNascitaStr);
         } catch (java.time.format.DateTimeParseException e) {
             request.setAttribute("errore", "Formato della data di nascita non valido.");
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/registrazione.jsp");

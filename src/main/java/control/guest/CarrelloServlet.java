@@ -96,7 +96,7 @@ public class CarrelloServlet extends HttpServlet {
             }            
             
             response.setContentType("application/json");  
-            //Informa il browser sul tipo di contenuto che gli sta per arrivare nell'header HTTP: un oggetto JSON. In questo modo, JavaScript (con l'API fetch) capirà come interpretarlo correttamente.
+            //Informa il browser sul tipo di contenuto che nell'HTTP c'è un oggetto JSON. In questo modo, JavaScript (con l'API fetch) capirà come interpretarlo correttamente.
             response.setCharacterEncoding("UTF-8"); //codifica dei caratteri della risposta in UTF-8.
             String json = String.format(
                 java.util.Locale.US,

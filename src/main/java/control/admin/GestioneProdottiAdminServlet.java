@@ -637,6 +637,7 @@ public class GestioneProdottiAdminServlet extends HttpServlet {
 		            
 		            String nomeFile = "immagine_" + idOcchiale + "_" + (i + 1) + "_" + System.currentTimeMillis() + estensione;
 		            
+		            //costruzione percorso completo
 		            Path pathLocale = Paths.get(uploadDir2, nomeFile);
 		            Path pathTomcat = Paths.get(uploadDir1, nomeFile);
 		

@@ -2,6 +2,7 @@ package control.common;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,11 +52,16 @@ public class AreaUtenteServlet extends HttpServlet {
             return;
         }
         
-        if (session != null && session.getAttribute("msgSuccesso") != null) {
-            // Passiamo il messaggio alla request per la JSP
+        if (session != null) {
+        	if(session.getAttribute("msgSuccesso") != null) {
             request.setAttribute("msgSuccesso", session.getAttribute("msgSuccesso"));
-            // Lo rimuoviamo dalla sessione per non farlo mostrare ai successivi refresh
             session.removeAttribute("msgSuccesso");
+        	}
+            
+            if (session.getAttribute("msgErrore") != null) {
+                request.setAttribute("msgErrore", session.getAttribute("msgErrore"));
+                session.removeAttribute("msgErrore");
+            }
         }
 
         OrdineDAOImpl ordineDAO = new OrdineDAOImpl(ds);
@@ -126,120 +132,123 @@ public class AreaUtenteServlet extends HttpServlet {
                 utenteSessione = (Utente) session.getAttribute("utenteLoggato");
             }
 
-            if (utenteSessione != null) {
-                String nuovoNome = request.getParameter("nome");
-                String nuovoCognome = request.getParameter("cognome");
-                String nuovoTelefono = request.getParameter("telefono");
-                String nuovaVia = request.getParameter("via");
-                String nuovoCivico = request.getParameter("civico");
-                String nuovoCap = request.getParameter("cap");
-                String nuovaCitta = request.getParameter("citta");
-                String nuovaDataNascitaStr = request.getParameter("data_nascita");
-                String emailParam = request.getParameter("email");
-                String nuovaEmail = (emailParam != null) ? emailParam.trim() : "";
+            if (utenteSessione == null) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+           
+            String nuovoNome = request.getParameter("nome");
+            String nuovoCognome = request.getParameter("cognome");
+            String nuovoTelefono = request.getParameter("telefono");
+            String nuovaVia = request.getParameter("via");
+            String nuovoCivico = request.getParameter("civico");
+            String nuovoCap = request.getParameter("cap");
+            String nuovaCitta = request.getParameter("citta");
+            String nuovaDataNascitaStr = request.getParameter("data_nascita");
+            String emailParam = request.getParameter("email");
+            String nuovaEmail = (emailParam != null) ? emailParam.trim() : "";
+            
+            String oldPassword = request.getParameter("old_password");
+            String nuovaPassword = request.getParameter("new_password");
+            String confermaPassword = request.getParameter("conferma_password");
+            // CONTROLLO DATI
+            if (nuovoNome == null || nuovoNome.trim().isEmpty() ||
+            	nuovoCognome == null || nuovoCognome.trim().isEmpty() ||
+            	nuovaEmail == null || nuovaEmail.trim().isEmpty() ||
+                nuovoTelefono == null || nuovoTelefono.trim().isEmpty() ||
+                nuovaVia == null || nuovaVia.trim().isEmpty() ||
+                nuovoCivico == null || nuovoCivico.trim().isEmpty() ||
+                nuovoCap == null || nuovoCap.trim().isEmpty() ||	
+                nuovaCitta == null || nuovaCitta.trim().isEmpty() ||
+                nuovaDataNascitaStr == null || nuovaDataNascitaStr.trim().isEmpty()) {
+
+                session.setAttribute("msgErrore", "Impossibile salvare: tutti i campi anagrafici sono obbligatori.");
+                response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                return;
+            }
                 
-                String oldPassword = request.getParameter("old_password");
-                String nuovaPassword = request.getParameter("new_password");
-                String confermaPassword = request.getParameter("conferma_password");
+            Utente utenteAggiornato = new Utente();
+            utenteAggiornato.setNome(nuovoNome.trim());
+            utenteAggiornato.setCognome(nuovoCognome.trim());
+            utenteAggiornato.setTelefono(nuovoTelefono.trim());
+            String nuovoIndirizzo = nuovaVia.trim() + " " + nuovoCivico.trim() + ", " + nuovoCap.trim() + " " + nuovaCitta.trim();
+            utenteAggiornato.setIndirizzo(nuovoIndirizzo);
+            utenteAggiornato.setRuolo(utenteSessione.getRuolo());
 
-                // CONTROLLO DATI
-                if (nuovoNome == null || nuovoNome.trim().isEmpty() ||
-                    nuovoCognome == null || nuovoCognome.trim().isEmpty() ||
-                    nuovaEmail == null || nuovaEmail.trim().isEmpty() ||
-                    nuovoTelefono == null || nuovoTelefono.trim().isEmpty() ||
-                    nuovaVia == null || nuovaVia.trim().isEmpty() ||
-                    nuovoCivico == null || nuovoCivico.trim().isEmpty() ||
-                    nuovoCap == null || nuovoCap.trim().isEmpty() ||	
-                    nuovaCitta == null || nuovaCitta.trim().isEmpty() ||
-                    nuovaDataNascitaStr == null || nuovaDataNascitaStr.trim().isEmpty()) {
-
-                    request.setAttribute("msgErrore", "Impossibile salvare: tutti i campi anagrafici sono obbligatori.");
-                    doGet(request, response);
+            // CONTROLLO PASSWORD
+            if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
+            	// Verifica vecchia password sia stata inserita e che corrisponda all'hash nel DB
+                if (oldPassword == null || oldPassword.trim().isEmpty() || 
+                	utenteSessione.getPassword() == null || 
+                    !BCrypt.checkpw(oldPassword, utenteSessione.getPassword())) {
+                        
+                    session.setAttribute("msgErrore", "La password inserita non è corretta.");
+                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
                     return;
                 }
-                
-                Utente utenteAggiornato = new Utente();
-                utenteAggiornato.setNome(nuovoNome.trim());
-                utenteAggiornato.setCognome(nuovoCognome.trim());
-                utenteAggiornato.setTelefono(nuovoTelefono.trim());
-                String nuovoIndirizzo = nuovaVia.trim() + " " + nuovoCivico.trim() + ", " + nuovoCap.trim() + " " + nuovaCitta.trim();
-                utenteAggiornato.setIndirizzo(nuovoIndirizzo);
-                utenteAggiornato.setRuolo(utenteSessione.getRuolo());
-
-                // CONTROLLO PASSWORD
-                if (nuovaPassword != null && !nuovaPassword.trim().isEmpty()) {
-                	// Verifica vecchia password sia stata inserita e che corrisponda all'hash nel DB
-                    if (oldPassword == null || oldPassword.trim().isEmpty() || 
-                        utenteSessione.getPassword() == null || 
-                        !BCrypt.checkpw(oldPassword, utenteSessione.getPassword())) {
-                        
-                        request.setAttribute("msgErrore", "La password inserita non è corretta.");
-                        doGet(request, response);
-                        return; 
-                    }
                     
-                    if (confermaPassword == null || !nuovaPassword.equals(confermaPassword)) {
-                        request.setAttribute("msgErrore", "La nuova password e la conferma non coincidono.");
-                        doGet(request, response);
-                        return;
-                    }
-                    else {
-	                    String passwordHash = BCrypt.hashpw(nuovaPassword.trim(), BCrypt.gensalt());
-	                    utenteAggiornato.setPassword(passwordHash);
-                    }
+                if (confermaPassword == null || !nuovaPassword.equals(confermaPassword)) {
+                	session.setAttribute("msgErrore", "La nuova password e la conferma non coincidono.");
+                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                    return;
                 }
                 else {
-                    utenteAggiornato.setPassword(utenteSessione.getPassword());
-                }
-                     
-                try {
-                	utenteAggiornato.setDataNascita(java.time.LocalDate.parse(nuovaDataNascitaStr.trim()));
-                } catch (Exception e) {
-                    request.setAttribute("msgErrore", "Formato data di nascita non valido.");
-                    doGet(request, response);
-                    return;
-                }
-                String vecchiaEmail = utenteSessione.getEmail();
-                UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
-                
-                // verifico nuova email sia diversa e se è già usata
-                if (!nuovaEmail.equalsIgnoreCase(vecchiaEmail)) {
-                    try {
-						if (utenteDao.doRetrieveByKey(nuovaEmail) != null) {
-						    request.setAttribute("msgErrore", "L'email inserita è già associata a un altro account.");
-						    doGet(request, response);
-						    return;
-						}
-						
-					} catch (SQLException e) {
-						e.printStackTrace();
-						request.setAttribute("msgErrore", "Errore durante la verifica dell'email.");
-				        doGet(request, response);
-				        return;
-					}
-                }
-                utenteAggiornato.setEmail(nuovaEmail);
-                
-                // SALVATAGGIO SU DB
-                try {
-                	boolean success = utenteDao.doUpdateEmail(utenteAggiornato, vecchiaEmail);
-                    if (success) {
-                        session.setAttribute("utenteLoggato", utenteAggiornato);
-                        session.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
-                        
-                        response.sendRedirect(request.getContextPath() + "/common/area-utente");
-                        return;
-                    } else {
-                        request.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    request.setAttribute("msgErrore", "Errore del database: " + e.getMessage());
+                	String passwordHash = BCrypt.hashpw(nuovaPassword.trim(), BCrypt.gensalt());
+	                utenteAggiornato.setPassword(passwordHash);
                 }
             }
-            
-            // Richiamo doGet per ricaricare lo storico ordini e inoltrare alla corretta view JSP
-            doGet(request, response);
+            else {
+            	utenteAggiornato.setPassword(utenteSessione.getPassword());
+            }
+                     
+            try {
+            	utenteAggiornato.setDataNascita(LocalDate.parse(nuovaDataNascitaStr.trim()));
+            } catch (Exception e) {
+            	session.setAttribute("msgErrore", "Formato data di nascita non valido.");
+                response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                return;
+            }
+            String vecchiaEmail = utenteSessione.getEmail();
+            UtenteDAOImpl utenteDao = new UtenteDAOImpl(ds);
+
+            // verifico nuova email sia diversa e se è già usata
+            if (!nuovaEmail.equalsIgnoreCase(vecchiaEmail)) {
+            	try {
+            		if (utenteDao.doRetrieveByKey(nuovaEmail) != null) {
+            			session.setAttribute("msgErrore", "L'email inserita è già associata a un altro account.");
+						response.sendRedirect(request.getContextPath() + "/common/area-utente");
+						return;
+            		}
+						
+            	} catch (SQLException e) {
+            		e.printStackTrace();
+					session.setAttribute("msgErrore", "Errore durante la verifica dell'email.");
+					response.sendRedirect(request.getContextPath() + "/common/area-utente");
+					return;
+            	}
+            }
+            utenteAggiornato.setEmail(nuovaEmail);
+                
+            // SALVATAGGIO SU DB
+            try {
+            	boolean success = utenteDao.doUpdateEmail(utenteAggiornato, vecchiaEmail);
+                if (success) {
+                	session.setAttribute("utenteLoggato", utenteAggiornato);
+                    session.setAttribute("msgSuccesso", "Dati utente aggiornati con successo!");
+                        
+                    response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                    return;
+                } else {
+                	session.setAttribute("msgErrore", "Errore durante l'aggiornamento dei dati.");
+                	response.sendRedirect(request.getContextPath() + "/common/area-utente");
+                    return;
+                }
+            } catch (SQLException e) {
+            	e.printStackTrace();
+                session.setAttribute("msgErrore", "Errore del database: " + e.getMessage());
+                response.sendRedirect(request.getContextPath() + "/common/area-utente");
+				return;
+            }        
         }
         else {
             response.sendRedirect(request.getContextPath() + "/common/area-utente");
