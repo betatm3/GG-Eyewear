@@ -32,13 +32,13 @@
                 <table class="cart-table" id="cartTable">
                     <thead>
                         <tr class="cart-header-row">
-                            <th class="cart-header-cell" style="width: 100px;">Prodotto</th>
-                            <th class="cart-header-cell">Dettagli</th>
-                            <th class="cart-header-cell" style="width: 120px;">Prezzo</th>
-                            <th class="cart-header-cell" style="width: 150px; text-align: center;">Quantità</th>
-                            <th class="cart-header-cell" style="width: 120px; text-align: right;">Subtotale</th>
-                            <th class="cart-header-cell" style="width: 60px; text-align: center;">Rimuovi</th>
-                        </tr>
+						    <th class="cart-header-cell">Prodotto</th>
+						    <th class="cart-header-cell">Dettagli</th>
+						    <th class="cart-header-cell">Prezzo</th>
+						    <th class="cart-header-cell">Quantità</th>
+						    <th class="cart-header-cell">Subtotale</th>
+						    <th class="cart-header-cell">Rimuovi</th>
+						</tr>
                     </thead>
                     <tbody>
                         <% 
@@ -119,7 +119,7 @@
                     
                     <div class="action-buttons">
                         <a href="${pageContext.request.contextPath}/common/checkout" class="btn-checkout">Procedi al Checkout</a>
-                        <a href="carrello?action=svuota" class="btn-shopping btn-clear-cart" style="color: var(--danger-color); border-color: rgba(248, 113, 113, 0.2);">Svuota Carrello</a>
+                        <a href="carrello?action=svuota" class="btn-shopping btn-clear-cart">Svuota Carrello</a>
                         <a href="catalogo" class="btn-shopping">Continua lo Shopping</a>
                     </div>
                 </div>

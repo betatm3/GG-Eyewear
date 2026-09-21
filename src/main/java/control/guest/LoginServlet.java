@@ -26,12 +26,11 @@ public class LoginServlet extends HttpServlet {
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-    	// 1. Controlla se l'utente è già loggato in sessione
+    	// Controllo utente già loggato in sessione
         HttpSession session = request.getSession(false);
         if (session != null) {
             Utente utente = (Utente) session.getAttribute("utenteLoggato");
    
-            // Se l'utente è già loggato, fai il redirect alla pagina corretta
             if (utente != null) {
                 if (utente.isAdmin()) {
                     response.sendRedirect(request.getContextPath() + "/admin/dashboard");
@@ -42,11 +41,10 @@ public class LoginServlet extends HttpServlet {
             }
         }
 
-        // 2. Se NON è loggato, gestisci i messaggi di errore e mostra il form
-        
+        // NON è loggato -> messaggio di errore
     	String erroreParam = request.getParameter("errore");
     	if ("auth_required".equals(erroreParam)) {
-    	    request.setAttribute("errore", "Devi effettuare il login prima di effettuare altre azioni.");
+    	    request.setAttribute("errore", "Effettua il login prima di effettuare altre azioni.");
     	}
     	RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/guest/login.jsp");
     	dispatcher.forward(request, response);
@@ -79,13 +77,11 @@ public class LoginServlet extends HttpServlet {
                     return;
                 }
             	
-            	// PREVENZIONE SESSION FIXATION
                 HttpSession oldSession = request.getSession(false);
                 if (oldSession != null) {
                     oldSession.invalidate();
                 }
 
-                // Nuova sessione pulita post-login
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utenteLoggato", utente);
 

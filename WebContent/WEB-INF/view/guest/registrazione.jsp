@@ -25,10 +25,12 @@
 		   boolean haErroreServlet = (erroreServlet != null && !erroreServlet.trim().isEmpty());
 		%>
 		
-		<div id="js-error-banner" class="error-banner" style="<%= haErroreServlet ? "display: flex;" : "display: none;" %> align-items: center; justify-content: space-between;">
-		    <span>⚠️</span>
-		    <span id="js-error-text"><%= haErroreServlet ? erroreServlet : "" %></span>
-		    <button type="button" style="text-align: right;" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>;">
+			<div class="banner-content">
+			    <span>⚠️</span>
+			    <span id="js-error-text"><%= haErroreServlet ? erroreServlet : "" %></span>
+		    </div>
+		    <button type="button" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
 		    
 		</div>
 
@@ -74,7 +76,7 @@
                     <input type="date" id="dataNascita" name="dataNascita" />
                 </div>
 				<div class="form-group full-width">
-                	<span>Indirizzo di spedizione predefinito</span>
+                	<p>Indirizzo di spedizione predefinito</p>
                  
 	                <div class="form-grid">
 	                   

@@ -67,6 +67,29 @@ h1 {
   vertical-align: middle;
 }
 
+.cart-header-cell:nth-child(1) {
+  width: 100px;
+}
+
+.cart-header-cell:nth-child(3) {
+  width: 120px;
+}
+
+.cart-header-cell:nth-child(4) {
+  width: 150px;
+  text-align: center;
+}
+
+.cart-header-cell:nth-child(5) {
+  width: 120px;
+  text-align: right;
+}
+
+.cart-header-cell:nth-child(6) {
+  width: 60px;
+  text-align: center;
+}
+
 /* Foto Prodotto */
 .product-img-container {
   width: 80px;
@@ -233,7 +256,16 @@ h1 {
   border-color: var(--grey);
 }
 
-/* Cart vuoto */
+.btn-clear-cart {
+  color: var(--danger-color);
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+.btn-clear-cart:hover {
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+/* Carrello vuoto */
 .empty-cart {
   text-align: center;
   padding: 60px 20px;

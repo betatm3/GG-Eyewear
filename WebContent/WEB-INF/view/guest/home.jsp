@@ -79,7 +79,6 @@
 
   <div class="featured-groups">
 
-   
     <div class="group" id="sole">
       <h3>Occhiali da sole</h3>
       <div class="grid-2x2">
@@ -119,24 +118,24 @@
                         %>
                                 <img src="<%= imgSrcSole %>" alt="Foto <%= nomeProdotto %>" />
                         <% } else {%>
-                                <span style="font-size: 11px; color: #888; text-align: center; padding: 10px; font-weight: 500;">Immagine non disponibile</span>
+                                <span class="no-image-text">Immagine non disponibile</span>
                         <% }  %>
                       </div>
                       <div class="product-info">
                         <div class="product-name"><%= nomeProdotto %></div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                        <div class="product-footer">
                           <div class="product-price"><%= prezzoStr %></div>
-                          <div class="rating-stars" style="font-size: 12px; color: #f59e0b;" title="<%= mediaVoto > 0 ? String.format("%.1f su 5 stelle", mediaVoto) : "Nessuna recensione" %>">
+                          <div class="rating-stars" title="<%= mediaVoto > 0 ? String.format("%.1f su 5 stelle", mediaVoto) : "Nessuna recensione" %>">
                             <% 
                                 int interoVoto = (int) Math.round(mediaVoto);
                                 for (int s = 1; s <= 5; s++) {
                                     if (s <= interoVoto && interoVoto > 0) {
                             %>
-                                        <span style="color: #f59e0b;">★</span>
+                                        <span class="star filled">★</span>
                             <% 
                                     } else { 
                             %>
-                                        <span style="color: #d1d5db;">☆</span>
+                                        <span class="star empty">☆</span>
                             <% 
                                     }
                                 } 
@@ -149,7 +148,7 @@
                 }
             } else {
         %>
-                <p style="grid-column: span 2; color: #888; font-style: italic;">Nessun occhiale da sole in primo piano al momento.</p>
+                <p class="empty-featured-msg">Nessun occhiale da sole in primo piano al momento.</p>
         <% 
             }
         %>
@@ -195,25 +194,25 @@
                         %>
                                 <img src="<%= imgSrcVista %>" alt="Foto <%= nomeProdotto %>" />
                         <% } else { %>
-                                <span style="font-size: 11px; color: #888; text-align: center; padding: 10px; font-weight: 500;">Immagine non disponibile</span>
+                                <span class="no-image-text">Immagine non disponibile</span>
                         <% } %>
                       </div>
                       
                       <div class="product-info">
                         <div class="product-name"><%= nomeProdotto %></div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
+                        <div class="product-footer">
                           <div class="product-price"><%= prezzoStr %></div>
-                          <div class="rating-stars" style="font-size: 12px; color: #f59e0b;" title="<%= mediaVoto > 0 ? String.format("%.1f su 5 stelle", mediaVoto) : "Nessuna recensione" %>">
+                          <div class="rating-stars" title="<%= mediaVoto > 0 ? String.format("%.1f su 5 stelle", mediaVoto) : "Nessuna recensione" %>">
                             <% 
                                 int interoVoto = (int) Math.round(mediaVoto);
                                 for (int s = 1; s <= 5; s++) {
                                     if (s <= interoVoto && interoVoto > 0) {
                             %>
-                                        <span style="color: #f59e0b;">★</span>
+                                        <span class="star filled"">★</span>
                             <% 
                                     } else { 
                             %>
-                                        <span style="color: #d1d5db;">☆</span>
+                                        <span class="star empty">☆</span>
                             <% 
                                     }
                                 } 
@@ -226,7 +225,7 @@
                 }
             } else {
         %>
-                <p style="grid-column: span 2; color: #888; font-style: italic;">Nessun occhiale da vista in primo piano al momento.</p>
+                <p class="empty-featured-msg">Nessun occhiale da vista in primo piano al momento.</p>
         <% 
             }
         %>

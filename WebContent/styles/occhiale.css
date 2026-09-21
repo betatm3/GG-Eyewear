@@ -205,6 +205,45 @@ body {
   text-decoration: underline;
 }
 
+/* Griglia Dettagli */
+.details-grid-section {
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  font-family: 'Outfit', sans-serif;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Per Montatura */
+.detail-item.full-width {
+  grid-column: span 2;
+}
+
+/* Le altre etichetta */
+.detail-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2B2B2B;
+}
+
 .size-badge-box {
   display: flex;
   gap: 8px;
@@ -424,19 +463,27 @@ body {
 
 .btn-submit-review {
   align-self: flex-start;
+  display: inline-block;
   background: var(--ink);
   color: #FFFFFF;
   font-weight: 700;
   font-size: 0.9rem;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-top:20px;
 }
 
 .btn-submit-review:hover {
   background: var(--rust);
+}
+
+
+.review-login-prompt{
+	text-align: center; 
+	padding: 15px;
 }
 
 /* Lista Recensioni */
@@ -480,4 +527,33 @@ body {
   text-align: center;
   color: rgba(43, 43, 43, 0.6);
   font-size: 0.9rem;
+}
+
+/* Prodotto Non Trovato */
+.product-not-found-container {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.color-not-found{
+	font-size: 14px; 
+	color: #888; 
+	display: block; 
+	margin-top: 8px;
+}
+
+.not-found-title {
+  color: var(--rust);
+  margin-bottom: 20px;
+}
+
+.not-found-message {
+  color: rgba(43, 43, 43, 0.6);
+  margin-bottom: 30px;
+}
+
+.btn-not-found {
+  display: inline-block;
+  width: auto;
+  padding: 12px 24px;
 }

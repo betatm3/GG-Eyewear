@@ -38,6 +38,13 @@ h1 {
   }
 }
 
+.filters-title img {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 .card-occhiale {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -325,6 +332,7 @@ h1 {
   padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
+  width: 100%;
   transition: all 0.3s ease;
 }
 

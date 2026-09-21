@@ -136,28 +136,28 @@
                 </div>
 
                 
-                <div class="details-grid-section" style="margin: 20px 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 16px; background: rgba(0,0,0,0.02); border-radius: 8px; border: 1px solid var(--line); font-family: 'Outfit', sans-serif;">
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 600;">Taglia</span>
-                        <span style="font-size: 14px; font-weight: 500; color: #2B2B2B;"><%= taglia %></span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 600;">Genere</span>
-                        <span style="font-size: 14px; font-weight: 500; color: #2B2B2B;"><%= genere %></span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 600;">Materiale</span>
-                        <span style="font-size: 14px; font-weight: 500; color: #2B2B2B;"><%= materiale %></span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 600;">Forma</span>
-                        <span style="font-size: 14px; font-weight: 500; color: #2B2B2B;"><%= forma %></span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 4px; grid-column: span 2;">
-                        <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 600;">Montatura</span>
-                        <span style="font-size: 14px; font-weight: 500; color: #2B2B2B;"><%= montatura %></span>
-                    </div>
-                </div>
+                <div class="details-grid-section">
+				    <div class="detail-item">
+				        <span class="detail-label">Taglia</span>
+				        <span class="detail-value"><%= taglia %></span>
+				    </div>
+				    <div class="detail-item">
+				        <span class="detail-label">Genere</span>
+				        <span class="detail-value"><%= genere %></span>
+				    </div>
+				    <div class="detail-item">
+				        <span class="detail-label">Materiale</span>
+				        <span class="detail-value"><%= materiale %></span>
+				    </div>
+				    <div class="detail-item">
+				        <span class="detail-label">Forma</span>
+				        <span class="detail-value"><%= forma %></span>
+				    </div>
+				    <div class="detail-item full-width">
+				        <span class="detail-label">Montatura</span>
+				        <span class="detail-value"><%= montatura %></span>
+				    </div>
+				</div>
 
                
                 <form action="carrello" method="POST" class="purchase-form">
@@ -212,7 +212,7 @@
                                 }
                             } else { 
                         %>
-                        <span style="font-size: 13px; color: #888; display: block; margin-top: 8px;">
+                        <span class="color-not-found">
 							Nessun colore disponibile per questo modello.
 						</span>
                         <% 
@@ -299,9 +299,9 @@
 	                        <button type="submit" class="btn-submit-review">Invia Recensione</button>
 	                    </form>
 	                <% } else { %>
-						<div class="review-login-prompt" style="text-align: center; padding: 15px;">
-				            <p style="margin-bottom: 20px;">Vuoi lasciare una recensione per questo prodotto?</p>
-				            <a href="<%= request.getContextPath() %>/login" class="btn-submit-review" style="display: inline-block; text-decoration: none; width: auto; padding: 8px 16px;">
+						<div class="review-login-prompt">
+				            <p>Vuoi lasciare una recensione per questo prodotto?</p>
+				            <a href="<%= request.getContextPath() %>/login" class="btn-submit-review">
 				                Accedi per recensire
 				            </a>
 				        </div>
@@ -352,11 +352,11 @@
         <% 
             } else { 
         %>
-            <div style="text-align: center; padding: 60px 0;">
-                <h2 style="color: var(--rust); margin-bottom: 20px;">Prodotto Non Trovato</h2>
-                <p style="color: rgba(43, 43, 43, 0.6); margin-bottom: 30px;">L'occhiale richiesto non esiste o non è disponibile.</p>
-                <a href="catalogo" class="btn-main-action" style="display: inline-block; width: auto; padding: 12px 24px;">Vai al Catalogo</a>
-            </div>
+            <div class="product-not-found-container">
+			    <h2 class="not-found-title">Prodotto Non Trovato</h2>
+			    <p class="not-found-message">L'occhiale richiesto non esiste o non è disponibile.</p>
+			    <a href="catalogo" class="btn-not-found">Vai al Catalogo</a>
+			</div>
         <% 
             } 
         %>

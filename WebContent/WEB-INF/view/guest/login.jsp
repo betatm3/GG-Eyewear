@@ -25,13 +25,13 @@
 		    boolean haErroreServlet = (msgErroreServlet != null && !msgErroreServlet.trim().isEmpty());
 		%>
 		
-		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>; align-items: center; justify-content: space-between; border-radius: 8px; margin-bottom: 20px;">
-		    <div style="display: flex; align-items: center; gap: 8px;">
+		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>;">
+		    <div class = "banner-content">
 		        <span>⚠️</span>
 		        <span id="js-error-text"><%= haErroreServlet ? msgErroreServlet : "" %></span>
 		    </div>
 		    
-		    <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';" style=" color: rgb(239, 68, 68); line-height: 1; font-weight: bold;">✕</button>
+		    <button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner" onclick="this.parentElement.style.display='none';">✕</button>
 		</div>
         <form action="login" method="POST">
             <div class="form-group">

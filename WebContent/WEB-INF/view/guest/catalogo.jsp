@@ -48,7 +48,7 @@
     
     <div class="filters-section">
         <div class="filters-title">
-            <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;" />
+            <img src="${pageContext.request.contextPath}/images/icons8-filter-24.png" alt="Filtra" />
             Filtra Catalogo
         </div>
         <form id = "filtriCatalogo">
@@ -136,7 +136,7 @@
                 </div>
                 
 				<div class="filters-actions">
-		            <button type="button" id="btnResetFiltri" class="btn-reset" style="width: 100%; cursor: pointer;">
+		            <button type="button" id="btnResetFiltri" class="btn-reset">
 				        Azzera Filtri
 				    </button>
 		        </div>
