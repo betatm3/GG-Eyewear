@@ -72,7 +72,6 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(43, 43, 43, 0.08);
 }
 
-/* Bottone submit */
 .btn-submit {
   background: var(--ink);
   color: var(--paper);

@@ -32,7 +32,7 @@ h1 {
   color: var(--ink);
 }
 
-/* Banner Feedback */
+/* Banner */
 .alert {
   border-radius: 16px;
   padding: 16px 20px;
@@ -231,29 +231,6 @@ input:focus, select:focus {
   background: var(--amber);
   color: var(--ink);
   box-shadow: 0 6px 16px rgba(43, 43, 43, 0.25);
-}
-
-.btn-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(43, 43, 43, 0.7);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  margin-bottom: 25px;
-  transition: all 0.3s ease;
-  width: fit-content;
-}
-
-.btn-back:hover {
-  color: var(--ink);
-  transform: translateX(-5px);
-}
-
-.btn-back svg {
-  width: 20px;
-  height: 20px;
 }
 
 .btn-success-home {

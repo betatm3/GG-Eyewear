@@ -24,7 +24,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Bottone Indietro */
 .btn-back {
   display: inline-flex;
   align-items: center;
@@ -150,7 +149,7 @@ h1 {
   font-size: 1.05rem;
 }
 
-/* Form di modifica stato */
+/* Form modifica stato */
 .status-form {
   display: flex;
   align-items: center;

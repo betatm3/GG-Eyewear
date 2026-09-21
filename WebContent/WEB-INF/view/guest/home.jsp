@@ -24,45 +24,42 @@
 %>
 
 <%@ include file="../partials/header.jsp" %>
-
 <section class="hero">
-  <div class="hero-inner" style="display: block; max-width: 1180px; margin: 0 auto; padding: 40px 32px; min-height: auto;">
-    <div class="hero-visual" style="display: block; position: relative; height: 580px; overflow: hidden; border-radius: 24px; border: 1px solid var(--line); background: var(--paper-soft); width: 100%;">
-      <div class="hero-slides" style="width: 100%; height: 100%; position: relative;">
+  <div class="hero-inner">
+    <div class="hero-visual">
+      <div class="hero-slides">
         
         <div class="hero-slide active" style="background: url('<%= request.getContextPath() %>/images/RayBan_banner.jpg') center/cover no-repeat;">
-			<div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-         	   <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Ray-Ban</h4>
-          	   <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Design contemporaneo e comfort per ogni momento della tua giornata</p>
-         	 </div>       
-		</div>
+          <div class="hero-slide-content">
+            <h4>Ray-Ban</h4>
+            <p>Design contemporaneo e comfort per ogni momento della tua giornata</p>
+          </div>       
+        </div>
 
         <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('<%= request.getContextPath() %>/images/Gucci_banner.jpg') center/cover no-repeat;">
-          <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Gucci</h4>
-			<h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Montature da Vista Premium</h4>
-			<p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">	Questa stagione, diventa protagonista</p>
+          <div class="hero-slide-content">
+            <h4>Gucci</h4>
+            <h4>Montature da Vista Premium</h4>
+            <p>Questa stagione, diventa protagonista</p>
           </div>
         </div>
         
         <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), url('<%= request.getContextPath() %>/images/TomFord_banner.jpg') center/cover no-repeat;">
-          <div style="text-align: center; color: #FFFFFF; padding: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-            <h4 style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; margin-bottom: 8px; font-style: italic; color: #FFFFFF;">Tom Ford</h4>
-            <p style="font-size: 15px; color: #F0EAE1; margin-bottom: 80px; letter-spacing: 0.04em;">Materiali nobili solo per gli occhiali più esclusivi</p>
+          <div class="hero-slide-content">
+            <h4>Tom Ford</h4>
+            <p>Materiali nobili solo per gli occhiali più esclusivi</p>
           </div>
         </div>
       </div>
 
-      
-      <div style="position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 70px; z-index: 12; pointer-events: none;">
-        <a id="heroDiscoverBtn" href="${pageContext.request.contextPath}/catalogo?marca=Ray-Ban" class="btn-primary" style="pointer-events: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.18);">
+      <div class="hero-action-container">
+        <a id="heroDiscoverBtn" href="${pageContext.request.contextPath}/catalogo?marca=Ray-Ban" class="btn-primary">
           Scopri la collezione
-          <img src="${pageContext.request.contextPath}/images/icons8-right-arrow-24 (1).png" alt="->" style="width: 14px; height: 14px; margin-left: 8px; vertical-align: middle;" />
+          <img src="${pageContext.request.contextPath}/images/icons8-right-arrow-24 (1).png" alt="->" />
         </a>
       </div>
 
-      
-      <div class="slider-dots" style="position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 15;">
+      <div class="slider-dots">
         <span class="slider-dot active" data-index="0"></span>
         <span class="slider-dot" data-index="1"></span>
         <span class="slider-dot" data-index="2"></span>

@@ -126,7 +126,7 @@ h1 {
   transform: scale(1.1);
 }
 
-/* Row Titolo + Cuore + Bottone Dettagli */
+/* Row Titolo + Core + Bottone Dettagli */
 .card-title-row {
   display: flex;
   align-items: center;
@@ -180,7 +180,7 @@ h1 {
   fill: var(--paper);
 }
 
-/* Row Bottom: Prezzo + Stelle Voto Recensione */
+/* Row Bottom: Prezzo + Stelle */
 .card-bottom-row {
   display: flex;
   align-items: center;
@@ -217,11 +217,11 @@ h1 {
 }
 
 .star.filled {
-  color: #F59E0B; /* Stella Oro */
+  color: #F59E0B;
 }
 
 .star.empty {
-  color: #E5E7EB; /* Stella Grigia */
+  color: #E5E7EB;
 }
 
 .msg-vuoto {
@@ -235,7 +235,7 @@ h1 {
   font-size: 1.1rem;
 }
 
-/* Sezione Filtri Catalogo */
+/* Sezione Filtri */
 .filters-section {
   background: var(--paper);
   border: 1px solid var(--line);
@@ -334,7 +334,7 @@ h1 {
   transform: translateY(-1px);
 }
 .ts-control {
-    background-color: var(--paper-soft) !important; /* Colore dello sfondo del tuo form */
+    background-color: var(--paper-soft) !important; /* Colore sfondo form */
     border: 1px solid var(--line);
   	border-radius: 10px;  
 }

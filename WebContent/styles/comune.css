@@ -1,5 +1,4 @@
 
-
 :root {
   --paper: #FFFFFF;
   --paper-soft: #F3EDE3;
@@ -209,7 +208,7 @@ nav.main-nav a.outlet {
   gap: 8px;
 }
 
-/* Stile pulsante di chiusura (X) */
+/* Pulsante chiusura (X) */
 .close-banner-btn {
   background: transparent;
   border: none;
@@ -245,27 +244,127 @@ nav.main-nav a.outlet {
 }
 
 
+/* Bottone Indietro */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(43, 43, 43, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  width: fit-content;
+}
+
+.btn-back:hover {
+  color: var(--ink);
+  transform: translateX(-5px);
+}
+
+.btn-back svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* ---------- FOOTER ---------- */
-footer {
-  border-top: 1px solid var(--ink);
-  padding: 48px 0;
-  background: var(--paper-soft);
+.site-footer {
+  background: #FAF8F5;
+  border-top: 1px solid var(--line);
+  padding: 48px 0 36px 0;
 }
 
 .footer-inner {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr;
+  gap: 40px;
+  align-items: start;
 }
 
-.footer-inner p {
+/* Sezione Logo e Descrizione */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-logo {
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.footer-logo .mark {
+  font-family: 'Fraunces', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2B2B2B;
+}
+
+.footer-logo .mark em {
+  font-style: italic;
+  color: var(--amber, #D8CBB2);
+}
+
+.footer-logo .sub {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+  font-weight: 600;
+}
+
+.footer-description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+  max-width: 440px;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Colonne dei Link */
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.footer-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2B2B2B;
+  margin-bottom: 4px;
+}
+
+.footer-link {
+  font-size: 13px;
+  color: #555;
+  text-decoration: none;
+}
+
+.footer-link-highlight {
+  color: #C86A55;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.footer-info-text {
+  font-size: 13px;
+  color: #555;
+}
+
+.footer-copyright {
   font-size: 12px;
-  color: #777;
+  color: #888;
+  margin-top: 12px;
 }
 
 @media (max-width: 860px) {
