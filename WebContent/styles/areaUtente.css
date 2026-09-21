@@ -61,7 +61,7 @@ h1 {
 .user-icon-container {
   width: 100px;
   height: 100px;
-  margin: 0 auto 20px;
+  margin: 15px auto 20px;
   background: linear-gradient(135deg, rgba(216, 203, 178, 0.15) 0%, rgba(166, 161, 154, 0.15) 100%);
   border: 1px solid var(--line);
   border-radius: 50%;
@@ -76,6 +76,54 @@ h1 {
   height: 50px;
   fill: var(--ink);
   opacity: 0.85;
+}
+
+.user-icon-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.logout-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.edit-profile-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-bottom: -15px;
+  position: relative;
+  z-index: 10;
+}
+
+.btn-edit-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 700;
+  color: #7F7159;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-profile:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.edit-profile-icon {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
 }
 
 .profile-name {
@@ -380,13 +428,27 @@ h1 {
     }
 }
 
-/* Bottone Dashboard Admin per Utenti Amministratori */
+/* Bottone Dashboard Admin */
+
+.admin-dashboard-container {
+  display: flex;
+  justify-content: flex-end!important;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-admin-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
 .btn-admin-dashboard {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  margin-top: 24px;
+  width: auto;
   padding: 12px 18px;
   background: var(--ink);
   color: #FFFFFF;

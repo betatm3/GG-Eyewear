@@ -27,12 +27,12 @@
     <div class="container">
     <%  Utente utente = (Utente) session.getAttribute("utenteLoggato");	%>
         
-        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+        <div class="admin-dashboard-container">
             <% 
                 if (utente != null && utente.isAdmin()) { 
             %>
-                <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard" style="width: auto; margin-top: 0; padding: 8px 16px;">
-                    <img src="<%= request.getContextPath() %>/images/icons8-product-24.png" alt="Admin" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
+                <a href="<%= request.getContextPath() %>/admin/dashboard" class="btn-admin-dashboard">
+                    <img src="<%= request.getContextPath() %>/images/icons8-product-24.png" alt="Admin" class="btn-admin-icon"/>
                     Pannello Amministratore
                 </a>
             <% } %>
@@ -44,7 +44,7 @@
             String errore = (String) request.getAttribute("errore");
             if (errore != null) {
         %>
-            <div class="error-banner" style="text-align: center;">
+            <div class="error-banner">
                 <span>⚠️</span> <%= errore %>
             </div>
         <% 
@@ -54,7 +54,7 @@
 	        %>
 	        <div class="success-banner" >
 			    <div></div>
-			    <div class="success-banner-content">
+			    <div class="banner-content">
 			        <span>✓</span>
 			        <span><%= msgSuccesso %></span>
 			    </div>
@@ -67,76 +67,73 @@
 			String msgErroreServlet = (String) request.getAttribute("msgErrore");
 			boolean haErroreServlet = (msgErroreServlet != null && !msgErroreServlet.trim().isEmpty());
 		%>
-		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>; align-items: center; justify-content: space-between; border-radius: 8px; margin-bottom: 20px;">
+		<div id="js-error-banner" class="error-banner" style="display: <%= haErroreServlet ? "flex" : "none" %>;">
 			<div></div>
-			<div style="display: flex; align-items: center; gap: 8px;">
+			<div class = "banner-content">
 				<span>⚠️</span>
 				<span id="js-error-text"><%= haErroreServlet ? msgErroreServlet : "" %></span>
 			</div>
-			<button type="button" style="text-align: right;" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+			<button type="button" class="close-banner-btn" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
 		</div> 
 
         <div class="area-grid">
-            
-            
+                        
             <div class="profile-card">
-                
-                <div style="display: flex; justify-content: flex-end; width: 100%; margin-bottom: -15px; position: relative; z-index: 10;">
-                    <a href="javascript:void(0);" onclick="toggleEditProfile(true);" class="btn-edit-profile" title="Modifica dati" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 10px; font-weight: 700; color: #7F7159; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(0, 0, 0, 0.04); padding: 6px 12px; border-radius: 20px; transition: all 0.2s ease;">
-                        <img src="<%= request.getContextPath() %>/images/editProfile.png" alt="Modifica Dati" style="width: 12px; height: 12px; object-fit: contain;">
-                        <span>Modifica dati</span>
-                    </a>
-                </div>
-                
-                <div class="user-icon-container" style="margin-top: 15px;">
-                    <img src="<%= request.getContextPath() %>/images/user.png" alt="Profilo" style="width: 42px; height: 42px; object-fit: contain;" />
-                </div>
-
-                <div class="profile-name"><%= utente.getNome() %> <%= utente.getCognome() %></div>
-                <div class="profile-role"><%= utente.getRuolo() %></div>
-
-                <div class="info-list">
-                    <div class="info-group">
-                        <div class="info-label">Email dell'Account</div>
-                        <div class="info-value"><%= utente.getEmail() %></div>
-                    </div>
-                    
-                    <div class="info-group">
-                        <div class="info-label">Indirizzo di Spedizione</div>
-                        <div class="info-value">
-                            <%= utente.getIndirizzo() != null && !utente.getIndirizzo().isEmpty() ? utente.getIndirizzo() : "Non inserito" %>
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Recapito Telefonico</div>
-                        <div class="info-value">
-                            <%= utente.getTelefono() != null && !utente.getTelefono().isEmpty() ? utente.getTelefono() : "Non inserito" %>
-                        </div>
-                    </div>
-
-                    <div class="info-group">
-                        <div class="info-label">Data di Nascita</div>
-                        <div class="info-value">
-                            <% 
-                                if (utente.getDataNascita() != null) { 
-                                    // Utilizziamo un semplice formato localizzato
-                                    DateTimeFormatter formatterIT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                                    out.print(utente.getDataNascita().format(formatterIT));
-                                } else {
-                                    out.print("Non inserita");
-                                }
-                            %>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="<%= request.getContextPath() %>/common/logout" class="btn-logout" onclick="return confirm('Sei sicuro di voler uscire dal profilo?');">
-                    <img src="<%= request.getContextPath() %>/images/icons8-logout-50.png" alt="Esci" style="width: 18px; height: 18px; margin-right: 8px; vertical-align: middle;" />
-                    Esci dal Profilo
-                </a>
-
-            </div>
+			    <div class="edit-profile-container">
+			        <a href="javascript:void(0);" onclick="toggleEditProfile(true);" class="btn-edit-profile" title="Modifica dati">
+			            <img src="<%= request.getContextPath() %>/images/editProfile.png" alt="Modifica Dati" class="edit-profile-icon">
+			            <span>Modifica dati</span>
+			        </a>
+			    </div>
+			    
+			    <div class="user-icon-container">
+			        <img src="<%= request.getContextPath() %>/images/user.png" alt="Profilo" class="user-icon-img" />
+			    </div>
+			
+			    <div class="profile-name"><%= utente.getNome() %> <%= utente.getCognome() %></div>
+			    <div class="profile-role"><%= utente.getRuolo() %></div>
+			
+			    <div class="info-list">
+			        <div class="info-group">
+			            <div class="info-label">Email dell'Account</div>
+			            <div class="info-value"><%= utente.getEmail() %></div>
+			        </div>
+			        
+			        <div class="info-group">
+			            <div class="info-label">Indirizzo di Spedizione</div>
+			            <div class="info-value">
+			                <%= utente.getIndirizzo() != null && !utente.getIndirizzo().isEmpty() ? utente.getIndirizzo() : "Non inserito" %>
+			            </div>
+			        </div>
+			
+			        <div class="info-group">
+			            <div class="info-label">Recapito Telefonico</div>
+			            <div class="info-value">
+			                <%= utente.getTelefono() != null && !utente.getTelefono().isEmpty() ? utente.getTelefono() : "Non inserito" %>
+			            </div>
+			        </div>
+			
+			        <div class="info-group">
+			            <div class="info-label">Data di Nascita</div>
+			            <div class="info-value">
+			                <% 
+			                    if (utente.getDataNascita() != null) { 
+			                        DateTimeFormatter formatterIT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			                        out.print(utente.getDataNascita().format(formatterIT));
+			                    } else {
+			                        out.print("Non inserita");
+			                    }
+			                %>
+			            </div>
+			        </div>
+			    </div>
+			
+			    <a href="<%= request.getContextPath() %>/common/logout" class="btn-logout" onclick="return confirm('Sei sicuro di voler uscire dal profilo?');">
+			        <img src="<%= request.getContextPath() %>/images/icons8-logout-50.png" alt="Esci" class="logout-icon" />
+			        Esci dal Profilo
+			    </a>
+			
+			</div>
 
            
             <div class="orders-card" id="orders-card-section">
@@ -233,7 +230,6 @@
                 %>
             </div>
 
-            <!-- SCHEDA MODIFICA DATI UTENTE -->
             <%
             	String indirizzoEsteso = utente != null && utente.getIndirizzo() != null ? utente.getIndirizzo() : "";
                             

@@ -42,12 +42,12 @@
             <% if (errore != null) { 
             %>
             
-                <div class="error-banner" style="align-items: center; justify-content: space-between;">
+                <div class="error-banner">
                     <div></div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="banner-content">
                     <span>⚠️</span> <%= errore %>
                     </div>
-                    <button type="button" style="text-align: right;" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
+                    <button type="button" class="close-banner-btn" onclick="this.parentElement.style.display='none';" title="Chiudi banner" aria-label="Chiudi banner">✕</button>
                     
                 </div>
             <% } %>
@@ -200,7 +200,7 @@
                             }
                         } else { 
                     %>
-                            <p style="color: var(--text-secondary); text-align: center; padding: 20px 0;">Il carrello è vuoto.</p>
+                            <p class="emptyCart">Il carrello è vuoto.</p>
                     <% 
                         } 
                     %>
