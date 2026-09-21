@@ -41,30 +41,30 @@
 
     
     <div class="actions-grid">
-        <a href="${pageContext.request.contextPath}/admin/GestioneProdotti" class="action-card">
-            <div class="action-icon">
-                <img src="${pageContext.request.contextPath}/images/icons8-product-24.png" alt="Gestione Prodotti" style="width: 28px; height: 28px; object-fit: contain;" />
-            </div>
-            <div class="action-title">Gestione Prodotti</div>
-            <div class="action-desc">Inserisci nuovi occhiali, modifica le informazioni commerciali, i prezzi e gestisci le varianti di colore a magazzino.</div>
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="action-card">
-            <div class="action-icon">
-                <img src="${pageContext.request.contextPath}/images/icons8-order-24.png" alt="Gestione Ordini" style="width: 28px; height: 28px; object-fit: contain;" />
-            </div>
-            <div class="action-title">Gestione Ordini</div>
-            <div class="action-desc">Visualizza gli ordini effettuati dai clienti, applica filtri avanzati e aggiorna lo stato degli ordini in tempo reale.</div>
-        </a>
-
-        <a href="${pageContext.request.contextPath}/admin/GestioneUtenti" class="action-card">
-            <div class="action-icon">
-                <img src="${pageContext.request.contextPath}/images/user.png" alt="Gestione Utenti" style="width: 28px; height: 28px; object-fit: contain;" />
-            </div>
-            <div class="action-title">Gestione Utenti</div>
-            <div class="action-desc">Visualizza tutti gli utenti registrati, promuovili ad amministratori oppure attiva/disattiva i loro account in tempo reale.</div>
-        </a>
-    </div>
+	    <a href="${pageContext.request.contextPath}/admin/GestioneProdotti" class="action-card">
+	        <div class="action-icon">
+	            <img src="${pageContext.request.contextPath}/images/icons8-product-24.png" alt="Gestione Prodotti" class="action-icon-img" />
+	        </div>
+	        <div class="action-title">Gestione Prodotti</div>
+	        <div class="action-desc">Inserisci nuovi occhiali, modifica le informazioni commerciali, i prezzi e gestisci le varianti di colore a magazzino.</div>
+	    </a>
+	
+	    <a href="${pageContext.request.contextPath}/admin/GestioneOrdini" class="action-card">
+	        <div class="action-icon">
+	            <img src="${pageContext.request.contextPath}/images/icons8-order-24.png" alt="Gestione Ordini" class="action-icon-img" />
+	        </div>
+	        <div class="action-title">Gestione Ordini</div>
+	        <div class="action-desc">Visualizza gli ordini effettuati dai clienti, applica filtri avanzati e aggiorna lo stato degli ordini in tempo reale.</div>
+	    </a>
+	
+	    <a href="${pageContext.request.contextPath}/admin/GestioneUtenti" class="action-card">
+	        <div class="action-icon">
+	            <img src="${pageContext.request.contextPath}/images/user.png" alt="Gestione Utenti" class="action-icon-img" />
+	        </div>
+	        <div class="action-title">Gestione Utenti</div>
+	        <div class="action-desc">Visualizza tutti gli utenti registrati, promuovili ad amministratori oppure attiva/disattiva i loro account in tempo reale.</div>
+	    </a>
+	</div>
 </div>
 <%@ include file="../partials/footer.jsp" %>
 </body>

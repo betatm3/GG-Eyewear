@@ -383,6 +383,14 @@ h1 {
     margin-top: 10px;
 }
 
+.label-medium {
+  font-weight: 500!important;
+}
+
+.input-short {
+  width: 120px;
+}
+
 /* Pulsante "Salva modifiche" */
 .btn-save {
     background-color: #2B2B2B;

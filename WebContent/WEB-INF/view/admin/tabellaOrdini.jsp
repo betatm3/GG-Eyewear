@@ -66,8 +66,8 @@
 
                            
                             <% if (ordine.getStato() == Stato.CONSEGNATO) { %>
-                                <div class="status-form" style="border-color: rgba(52, 211, 153, 0.2); background: rgba(52, 211, 153, 0.03);">
-                                    <span style="color: #10B981; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.05em; padding: 4px 12px; text-transform: uppercase;">Consegnato</span>
+                                <div class="status-form delivered">
+                                    <span class="status-text-delivered">Consegnato</span>
                                 </div>
                             <% } else { %>
                                 <form action="${pageContext.request.contextPath}/admin/ModificaStato" method="POST" class="status-form">

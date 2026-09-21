@@ -21,7 +21,7 @@
 
 <div class="container">
     <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-back">
-        <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
+        <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna" />
         Torna alla Dashboard Admin
     </a>
 
@@ -99,7 +99,6 @@
                                 <td>
                                     <div class="actions-group">
                                         <% if (!isSelf) { %>
-                                            <!-- Attiva/Disattiva Account -->
                                             <form action="${pageContext.request.contextPath}/admin/GestioneUtenti" method="POST" style="display:inline;" onsubmit="return confirm('Sei sicuro di voler <%= u.isAttivo() ? "disattivare" : "attivare" %> l\'account di <%= u.getNome() %> <%= u.getCognome() %>?');">
                                                 <input type="hidden" name="email" value="<%= u.getEmail() %>" />
                                                 <input type="hidden" name="action" value="toggleAttivo" />
@@ -110,7 +109,6 @@
                                                 <% } %>
                                             </form>
 
-                                            <!-- Promuovi / Retrocedi Ruolo -->
                                             <form action="${pageContext.request.contextPath}/admin/GestioneUtenti" method="POST" style="display:inline;" onsubmit="return confirm('Sei sicuro di voler <%= u.getRuolo() == Ruolo.USER ? "promuovere ad Amministratore" : "rimuovere dal ruolo di Amministratore" %> l\'utente <%= u.getNome() %> <%= u.getCognome() %>?');">
                                                 <input type="hidden" name="email" value="<%= u.getEmail() %>" />
                                                 <input type="hidden" name="action" value="promuovi" />

@@ -150,6 +150,35 @@ h1 {
   object-fit: contain;
 }
 
+/* Marca e sottotitolo modello del prodotto */
+.prod-brand {
+  font-weight: 700;
+  color: #000000;
+}
+
+.prod-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.prod-td.prod-price {
+  font-weight: 700;
+}
+
+.prod-type {
+  font-weight: 600;
+}
+
+.prod-gender {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.prod-td.prod-center {
+  text-align: center;
+}
+
 .status-badge {
   font-size: 0.75rem;
   font-weight: 700;
@@ -229,6 +258,12 @@ h1 {
 }
 
 /* Form di Inserimento/Modifica */
+.new-color-variant{
+	border-top: 1px solid var(--glass-border); 
+	padding-top: 20px; 
+	margin-top: 20px;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -398,7 +433,23 @@ input[type="color"]::-webkit-color-swatch {
   margin-bottom: 0;
 }
 
+.input-color-picker {
+  width: 80px;
+  height: 40px;
+}
+
+.input-quantity {
+  width: 80px;
+  height: 40px;
+}
+
 /* Pannello Gestione Colori */
+.variant-not-found{
+	text-align: center;
+	color: var(--text-secondary); 
+	padding: 15px;
+}
+
 .color-manager-list {
   margin-bottom: 25px;
 }

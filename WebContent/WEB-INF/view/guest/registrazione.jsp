@@ -81,20 +81,20 @@
 	                <div class="form-grid">
 	                   
 	                    <div class="form-group">
-	                    	<label for="via" style="font-weight: 500;">Via</label>
+	                    	<label for="via" class="label-medium">Via</label>
 	                    	<input type="text" id="via" name="via" placeholder="Via / Piazzia / Corso e Nome " />
 	                    </div>
 	                    <div class="form-group">
-							<label for="civico" style="font-weight: 500;">Civico</label>
-							<input type="text" id="civico" name="civico" placeholder="Es. 12" style="width: 120px;"/>
+							<label for="civico" class="label-medium">Civico</label>
+							<input type="text" id="civico" name="civico" placeholder="Es. 12" class="input-short"/>
 						</div>
 	                    <div class="form-group" >
-		                    <label for="citta" style="font-weight: 500;">Città</label>
+		                    <label for="citta" class="label-medium">Città</label>
 		                    <input type="text" id="citta" name="citta" placeholder="Es. Napoli"/>
 	                    </div>
 	                    <div class="form-group">
-	                    	<label for="cap" style="font-weight: 500;">CAP</label>
-	                    	<input type="text" inputmode="numeric" id="cap" name="cap" placeholder="Es. 80100" style="width: 120px;" />
+	                    	<label for="cap" class="label-medium">CAP</label>
+	                    	<input type="text" inputmode="numeric" id="cap" name="cap" placeholder="Es. 80100" class="input-short" />
 	                    </div>
 	                    
 	                </div>

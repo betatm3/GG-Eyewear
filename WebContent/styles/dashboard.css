@@ -164,3 +164,9 @@ h1 {
   color: rgba(43, 43, 43, 0.6);
   line-height: 1.4;
 }
+
+.action-icon-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}

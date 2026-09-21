@@ -72,6 +72,14 @@ label {
   letter-spacing: 0.05em;
 }
 
+.label-medium {
+  font-weight: 500;
+}
+
+.input-short {
+  width: 120px;
+}
+
 p {
   display: block;
   font-size: 0.85rem;

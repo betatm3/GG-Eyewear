@@ -37,7 +37,7 @@
     
     
     <a href="${pageContext.request.contextPath}/admin/dashboard" class="btn-back">
-        <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />
+        <img src="${pageContext.request.contextPath}/images/icons8-home-24.png" alt="Torna"/>
         Torna alla Dashboard Admin
     </a>
 
@@ -45,15 +45,13 @@
         <h1>Gestione Catalogo Prodotti</h1>
         <div class="subtitle">Visualizza, aggiungi o modifica i modelli e regola le scorte di magazzino</div>
         
-        <%-- Controllo presenza parametri di errore o successo --%>
 		<%
 		    String errore = (String) request.getAttribute("errore");
 		    String msgSuccesso = (String) request.getAttribute("msgSuccesso");
 		%>
 		
-		<%-- BANNER DI ERRORE --%>
 		<% if (errore != null && !errore.trim().isEmpty()) { %>
-		    <div class="error-banner" style=" justify-content: space-between;">
+		    <div class="error-banner">
 		        <div></div>
 		        <div class="banner-content">
 		            <span>⚠️</span>
@@ -63,7 +61,6 @@
 		    </div>
 		<% } %>
 		
-		<%-- BANNER DI SUCCESSO --%>
 		<% if (msgSuccesso != null && !msgSuccesso.trim().isEmpty()) { %>
 		    <div class="success-banner">
 		        <div></div>
@@ -103,73 +100,73 @@
                                     boolean attivo = occ != null && occ.isAttivo();
                                     int occId = occ != null ? occ.getId() : 0;
                         %>
-                                    <tr class="prod-tr">
-                                        <td class="prod-td">
-                                            <div class="prod-img-container">
-                                                 <% 
-                                                    String primaImg = (occ != null) ? occ.getImmagine(0) : null;
-                                                    String imgSrc = null, altText=null;
-                                                    
-                                                    if (primaImg != null && !primaImg.trim().isEmpty()) {
-                                                        imgSrc = request.getContextPath() + "/" + primaImg.trim();
-                                                        altText = (v != null) ? v.getModello() : "Occhiale";
-                                                    } else {
-                                                        imgSrc = "https://via.placeholder.com/60x45?text=No+Img";
-                                                        altText = "No Image";
-                                                    }
-                                                %>
-                                                <img class="prod-img" src="<%= imgSrc %>" alt="<%= altText %>" />
-                                            </div>
-                                        </td>
-                                        <td class="prod-td">
-                                            <div style="font-weight: 700; color: #000000;"><%= v.getMarca() %></div>
-                                            <div style="font-size: 0.8rem; color: var(--text-secondary);"><%= v.getModello() %> (ID: <%= occ.getId() %>)</div>
-                                        </td>
-                                        <td class="prod-td" style="font-weight: 700;">
-                                            € <%= String.format("%.2f", v.getPrezzo()) %>
-                                        </td>
-                                        <td class="prod-td">
-                                            <div style="font-weight: 600;"><%= occ.getTipo() != null ? occ.getTipo().name().replace("_", " ") : "N/D" %></div>
-                                            <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;"><%= v.getGenere() %></div>
-                                        </td>
-                                        <td class="prod-td" style="text-align: center;">
-                                            <span class="status-badge <%= attivo ? "active" : "inactive" %>">
-                                                <%= attivo ? "Attivo" : "Disattivato" %>
-                                            </span>
-                                        </td>
-                                        <td class="prod-td">
-                                            <div class="actions-group">
-                                                <a href="GestioneProdotti?editId=<%= occ.getId() %>&editCodice=<%= v.getCodice() %>" class="btn-action edit" title="Modifica caratteristiche">✏️ Modifica</a>
-                                                <a href="GestioneProdotti?manageColorsId=<%= occ.getId() %>" class="btn-action color" title="Gestisci quantità colori">🎨 Colori</a>
-                                                <%-- Operazione di scrittura/modifica: trasformata in form POST --%>
-											    <% if (attivo) { %>
-											        <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
-											            <input type="hidden" name="action" value="delete" />
-											            <input type="hidden" name="id" value="<%= occ.getId() %>" />
+                            <tr class="prod-tr">
+							    <td class="prod-td">
+							        <div class="prod-img-container">
+							             <% 
+							                String primaImg = (occ != null) ? occ.getImmagine(0) : null;
+							                String imgSrc = null, altText=null;
+							                
+							                if (primaImg != null && !primaImg.trim().isEmpty()) {
+							                    imgSrc = request.getContextPath() + "/" + primaImg.trim();
+							                    altText = (v != null) ? v.getModello() : "Occhiale";
+							                } else {
+							                    imgSrc = "https://via.placeholder.com/60x45?text=No+Img";
+							                    altText = "No Image";
+							                }
+							            %>
+							            <img class="prod-img" src="<%= imgSrc %>" alt="<%= altText %>" />
+							        </div>
+							    </td>
+							    <td class="prod-td">
+							        <div class="prod-brand"><%= v.getMarca() %></div>
+							        <div class="prod-subtitle"><%= v.getModello() %> (ID: <%= occ.getId() %>)</div>
+							    </td>
+							    <td class="prod-td prod-price">
+							        € <%= String.format("%.2f", v.getPrezzo()) %>
+							    </td>
+							    <td class="prod-td">
+							        <div class="prod-type"><%= occ.getTipo() != null ? occ.getTipo().name().replace("_", " ") : "N/D" %></div>
+							        <div class="prod-gender"><%= v.getGenere() %></div>
+							    </td>
+							    <td class="prod-td prod-center">
+							        <span class="status-badge <%= attivo ? "active" : "inactive" %>">
+							            <%= attivo ? "Attivo" : "Disattivato" %>
+							        </span>
+							    </td>
+                                <td class="prod-td">
+                                	<div class="actions-group">
+                                    	<a href="GestioneProdotti?editId=<%= occ.getId() %>&editCodice=<%= v.getCodice() %>" class="btn-action edit" title="Modifica caratteristiche">✏️ Modifica</a>
+                                        <a href="GestioneProdotti?manageColorsId=<%= occ.getId() %>" class="btn-action color" title="Gestisci quantità colori">🎨 Colori</a>
+
+										<% if (attivo) { %>
+											<form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
+												<input type="hidden" name="action" value="delete" />
+											    <input type="hidden" name="id" value="<%= occ.getId() %>" />
 											            
-											            <button type="submit" class="btn-action delete" onclick="return confirm('Sicuro di voler disattivare questo prodotto dal catalogo pubblico?');" title="Disattiva prodotto">
-											                ❌
-											            </button>
-											        </form>
-											    <% } else {%>
-											    	 <form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
-											            <input type="hidden" name="action" value="activate" />
-											            <input type="hidden" name="id" value="<%= occ.getId() %>" />
-											            
-											            <button type="submit" class="btn-action activate" onclick="return confirm('Sicuro di voler attivare questo prodotto?');" title="Attiva prodotto">
-											                ✔️ Attiva
-											            </button>
-											         </form>
-											    <% } %>
-                                            </div>
-                                        </td>
-                                    </tr>
+											    <button type="submit" class="btn-action delete" onclick="return confirm('Sicuro di voler disattivare questo prodotto dal catalogo pubblico?');" title="Disattiva prodotto">
+											    	❌
+											    </button>
+											</form>
+										<% } else {%>
+											<form action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST" style="display:inline;">
+												<input type="hidden" name="action" value="activate" />
+												<input type="hidden" name="id" value="<%= occ.getId() %>" />
+												            
+												<button type="submit" class="btn-action activate" onclick="return confirm('Sicuro di voler attivare questo prodotto?');" title="Attiva prodotto">
+													✔️ Attiva
+												</button>
+											</form>
+										<% } %>
+                                	</div>
+                            	</td>
+                            </tr>
                         <%
                                 }
                             } else {
                         %>
                             <tr>
-                                <td colspan="6" class="prod-td" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                                <td colspan="6" class="prod-td">
                                     Nessun prodotto presente nel database.
                                 </td>
                             </tr>
@@ -336,7 +333,7 @@
                             }
                         } else {
                     %>
-                        <div style="text-align: center; color: var(--text-secondary); padding: 15px;">
+                        <div class="variant-not-found">
                             Nessuna variante colore associata a questo modello.
                         </div>
                     <%
@@ -344,7 +341,7 @@
                     %>
                 </div>
                
-                <div style="border-top: 1px solid var(--glass-border); padding-top: 20px; margin-top: 20px;">
+                <div class="new-color-variant">
                     <div style="font-weight: 700; font-size: 1rem; margin-bottom: 15px;">Associa Nuova Variante Colore</div>
                     <div class="color-variants-container">
 	                    <form id="formAddColor" action="<%= request.getContextPath() %>/admin/GestioneProdotti" method="POST">
@@ -380,10 +377,10 @@
 			                        <input type="text" id="newNomeColore" name="newNomeColore" placeholder="Es. Tartarugato classico" />
 		                        </div>
 	                        	<div class="field-wrapper">
-	                        		<input type="color" id="nuovoHexColore" name="newHexColore" value="#000000" style="width: 80px; height: 40px;"/> 
+	                        		<input type="color" id="nuovoHexColore" name="newHexColore" value="#000000" class="input-color-picker"/> 
 								</div>
 								<div class="field-wrapper">
-	                            	<input type="number" id= "newQtaColore" name="newQtaColore" placeholder="10" style="width: 80px; height: 40px;"/>
+	                            	<input type="number" id= "newQtaColore" name="newQtaColore" placeholder="10" class="input-quantity"/>
 	                        	</div>
 	                        </div>
 	                        	                        
@@ -506,16 +503,16 @@
 						
 						<label for="nuovoNomeColore" style="margin-top: 14px;">(Aggiungi un nuovo colore al catalogo)</label>
                         <div class="color-row">
-	                        <div class="field-wrapper">
-		                        <input type="text" id="nuovoNomeColore" name="nuovoNomeColore" placeholder="Es. Tartarugato classico" />
-	                        </div>
-                        	<div class="field-wrapper">
-                        		<input type="color" id="nuovoHexColore" name="nuovoHexColore" value="#000000" style="width: 80px; height: 40px;"/> 
-							</div>
-							<div class="field-wrapper">
-                            	<input type="number" id= "nuovaQtaColore" name="nuovaQtaColore" placeholder="10" style="width: 80px; height: 40px;"/>
-                        	</div>
-                        </div>
+						    <div class="field-wrapper">
+						        <input type="text" id="nuovoNomeColore" name="nuovoNomeColore" placeholder="Es. Tartarugato classico" />
+						    </div>
+						    <div class="field-wrapper">
+						        <input type="color" id="nuovoHexColore" name="nuovoHexColore" value="#000000" class="input-color-picker" /> 
+						    </div>
+						    <div class="field-wrapper">
+						        <input type="number" id="nuovaQtaColore" name="nuovaQtaColore" placeholder="10" class="input-quantity" />
+						    </div>
+						</div>
                     </div>
                     
                     <button type="submit" class="btn-submit">Aggiungi Occhiale</button>

@@ -306,20 +306,20 @@
 			                <div class="form-grid-2">
 			                   
 			                    <div class="form-group">
-			                    	<label for="edit_via" style="font-weight: 500;">Via</label>
-			                    	<input type="text" id="edit_via" name="via" value="<%= via %>" placeholder="<%= via %>" />
+			                    	<label for="edit_via" class="label-medium">Via</label>
+			                    	<input type="text" id="edit_via" name="via"  value="<%= via %>" placeholder="<%= via %>"/>
 			                    </div>
 			                    <div class="form-group">
-									<label for="edit_civico" style="font-weight: 500;">Civico</label>
-									<input type="text" id="edit_civico" name="civico" value="<%= civico %>" placeholder="<%= civico %>" style="width: 120px;"/>
+									<label for="edit_civico" class="label-medium">Civico</label>
+									<input type="text" id="edit_civico" name="civico" value="<%= civico %>" placeholder="<%= civico %>" class="input-short" />
 								</div>
-			                    <div class="form-group" >
-				                    <label for="edit_citta" style="font-weight: 500;">Città</label>
+			                    <div class="form-group">
+				                    <label for="edit_citta" class="label-medium">Città</label>
 				                    <input type="text" id="edit_citta" name="citta" value="<%= citta %>" placeholder="<%= citta %>"/>
 			                    </div>
 			                    <div class="form-group">
-			                    	<label for="edit_cap" style="font-weight: 500;">CAP</label>
-			                    	<input type="text" inputmode="numeric" id="edit_cap" name="cap" value="<%= cap %>" placeholder="<%= cap %>" style="width: 120px;" />
+			                    	<label for="edit_cap" class="label-medium">CAP</label>
+			                    	<input type="text" inputmode="numeric" id="edit_cap" name="cap" value="<%= cap %>" placeholder="<%= cap %>" class="input-short"/>
 			                    </div>
 			                    
 			                </div>

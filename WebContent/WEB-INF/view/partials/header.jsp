@@ -23,10 +23,10 @@
 
     <div class="header-actions">
       <a href="<%= request.getContextPath() %>/common/area-utente" class="icon-btn" aria-label="Area utente">
-        <img src="<%= request.getContextPath() %>/images/user.png" alt="Area Utente" style="width: 20px; height: 20px; object-fit: contain;" />
+        <img src="<%= request.getContextPath() %>/images/user.png" alt="Area Utente" class="icon-btn-img"/>
       </a>
       <a href="<%= request.getContextPath() %>/carrello" class="icon-btn" aria-label="Carrello">
-        <img src="<%= request.getContextPath() %>/images/icons8-cart-24.png" alt="Carrello" style="width: 20px; height: 20px; object-fit: contain;" />
+        <img src="<%= request.getContextPath() %>/images/icons8-cart-24.png" alt="Carrello" class="icon-btn-img"/>
         <% if (cartCountHeader > 0) { %>
           <span class="cart-count" id="headerCartCount"><%= cartCountHeader %></span>
         <% } %>

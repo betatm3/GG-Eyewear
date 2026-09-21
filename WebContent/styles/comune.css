@@ -192,6 +192,11 @@ nav.main-nav a.outlet {
   justify-content: center;
 }
 
+.icon-btn-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 
 /* Banner errori */
 .error-banner {
