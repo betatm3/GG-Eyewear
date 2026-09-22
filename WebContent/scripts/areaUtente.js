@@ -1,7 +1,7 @@
 function toggleEditProfile(show) {
-    var ordersCard = document.getElementById("orders-card-section");
-    var editCard = document.getElementById("edit-profile-card");
-    var form = document.querySelector(".edit-profile-form");
+    const ordersCard = document.getElementById("orders-card-section");
+    const editCard = document.getElementById("edit-profile-card");
+    const form = document.querySelector(".edit-profile-form");
 
     if (ordersCard && editCard) {
         if (show) {

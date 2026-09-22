@@ -130,21 +130,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return v1 && v2 && v3 && v4;
     }
 		
-    // richiesta AJAX
     function applyFilters() {
 		
 		if (!validateForm()) {	return; }
 				
-        // Serializza tutti i campi visibili e nascosti in un oggetto FormData
+        // Serializza tutti i campi in un oggetto FormData
         const formData = new FormData(filterForm);
-        // Converte i dati nel formato query string (es. ?genere=DA_SOLE&stato=SPEDITO)
+        // Converte in query string
         const searchParams = new URLSearchParams(formData).toString();
 
-        // Esegue chiamata HTTP asincrona
         fetch(contextPath + "/admin/GestioneOrdini?" + searchParams, {
             headers: {
-                // Header custom per permettere alla Servlet di distinguere 
-                // una richiesta AJAX da una ricarica completa della pagina
                 "X-Requested-With": "XMLHttpRequest"
             }
         })
@@ -155,12 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.text(); // legge risposta HTML restituita dalla Servlet
         })
         .then(html => {
-            // Aggiorna solo la tabella degli ordini
-			/*
-				La Servlet inoltra il controllo al dispatcher di tabellaOrdini.jsp, il server compila quel pezzo di HTML
-				con i dati aggiornati presi dagli attributi della request e lo invia come testo puro. Il JS prende quell'HTML
-				e aggiorna ordiniContainer.innerHTML con zero impatto visivo sul resto dell'interfaccia
-			*/
             ordiniContainer.innerHTML = html;
         })
         .catch(error => console.error("Errore durante il filtraggio degli ordini:", error));
@@ -176,9 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnReset.addEventListener("click", () => {
             filterForm.reset();
 
-            // Svuota tutti i campi
             filterInputs.forEach(input => {
-                // Preserva input hidden di configurazione o sicurezza
                 if (input.type !== "hidden") {
                     if (input.tagName === "SELECT") {
                         input.selectedIndex = 0; 
@@ -193,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 	
-	// Dettagli dell'ordine
+	// Dettagli ordine
 	ordiniContainer.addEventListener("click", (event) => {
 		const orderRow = event.target.closest(".order-row");
 	    if (!orderRow) return;

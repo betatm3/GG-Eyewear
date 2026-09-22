@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Selezione degli input e select visibili
     const filterInputs = filterForm.querySelectorAll("input, select");
-	// Applicazione di Tom Select ai 4 campi del form
+	// Tom Select
     const selectSelectors = ["#filterForma", "#filterTaglia", "#filterMontatura", "#filterGenere"];
 	
     const tomSelectConfig = {
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         maxOptions: null,
         dropdownParent: "body",
         onChange: function() {
-            applyFilters(); // Esegue la ricerca AJAX al cambio valore
+            applyFilters(); // Esegue ricerca AJAX
         }
     };
  
@@ -29,9 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 	
-	// --- REGEX E LOGICA DI VALIDAZIONE ---
-	
-	// Permette lettere, numeri, spazi, trattini, . e ' (NO slash /)
+	// Permette lettere, numeri, spazi, trattini, . e '
 	const regexTestoFiltri = /^[a-zA-Z0-9À-ÿ\s&\.-]{2,}$/;
 	
     function showFieldError(input, message) {
@@ -146,13 +144,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		return v1 && v2 && v3 && v4;
     }
 
-    // Funzione per inviare i filtri via AJAX
+    // Filtri via AJAX
     function applyFilters() {
 		if (!validateForm()) {
 			return;
 		}
 		
-		//impacchetto tutto il form in una stringa di Query Parameters (es. tipo=sole&prezzoMax=100).		
+		//impacchetto tutto il form in una query string.		
         const formData = new FormData(filterForm);
         const searchParams = new URLSearchParams(formData).toString();
 
@@ -164,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("Errore nella risposta della Servlet: " + response.status);
             }
             return response.text();
-			//leggo HTML restituito della Servlet e lo sovrascrivo nel contenitore del catalogo. Niente ricaricamento di pagina, aggiornamento istantaneo
+			//leggo HTML restituito dalla Servlet
         })
         .then(html => {
             catalogContainer.innerHTML = html;

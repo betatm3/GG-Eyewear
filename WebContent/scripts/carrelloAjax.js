@@ -27,13 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function gestisciModificaQuantita(link) {
-	/*	Crea l'oggetto URL a partire dal link (elemento <a>) su cui l'utente ha cliccato
-		Trasforma link in oggetto URL (con JavaScript posso leggere e modificare l'indirizzo web)
-	*/
+	//	Ricava l'URL dal link (elemento <a>) su cui l'utente ha cliccato
+
         const urlObj = new URL(link.href, window.location.origin);
-        urlObj.searchParams.set("ajax", "true");  //aggiunge in coda la coppia chiave-valore ajax=true.
+        urlObj.searchParams.set("ajax", "true");
 		
-		// recupero parametri
         const id = urlObj.searchParams.get("idOcchiale");
         const cod = urlObj.searchParams.get("codiceVersioneOcchiale");
         const col = urlObj.searchParams.get("coloreScelto");
@@ -51,17 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (data.carrelloVuoto) {
                         mostraCarrelloVuoto();
                     } else if (nuovaQty <= 0) {
-                        // quantità < 1 -> rimuovo occhiale
                         rimuoviRigaConAnimazione(row, data.totaleCarrello);
                     } else {
-                        // Aggiorna quantità e subtotale nella riga
+                        // Aggiorno quantità e subtotale
                         const qtySpan = row.querySelector(".qty-val");
                         const subtotalTd = row.querySelector(".item-subtotal");
                         
                         if (qtySpan) qtySpan.textContent = data.quantita;
                         if (subtotalTd) subtotalTd.textContent = "€ " + data.subtotale.toFixed(2);
 
-                        // Aggiorna gli href dei pulsanti + e -
+                        // Aggiorno href dei pulsanti + e -
                         const btnMinus = row.querySelector(".btn-minus");
                         const btnPlus = row.querySelector(".btn-plus");
 
@@ -82,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.error("Errore AJAX quantità:", err);
-                // Fallback: ricarica pagina in caso di errore di connessione
+                // Fallback: ricarico pagina in caso di errore
                 window.location.reload();
             });
     }
@@ -142,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // rimuove riga con effetto di dissolvenza (fadeout)
+    // Effetto dissolvenza (fadeout)
     function rimuoviRigaConAnimazione(row, nuovoTotale) {
         if (!row) return;
         row.style.transition = "opacity 0.4s ease, transform 0.4s ease";
